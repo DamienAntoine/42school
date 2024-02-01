@@ -6,30 +6,19 @@
 /*   By: dantoine <dantoine@student.42luxembourg.lu>+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/12 11:39:33 by dantoine          #+#    #+#             */
-/*   Updated: 2024/01/14 17:32:45 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/01/31 17:04:18 by dantoine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-
 int	ft_strlen(char *str)
 {
-	int	nb;
+	int	i;
 
-	nb = 0;
-	while (*str != '\0')
+	i = 0;
+	while (*str)
 	{
-		nb++;
 		str++;
+		i++;
 	}
-	return (nb);
+	return (i);
 }
-/*#include <stdio.h>
-int main(void)
-{
-    char str[] = "Hello, World!";
-
-    printf("Length of the string: %d\n", ft_strlen(str));
-
-    return 0;
-}*/

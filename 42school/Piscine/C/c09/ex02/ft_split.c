@@ -6,7 +6,7 @@
 /*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 11:38:14 by dantoine          #+#    #+#             */
-/*   Updated: 2024/01/30 14:22:17 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/01/31 14:31:14 by dantoine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ char	**ft_split(char *str, char *charset)
 	split_words(array, str, charset);
 	return (array);
 }
-
+/*
 #include <stdio.h>
 
 int main() {
@@ -114,3 +114,4 @@ int main() {
 
     return 0;
 }
+*/

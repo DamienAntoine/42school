@@ -1,6 +1,5 @@
 #! /bin/sh
 
-rm -f libft.a
-find . -name "*.c" -type f -exec gcc -Wall -Werror -Wextra -c {} \;
-ar rc libft.a *.o
-find . -name "*.o" -type f -delete
+gcc -c ft_putchar.c ft_swap.c ft_putstr.c ft_strlen.c ft_strcmp.c
+
+ar rcs libft.a ft_putchar.o ft_swap.o ft_putstr.o ft_strlen.o ft_strcmp.o
