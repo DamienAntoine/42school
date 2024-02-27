@@ -8,7 +8,7 @@ int	checkformat(const char specifier, va_list ap)
 	counter = 0;
 	if (specifier == '%c')
 	{
-		counter += ft_printchar(va_arg(ap, char)); //ok
+		counter += ft_printchar(va_arg(ap, int)); //ok
 	}
 	if (specifier == '%s')
 	{
