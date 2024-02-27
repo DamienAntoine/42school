@@ -31,6 +31,7 @@ int	ft_printnbr(int n)
 	return (1);
 }
 
+//pour hexa
 int	ft_print_digit(long n, int base)
 {
 	int count;
