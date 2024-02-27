@@ -4,14 +4,18 @@
 
 int	ft_printstr(char *s) //%s Prints a string.
 {
+	int	count;
+
+	count = 0;
 	if (!s)
 		return (0);
 	while (*s)
 	{
 		write(1, s, 1);
+		count++;
 		s++;
 	}
-	return (1);
+	return (count);
 }
 /*
 #include <stdio.h>
