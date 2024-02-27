@@ -1,98 +1,56 @@
 #include "libft.h"
 #include "ft_printf.h"
 
-int	ft_putchar(char c) //%c Prints a single character.
+int	checkformat(const char specifier, va_list ap)
 {
-	write(1, &c, 1);
-	return (1);
-}
+	int	counter;
 
-int	ft_putstr(char *s) //%s Prints a string.
-{
-	size_t	i;
-	
-	i = 0;
-	while (s[i])
+	counter = 0;
+	if (specifier == '%c')
 	{
-		write(1, s[i], 1);
-		i++;
+		counter += ft_printchar(va_arg(ap, char)); //ok
 	}
-	return (1);
-}
-
-int	ft_putnbr(int n)
-{
-	if (n == -2147483648)
+	if (specifier == '%s')
 	{
-		ft_putstr('-2147483648');
-		return ;
+		counter += ft_printstr(va_arg(ap, char *)); //ok
 	}
-	if (n == -987441)
+	if (specifier == '%p')
 	{
-		ft_putstr('-987441');
-		return ;
+		counter += ft_printvoid(va_arg(ap, void *));
 	}
-	else
+	if (specifier == '%d' || specifier == '%i')
 	{
-		if (n < 0)
-		{
-			ft_putchar('-');
-			n = n * -1;
-		}
-		if (n >= 9)
-		{
-			ft_putnbr(n / 10);
-		}
-		ft_putchar((n % 10) + '0');
+		counter += ft_printnbr(va_arg(ap, int));
 	}
-	return (1);
-}
-
-int	checkformat(va_list args, const char format, ...)
-{
-	size_t	input_counter;
-
-	input_counter = 0;
-	if (format == '%c')
+	if (specifier == '%u')
 	{
-		input_counter += ft_putchar(va_arg(args, int));
+		counter += ft_printunsigned(ap, unsigned int);
 	}
-	if (format == '%s')
+	if (specifier == '%x' || specifier == '%X')
 	{
-
+		counter +=
 	}
-	if (format == '%p')
+	if (specifier == '%%')
 	{
-
+		counter += ft_printchar('%');
 	}
-	if (format == '%d')
-	{
-		
-	}
-	if (format == '%i')
-	{
-
-	}
-	if (format == '%u')
-	{
-		
-	}
-	if (format == '%x' || format == '%X')
-	{
-
-	}
-	if (format == '%%')
-	{
-		
-	}
-	return (input_counter);
+	return (counter);
 }
 
 int	ft_printf(const char *format, ...)
 {
-	va_list args;
+	va_list ap;
+	int	counter;
+	while (*format)
+	{
+		if (format == '%')
+		{
+			counter += checkformat(++format, ap);
+		}
+		format++;
+	}
+	va_start(ap, *format);
 
-	va_start(args, *format);
-
-	va_end(args);
+	va_end(ap);
+	return (counter);
 }
