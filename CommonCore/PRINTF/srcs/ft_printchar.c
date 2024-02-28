@@ -1,7 +1,18 @@
-#include "libft.h"
-#include "ft_printf.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_printchar.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <dantoine@student.42luxembourg    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/28 16:35:49 by dantoine          #+#    #+#             */
+/*   Updated: 2024/02/28 16:37:27 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-int	ft_printchar(char c) //%c Prints a single character.
+#include "../includes/ft_printf.h"
+
+int	ft_printchar(char c)
 {
 	write(1, &c, 1);
 	return (1);

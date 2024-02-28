@@ -1,17 +1,25 @@
-//#include "libft.h"
-//#include "ft_printf.h"
-#include <stdint.h>
-#include <unistd.h>
-#include <stdlib.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_printptr.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <dantoine@student.42luxembourg    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/28 16:36:55 by dantoine          #+#    #+#             */
+/*   Updated: 2024/02/28 17:04:58 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/ft_printf.h"
 
 void	ft_putchar(char c)
 {
 	write(1, &c, 1);
 }
 
-int	ft_strlen(char *str)
+size_t	ft_strlenptr(char *str)
 {
-	int	nb;
+	size_t	nb;
 
 	nb = 0;
 	while (*str != '\0')
@@ -29,27 +37,26 @@ int	ptrlen(uintptr_t ptr, int temp)
 	i = 0;
 	while (temp)
 	{
-        temp /= 16;
-        i++;
-    }
+		temp /= 16;
+		i++;
+	}
 	return (i);
 }
 
 char	*ft_createstr(void *ptr)
 {
-	int	i;
-	const char* hexdigits;
-	char *hexstr;
-	uintptr_t value;
-	size_t ptrsize;
+	const char	*hexdigits;
+	uintptr_t	value;
+	size_t		ptrsize;
+	char		*hexstr;
+	int			i;
 
-	hexdigits = "0123456789ABCDEF";
+	hexdigits = "0123456789abcdef";
 	hexstr = NULL;
 	value = (uintptr_t)ptr;
 	i = 0;
-	uintptr_t temp = value;
-	ptrsize = ptrlen((uintptr_t)ptr, temp);
-    hexstr = (char *)malloc(ptrsize + 3);
+	ptrsize = ptrlen((uintptr_t)ptr, value);
+	hexstr = (char *)malloc(ptrsize + 3);
 	while (value)
 	{
 		hexstr[i++] = hexdigits[value % 16];
@@ -63,11 +70,11 @@ char	*ft_createstr(void *ptr)
 
 int	ft_printvoid(uintptr_t *ptr)
 {
-	int	i;
-	char *hex;
+	int		i;
+	char	*hex;
 
-	i = ft_strlen(hex);
 	hex = ft_createstr((void *)ptr);
+	i = ft_strlenptr(hex);
 	while (i >= 0)
 	{
 		ft_putchar(hex[i]);
@@ -76,11 +83,13 @@ int	ft_printvoid(uintptr_t *ptr)
 	free(hex);
 	return (1);
 }
+/*
 #include <stdio.h>
 int	main()
 {
-	void *ptr = "sdgdhfdshg";
+	void *ptr = "-10";
 	ft_printvoid(ptr);
-	printf("%p", ptr);
+	printf("\n%p", ptr);
 	return 0;
 }
+*/

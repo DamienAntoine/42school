@@ -1,8 +1,18 @@
-/*#include "libft.h"
-#include "ft_printf.h"*/
-#include <unistd.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_printstr.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/28 16:37:01 by dantoine          #+#    #+#             */
+/*   Updated: 2024/02/28 16:52:41 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-int	ft_printstr(char *s) //%s Prints a string.
+#include "../includes/ft_printf.h"
+
+int	ft_printstr(char *s)
 {
 	int	count;
 
