@@ -5,6 +5,7 @@ SRCS = srcs/ft_printchar.c srcs/ft_printf.c srcs/ft_printnbr.c srcs/ft_printstr.
 OBJ_DIR = obj
 OBJS = $(addprefix $(OBJ_DIR)/, $(notdir $(SRCS:.c=.o)))
 LIBFT_DIR = libft
+include libft/
 $(OBJ_DIR)/%.o: srcs/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
