@@ -30,7 +30,7 @@ size_t	ft_strlenptr(char *str)
 	return (nb);
 }
 
-int	ptrlen(uintptr_t ptr, int temp)
+int	ptrlen(int temp)
 {
 	int	i;
 
@@ -55,7 +55,7 @@ char	*ft_createstr(void *ptr)
 	hexstr = NULL;
 	value = (uintptr_t)ptr;
 	i = 0;
-	ptrsize = ptrlen((uintptr_t)ptr, value);
+	ptrsize = ptrlen(value);
 	hexstr = (char *)malloc(ptrsize + 3);
 	while (value)
 	{

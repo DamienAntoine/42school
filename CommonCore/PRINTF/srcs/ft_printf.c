@@ -46,6 +46,7 @@ int	ft_printf(const char *format, ...)
 		if (*format == '%')
 		{
 			counter += checkformat(*(++format), ap);
+			format++;
 		}
 		ft_printchar(*format);
 		format++;
