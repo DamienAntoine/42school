@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printnbr.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dantoine <dantoine@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 16:36:48 by dantoine          #+#    #+#             */
-/*   Updated: 2024/02/28 16:40:11 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/03/01 15:41:52 by dantoine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
+#include "../includes/ft_printf.h"
 
 int	ft_toupper(int c)
 {
@@ -19,19 +20,20 @@ int	ft_toupper(int c)
 	return (c);
 }
 
-int	ft_printchar(char c)
-{
-	write(1, &c, 1);
-	return (1);
-}
-
 int	ft_print_digit(long n, int base, char spec)
 {
 	int		count;
 	char	*symbols;
 
+	count = 0;
 	symbols = "0123456789abcdef";
-	n = (unsigned int) n;
+	if (n < 0)
+    {
+        ft_printchar('-');
+        count++;
+        n = -n;
+    }
+	
 	if (n < base)
 	{
 		if (spec == 'X')

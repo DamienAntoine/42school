@@ -3,16 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printunsigned.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dantoine <dantoine@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 16:37:05 by dantoine          #+#    #+#             */
-/*   Updated: 2024/02/28 16:57:51 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/03/01 14:39:13 by dantoine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_printf.h"
 #include <stdio.h>
 #include <limits.h>
+
+size_t	ft_strlen(const char *str)
+{
+	size_t	i;
+
+	i = 0;
+	while (str[i])
+	{
+		i++;
+	}
+	return (i);
+}
 
 static char	*ft_uitoa(unsigned int n)
 {
