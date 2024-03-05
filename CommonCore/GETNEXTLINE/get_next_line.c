@@ -1,4 +1,5 @@
 #include "get_next_line.h"
+#include <stdio.h>
 
 char	*ft_clearstash(char *stash)
 {
@@ -7,6 +8,8 @@ char	*ft_clearstash(char *stash)
 	int		i;
 	int		j;
 
+	printf("\n\n-----------------\n");
+	printf("\nentered clearstash\n");
 	i = 0;
 	j = 0;
 	while (stash[i] != '\n' && stash[i] != '\0')
@@ -17,37 +20,50 @@ char	*ft_clearstash(char *stash)
 	temp = (char *)malloc((size - i) + 1);
 	if (temp == NULL)
 		return (NULL);
-	/*while (stash[i])
+	while (stash[i])
 	{
 		temp[j] = stash[i];
 		j++;
 		i++;
-	}*/
+	}
 	temp[j] = '\0';
+	printf("\nstash cleared\n");
 	free(stash);
+	printf("\nexited clearstash\n\n");
+	printf("\n\n-----------------\n");
 	return (temp);
 }
 
-void	ft_readfile(int fd, char **buffer, char *stash)
+char	*ft_readfile(int fd, char **buffer, char *stash)
 {
 	size_t	bytesread;
 
+	printf("\n\n-----------------\n");
+	printf("\nentered readfile\n");
 	*buffer = (char *)malloc(BUFFER_SIZE + 1);
 	if (*buffer == NULL)
-		return ;
+		return (NULL);
 	(*buffer)[0] = '\0';
-	while (!ft_scanline(stash))
+	while (ft_scanline(stash) != 0)
 	{
+		printf("\nstash content before strlcat: %s\n", stash);
 		bytesread = read(fd, *buffer, BUFFER_SIZE);
-		if (bytesread == 0)
+		printf("\nbuffer content: %s\n", *buffer);
+		if (bytesread < 0)
 		{
+			printf("error");
 			free(*buffer);
-			return ;
+			return (NULL);
 		}
 		(*buffer)[bytesread] = '\0';
-		ft_strlcat(stash, *buffer, BUFFER_SIZE);
+		ft_strlcat(stash, *buffer, ft_strlen(stash) + BUFFER_SIZE + 1);
+		printf("\nstash content after strlcat: %s\n", stash);
 	}
+	printf("\nstash content after loop: %s\n", stash);
 	free(*buffer);
+	printf("\nexited readfile\n\n");
+	printf("\n\n-----------------\n");
+	return (stash);
 }
 
 void	get_line(char *stash, char *line)
@@ -55,6 +71,8 @@ void	get_line(char *stash, char *line)
 	int	i;
 	int	j;
 
+	printf("\n\n-----------------\n");
+	printf("\nentered getline\n");
 	i = 0;
 	j = 0;
 	while (line[j])
@@ -68,14 +86,20 @@ void	get_line(char *stash, char *line)
 		j++;
 	}
 	line[j] = '\0';
+	printf("\nexited clearstash\n\n");
+	printf("\n\n-----------------\n");
 }
 
 void	ft_scancheck(char *stash, char **temp, char **line)
 {
 	size_t	len;
 
+	printf("\n\n-----------------\n");
+	printf("\nentered scancheck\n");
+	printf("stash: %s, temp: %s, line: %s", stash, *temp, *line);
 	if (ft_scanline(stash) == 1)
 	{
+		printf("entered if condition");
 		len = ft_strlen(stash);
 		get_line(stash, *line);
 		*temp = ft_clearstash(stash);
@@ -85,6 +109,8 @@ void	ft_scancheck(char *stash, char **temp, char **line)
 			ft_strlcat(*line, *temp, len + 1);
 		free(*temp);
 	}
+	printf("\nexited scancheck\n\n");
+	printf("\n\n-----------------\n");
 }
 
 char	*get_next_line(int fd)
@@ -95,24 +121,29 @@ char	*get_next_line(int fd)
 	char			*temp;
 	size_t			len;
 
-	stash = NULL;
+	printf("\n-----------------\n");
+	printf("\nstart\n");
 	stash = (char *)malloc(BUFFER_SIZE + 1);
 	line = (char *)malloc(1);
 	line[0] = '\0';
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, line, 0) < 0)
 	{
+		printf("errorgnl");
 		free(line);
 		free(stash);
 		return (NULL);
 	}
 	buffer = NULL;
-	ft_readfile(fd, &buffer, stash);
+	stash = ft_readfile(fd, &buffer, stash);
+	printf("\nreadfile done\n");
 	ft_scancheck(stash, &temp, &line);
+	printf("\nscancheck done\n");
+	printf("\n\n-----------------\n");
 	return (line);
 }
 
 #include <fcntl.h>
-#include <stdio.h>
+
 int	main(void)
 {
 	int fd = open("test.txt", O_RDONLY);
@@ -126,9 +157,5 @@ int	main(void)
 		printf("%s", str);
 		free(str);
 	}
-	str = get_next_line(fd);
-	if (str == NULL)
-		printf("failed read");
-    close(fd);
     return 0;
 }

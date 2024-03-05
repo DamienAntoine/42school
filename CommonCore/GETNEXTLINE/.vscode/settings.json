@@ -2,6 +2,8 @@
 	"files.associations": {
 		"stat.h": "c",
 		"stdlib.h": "c",
-		"unistd.h": "c"
+		"unistd.h": "c",
+		"fcntl.h": "c",
+		"get_next_line.h": "c"
 	}
 }
