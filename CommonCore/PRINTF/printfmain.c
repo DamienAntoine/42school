@@ -30,11 +30,15 @@ int	main()
 
 	ft_printf("\nTEST 3:\n");
 	ft_printf("*****FT_PRINTF*****\n");
-	ft_printf("%c", '0');
-	ft_printf(" %c", '0' - 256);
+	ft_printf("%c\n", '0');
+	ft_printf(" %c\n", '0' - 256);
+	ft_printf(" %d \n", -15);
+        ft_printf(" %i \n", -15);
 	ft_printf("*****ST_PRINTF*****\n");
 	printf("%c\n", '0');
 	printf(" %c\n", '0' - 256);
+	printf(" %d \n", -15);
+	printf(" %i \n", -15);
 	ft_printf("----------------------------\n\n");
 
 	ft_printf("\nTEST 4:\n");
@@ -44,12 +48,14 @@ int	main()
 	ft_printf("%c%c%c*\n", '\0', '1', 1);
 	ft_printf("%c\n", 'a');
 	ft_printf("%c\n", '0');
+	ft_printf(" %p %p \n", 0, 0);
 	ft_printf("*****ST_PRINTF*****\n");
 	printf("%s\n", "");
 	printf(". .%s.\n", "");
 	printf("%c%c%c*\n", '\0', '1', 1);
 	printf("%c\n", 'a');
 	printf("%c\n", '0');
+	printf(" %p %p \n", 0, 0);
 	ft_printf("----------------------------\n\n");
 
 	return 0;

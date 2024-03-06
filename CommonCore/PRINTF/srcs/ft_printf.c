@@ -22,13 +22,13 @@ int	checkformat(const char specifier, va_list ap)
 	if (specifier == 's')
 		counter += ft_printstr(va_arg(ap, char *));
 	if (specifier == 'p')
-		counter += ft_printvoid(va_arg(ap, void *));
+		counter += ft_printvoid(va_arg(ap, unsigned long long));
 	if (specifier == 'd' || specifier == 'i')
-		counter += ft_print_digit(va_arg(ap, int), 10, specifier);
+		counter += ft_printnbr(va_arg(ap, int));
 	if (specifier == 'u')
 		counter += ft_printunsigned(va_arg(ap, unsigned int));
 	if (specifier == 'x' || specifier == 'X')
-		counter += ft_print_digit(va_arg(ap, unsigned int), 16, specifier);
+		counter += ft_printhexa(va_arg(ap, unsigned int), specifier);
 	if (specifier == '%')
 		counter += ft_printchar('%');
 	return (counter);
@@ -38,18 +38,21 @@ int	ft_printf(const char *format, ...)
 {
 	va_list	ap;
 	int		counter;
+	int		i;
 
 	va_start(ap, format);
 	counter = 0;
-	while (*format)
+	i = 0;
+	while (format[i])
 	{
-		if (*format == '%')
+		if (format[i] == '%')
 		{
-			counter += checkformat(*(++format), ap);
-			format++;
+			counter += checkformat(format[i + 1], ap);
+			i++;
 		}
-		counter += ft_printchar(*format);
-		format++;
+		else
+			counter += ft_printchar(format[i]);
+		i++;
 	}
 	va_end(ap);
 	return (counter);

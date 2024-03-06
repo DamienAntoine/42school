@@ -13,6 +13,17 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -I../includes
 NAME = libft.a
+
+DEF_COLOR = \033[0;39m
+GRAY = \033[0;90m
+RED = \033[0;91m
+GREEN = \033[0;92m
+YELLOW = \033[0;93m
+BLUE = \033[0;94m
+MAGENTA = \033[0;95m
+CYAN = \033[0;96m
+WHITE = \033[0;97m
+
 SRCS = ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c ft_isascii.c ft_isdigit.c ft_isprint.c\
 	ft_itoa.c ft_memchr.c ft_memcmp.c ft_memcpy.c ft_memmove.c ft_memset.c ft_putchar_fd.c ft_putendl_fd.c\
 	ft_putnbr_fd.c ft_putstr_fd.c ft_split.c ft_strchr.c ft_strdup.c ft_striteri.c ft_strjoin.c ft_strlcat.c\
@@ -25,18 +36,21 @@ OBJS = $(SRCS:.c=.o)
 BONUS_OBJS = $(BONUS_SRCS:.c=.o)
 
 all: $(NAME)
+		@echo "$(GREEN)Compiled: $< $(DEF_COLOR)"
 
 $(NAME): $(OBJS)
-		ar rc $(NAME) $(OBJS)
+		@ar rc $(NAME) $(OBJS)
 
 bonus: $(OBJS) $(BONUS_OBJS)
-		ar rc $(NAME) $(BONUS_OBJS) $(OBJS)
+		@ar rc $(NAME) $(BONUS_OBJS) $(OBJS)
 
 clean:
-		rm -rf $(OBJS) $(BONUS_OBJS)
+		@echo "$(BLUE)Cleaning libft... $< $(DEF_COLOR)"
+		@rm -rf $(OBJS) $(BONUS_OBJS)
+		@echo "$(BLUE)CLEANED $(DEF_COLOR)"
 
 fclean: clean
-		rm -rf $(NAME)
+		@rm -rf $(NAME)
 
 re: fclean all
 

@@ -12,7 +12,7 @@
 
 #include <unistd.h>
 #include "../includes/ft_printf.h"
-
+/*
 int	ft_toupper(int c)
 {
 	if (c >= 'a' && c <= 'z')
@@ -45,6 +45,18 @@ int	ft_print_digit(long n, int base, char spec)
 		count = ft_print_digit(n / base, base, spec);
 		return (count + ft_print_digit(n % base, base, spec));
 	}
+}
+*/
+int	ft_printnbr(int number)
+{
+	int	len;
+	char	*str;
+
+	len = 0;
+	str = ft_itoa(number);
+	len = ft_printstr(str);
+	free(str);
+	return (len);
 }
 /*
 #include <stdio.h>

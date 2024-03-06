@@ -14,18 +14,20 @@
 
 int	ft_printstr(char *s)
 {
-	int	count;
+	int	i;
 
-	count = 0;
-	if (!s)
-		return (0);
-	while (*s)
+	i = 0;
+	if (s == NULL)
 	{
-		write(1, s, 1);
-		count++;
-		s++;
+		ft_printstr("(null)");
+		return (6);
 	}
-	return (count);
+	while (s[i])
+	{
+		write(1, &s[i], 1);
+		i++;
+	}
+	return (i);
 }
 /*
 #include <stdio.h>

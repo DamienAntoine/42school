@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "../includes/ft_printf.h"
-
+/*
 void	ft_putchar(char c)
 {
 	write(1, &c, 1);
@@ -86,6 +86,51 @@ int	ft_printvoid(uintptr_t *ptr)
 	i = ft_strlenptr(hex);
 	free(hex);
 	return (i);
+}
+*/
+int     ptrlen(uintptr_t temp)
+{
+        int     i;
+
+        i = 0;
+        while (temp != 0)
+        {
+		i++;
+                temp /= 16;
+        }
+        return (i);
+}
+
+void	ft_fillstr(uintptr_t digit)
+{
+	if (digit >= 16)
+	{
+		ft_fillstr(digit / 16);
+		ft_fillstr(digit % 16);
+	}
+	else
+	{
+		if (digit <= 9)
+			ft_printchar(digit + '0');
+		else
+			ft_printchar(digit - 10 + 'a');
+	}
+}
+
+int	ft_printvoid(unsigned long long int ptr)
+{
+	int	len;
+
+	len = 0;
+	if (ptr == 0)
+		len += write(1, "(nil)", 5);
+	else
+	{
+		len += write(1, "0x", 2);
+		ft_fillstr(ptr);
+		len += ptrlen(ptr);
+	}
+	return (len);
 }
 /*
 #include <stdio.h>

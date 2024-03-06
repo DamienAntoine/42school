@@ -58,11 +58,13 @@ int	ft_printunsigned(unsigned int nb)
 	char	*ustr;
 	int		len;
 
-	ustr = ft_uitoa(nb);
-	len = ft_strlen(ustr);
-	if (ustr)
+	len = 0;
+	if (nb == 0)
+		len += write(1, "0", 1);
+	else
 	{
-		write(1, ustr, ft_strlen(ustr));
+		ustr = ft_uitoa(nb);
+		len += ft_printstr(ustr);
 		free(ustr);
 	}
 	return (len);
