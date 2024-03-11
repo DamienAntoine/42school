@@ -1,3 +1,5 @@
+#include "get_next_line.h"
+
 void    create_lst(t_list **list, int fd)
 {
     int     bytesread;
@@ -8,45 +10,52 @@ void    create_lst(t_list **list, int fd)
         buf = malloc(BUFFER_SIZE + 1);
         if (buf == NULL)
             return ;
-        char_read = read(fd, buf, BUFFER_SIZE);
+        bytesread = read(fd, buf, BUFFER_SIZE);
         if (!bytesread)
         {
             free(buf);
             return ;
         }
         buf[bytesread] = '\0';
-        lstcat(list, buf);
+        ft_lstcat(list, buf);
+        free(buf);
     }
 }
 
-char    *get_line(t_list *list)
+int scanline(t_list *list)
 {
-    int     len;
-    char    *nextstr;
-
-    if (list == NULL)
-        return (NULL);
-    len = charcount(list);
-    nextstr = malloc(len);
-    if (nextstr == NULL)
-        return (NULL);
-    return (nextstr);
+    t_list  *current;
+    char    *str;
+    current = list;
+    while (current != NULL)
+    {
+        str = current->str_buf;
+        if (ft_strchr(str, '\n') != NULL)
+        {
+            return (1);
+        }
+        current = current->next;
+    }
+    return (0);
 }
-
-
 
 char    *get_next_line(int fd)
 {
     static t_list   *list;
     char            *line;
+    int             len;
 
-    list = NULL;
-    if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &next_line, 0) < 0)
+//    list = NULL;
+    if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line, 0) < 0)
         return (NULL);
     create_lst(&list, fd);
     if (list == NULL)
         return (NULL);
-    line = get_line(list);
+    len = charcount(list);
+    line = malloc(len + 1);
+    if (line == NULL)
+        return (NULL);
+    lst_strcat(list, line);
     //copy the chars past newline, free used nodes
     return (line);
 }

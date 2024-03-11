@@ -1,22 +1,6 @@
 #include "get_next_line.h"
 #include <stdio.h>
 
-size_t	ft_strlcpy(char *dest, const char *src, size_t size)
-{
-	size_t	i;
-
-	if (!size)
-		return (ft_strlen(src));
-	i = 0;
-	while (src[i] && (i < size - 1))
-	{
-		dest[i] = src[i];
-		i++;
-	}
-	dest[i] = 0;
-	return (ft_strlen(src));
-}
-
 size_t	ft_strlen(const char *str)
 {
 	size_t	i;
@@ -55,21 +39,16 @@ size_t	ft_strlcat(char *dest, const char *src, size_t size)
 	return (j + i);
 }
 
-int	ft_scanline(char *str)
+int	find_newline(char *stash)
 {
-	printf("\nentered ft_scanline\n");
-	if (str && *str != '\0')
+	int	i;
+
+	while (stash[i] != '\n' || stash[i] != '\0')
 	{
-		while (str && *str != '\0')
-		{
-			if (*str == '\n')
-				return (1);
-			str++;
-		}
-		printf("\nnewline found in ft_scanline\n");
-		printf("\n\n-----------------\n");
-		return (0);
+		i++;
 	}
-	printf("\nexited scanline without finding newline\n\n");
-	return (1);
+	if (stash == '\n')
+		return (1);
+	else
+		return (0);
 }
