@@ -1,34 +1,5 @@
 #include "get_next_line.h"
 
-void    ft_lstcat(t_list **list, char *buf)
-{
-    t_list  *newnode;
-    t_list  *lastnode;
-
-    newnode = malloc(sizeof(t_list));
-    lastnode = ft_lstlast(*list);
-    if (newnode == NULL)
-        return ;
-    if (lastnode == NULL)
-        *list = newnode;
-    else
-        lastnode->next = newnode;
-    newnode->str_buf = buf;
-    newnode->next = NULL;
-}
-
-size_t	ft_strlen(const char *str)
-{
-	size_t	i;
-
-	i = 0;
-	while (str[i])
-	{
-		i++;
-	}
-	return (i);
-}
-
 t_list	*ft_lstlast(t_list *lst)
 {
 	if (lst == NULL)
@@ -40,91 +11,97 @@ t_list	*ft_lstlast(t_list *lst)
 	return (lst);
 }
 
-char	*ft_strchr(const char *s, int c)
+int	charcount(t_list *list)
 {
-	char	*ptr;
+	int	i;
+	int	len;
 
-	ptr = (char *)s;
-	while (*ptr)
+	if (list == NULL)
+		return (0);
+	len = 0;
+	while (list)
 	{
-		if (*ptr == (unsigned char)c)
+		i = 0;
+		while (list->str_buf[i])
 		{
-			return (ptr);
+			if (list->str_buf[i] == '\n')
+			{
+				++len;
+				return (len);
+			}
+			++i;
+			++len;
 		}
-		ptr++;
-	}
-	if (*ptr == '\0' && c == '\0')
-	{
-		return (ptr);
-	}
-	return (NULL);
+		list = list->next;
+	}	
+	return (len);
 }
 
-size_t	ft_strlcat(char *dest, const char *src, size_t size)
+void	struct_strcpy(t_list *list, char *str)
 {
-	size_t	i;
-	size_t	j;
-	char	*ptr_src;
+	int	i;
+	int	j;
 
-	ptr_src = (char *)src;
-	i = 0;
-	while (i < size && *dest)
-	{
-		dest++;
-		i++;
-	}
-	if (i == size)
-		return (i + ft_strlen(src));
+	if (list == NULL)
+		return;
 	j = 0;
-	while (ptr_src[j])
+	while (list != NULL)
 	{
-		if (j < size - i - 1)
-			*dest++ = ptr_src[j];
-		j++;
+		i = 0;
+		while (list->str_buf[i])
+		{
+			if (list->str_buf[i] == '\n')
+			{
+				str[j++] = '\n';
+				str[j] = '\0';
+				return;
+			}
+			str[j++] = list->str_buf[i++];
+		}
+		list = list->next;
 	}
-	*dest = 0;
-	return (j + i);
+	str[j] = '\0';
 }
 
-char    *lst_strcat(t_list *lst, char *nextstr)
+int scanline(t_list *list)
 {
-    int i;
-    size_t len;
+    int	i;
 
-    i = 0;
-    while (nextstr[i])
-    {
-        i++;
-    }
-    while (lst && ft_strchr(lst->str_buf, '\n'))
-    {
-        len = ft_strlen(lst->str_buf);
-        ft_strlcat(nextstr, lst->str_buf, len);
-        lst = lst->next;
-    }
-    return (nextstr);
+	if (list == NULL)
+		return (0);
+	while (list)
+	{
+		i = 0;
+		while (list->str_buf[i] && i < BUFFER_SIZE)
+		{
+			if (list->str_buf[i] == '\n')
+				return (1);
+			++i;
+		}
+		list = list->next;
+	}
+	return (0);
 }
 
-int charcount(t_list *lst)
+void	unmalloc(t_list **list, t_list *clean, char *buf)
 {
-    int len;
-    int i;
+	t_list	*temp;
 
-    len = 0;
-    while(lst != NULL)
-    {
-        i = 0;
-        while (lst->str_buf[i])
-        {
-            if (lst->str_buf[i] != '\n')
-            {
-                ++len;
-                return (len);
-            }
-            ++i;
-            ++len;
-        }
-        lst = lst->next;
-    }
-    return (len);
+	if (*list == NULL)
+		return;
+	while (*list)
+	{
+		temp = (*list)->next;
+		free((*list)->str_buf);
+		free(*list);
+		*list = temp;
+	}
+	*list = NULL;
+	if (clean->str_buf[0])
+		*list = clean;
+	else
+	{
+		free(buf);
+		free(clean);
+	}
 }
