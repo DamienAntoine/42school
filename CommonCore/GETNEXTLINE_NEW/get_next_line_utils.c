@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/13 14:09:45 by dantoine          #+#    #+#             */
+/*   Updated: 2024/03/13 14:12:03 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
 t_list	*ft_lstlast(t_list *lst)
 {
 	if (lst == NULL)
 		return (NULL);
-	while (lst->next != NULL)
+	while (lst->next)
 	{
 		lst = lst->next;
 	}
@@ -43,7 +55,7 @@ void	struct_strcpy(t_list *list, char *str)
 	int	j;
 
 	if (list == NULL)
-		return;
+		return ;
 	j = 0;
 	while (list != NULL)
 	{
@@ -54,7 +66,7 @@ void	struct_strcpy(t_list *list, char *str)
 			{
 				str[j++] = '\n';
 				str[j] = '\0';
-				return;
+				return ;
 			}
 			str[j++] = list->str_buf[i++];
 		}
@@ -63,9 +75,9 @@ void	struct_strcpy(t_list *list, char *str)
 	str[j] = '\0';
 }
 
-int scanline(t_list *list)
+int	scanline(t_list *list)
 {
-    int	i;
+	int	i;
 
 	if (list == NULL)
 		return (0);
@@ -88,7 +100,7 @@ void	unmalloc(t_list **list, t_list *clean, char *buf)
 	t_list	*temp;
 
 	if (*list == NULL)
-		return;
+		return ;
 	while (*list)
 	{
 		temp = (*list)->next;

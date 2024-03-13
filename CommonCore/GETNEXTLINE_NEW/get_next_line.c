@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/13 14:16:29 by dantoine          #+#    #+#             */
+/*   Updated: 2024/03/13 14:17:41 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
-void    cleanlist(t_list **list)
+void	cleanlist(t_list **list)
 {
-    t_list	*last_node;
+	t_list	*last_node;
 	t_list	*clean;
 	int		i;
 	int		k;
@@ -42,46 +54,53 @@ void	lstcat(t_list **list, char *buf)
 	new_node->next = NULL;
 }
 
-void    create_lst(t_list **list, int fd)
+void	create_lst(t_list **list, int fd)
 {
-    int     bytesread;
-    char    *buf;
+	int		bytesread;
+	char	*buf;
 
-    while (!scanline(*list))
-    {
-        buf = malloc(BUFFER_SIZE + 1);
-        if (buf == NULL)
-            return ;
-        bytesread = read(fd, buf, BUFFER_SIZE);
-        if (!bytesread)
-        {
-            free(buf);
-            return ;
-        }
-        buf[bytesread] = '\0';
-        lstcat(list, buf);
-    }
+	while (scanline(*list) != 1)
+	{
+		buf = malloc(BUFFER_SIZE + 1);
+		if (buf == NULL)
+			return ;
+		bytesread = read(fd, buf, BUFFER_SIZE);
+		if (!bytesread)
+		{
+			free(buf);
+			return ;
+		}
+		buf[bytesread] = '\0';
+		lstcat(list, buf);
+	}
 }
 
-char    *get_next_line(int fd)
+char	*get_line(t_list *list)
 {
-    static t_list   *list;
-    char            *nxtline;
-    int             len;
+	int		len;
+	char	*nxtline;
 
-    list = NULL;
-    if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &nxtline, 0) < 0)
-        return (NULL);
-    create_lst(&list, fd);
-    if (list == NULL)
-        return (NULL);
-    len = charcount(list);
-    nxtline = malloc(len + 1);
-    if (nxtline == NULL)
-        return (NULL);
-    struct_strcpy(list, nxtline);
-    cleanlist(&list);
-    return (nxtline);
+	len = charcount(list);
+	nxtline = malloc(len + 1);
+	if (nxtline == NULL)
+		return (NULL);
+	struct_strcpy(list, nxtline);
+	return (nxtline);
+}
+
+char	*get_next_line(int fd)
+{
+	static t_list	*list;
+	char			*nxtline;
+
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &nxtline, 0) < 0)
+		return (NULL);
+	create_lst(&list, fd);
+	if (list == NULL)
+		return (NULL);
+	nxtline = get_line(list);
+	cleanlist(&list);
+	return (nxtline);
 }
 /*
 #include <stdio.h>
@@ -100,6 +119,7 @@ int     main(void)
         {
             printf("line %d: %s\n", lines++, line);    
         }
+    free(line);
     return 0;
 }
 */
