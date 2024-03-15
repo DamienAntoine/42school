@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-void	cleanlist(t_list **list)
+void ft_lstclear(t_list **list)
 {
 	t_list	*last_node;
 	t_list	*clean;
@@ -99,7 +99,7 @@ char	*get_next_line(int fd)
 	if (list == NULL)
 		return (NULL);
 	nxtline = get_line(list);
-	cleanlist(&list);
+	ft_lstclear(&list);
 	return (nxtline);
 }
 /*
