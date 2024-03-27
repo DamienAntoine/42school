@@ -1,54 +1,119 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/13 14:09:45 by dantoine          #+#    #+#             */
+/*   Updated: 2024/03/13 14:12:03 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
-#include <stdio.h>
 
-size_t	ft_strlen(const char *str)
+t_list	*ft_lstlast(t_list *lst)
 {
-	size_t	i;
-
-	i = 0;
-	while (str[i])
+	if (lst == NULL)
+		return (NULL);
+	while (lst->next)
 	{
-		i++;
+		lst = lst->next;
 	}
-	return (i);
+	return (lst);
 }
 
-size_t	ft_strlcat(char *dest, const char *src, size_t size)
+int	charcount(t_list *list)
 {
-	size_t	i;
-	size_t	j;
-	char	*ptr_src;
+	int	i;
+	int	len;
 
-	ptr_src = (char *)src;
-	i = 0;
-	while (i < size && *dest)
+	if (list == NULL)
+		return (0);
+	len = 0;
+	while (list)
 	{
-		dest++;
-		i++;
-	}
-	if (i == size)
-		return (i + ft_strlen(src));
+		i = 0;
+		while (list->str_buf[i])
+		{
+			if (list->str_buf[i] == '\n')
+			{
+				++len;
+				return (len);
+			}
+			++i;
+			++len;
+		}
+		list = list->next;
+	}	
+	return (len);
+}
+
+void	struct_strcpy(t_list *list, char *str)
+{
+	int	i;
+	int	j;
+
+	if (list == NULL)
+		return ;
 	j = 0;
-	while (ptr_src[j])
+	while (list != NULL)
 	{
-		if (j < size - i - 1)
-			*dest++ = ptr_src[j];
-		j++;
+		i = 0;
+		while (list->str_buf[i])
+		{
+			if (list->str_buf[i] == '\n')
+			{
+				str[j++] = '\n';
+				str[j] = '\0';
+				return ;
+			}
+			str[j++] = list->str_buf[i++];
+		}
+		list = list->next;
 	}
-	*dest = 0;
-	return (j + i);
+	str[j] = '\0';
 }
 
-int	find_newline(char *stash)
+int	scanline(t_list *list)
 {
 	int	i;
 
-	while (stash[i] != '\n' || stash[i] != '\0')
-	{
-		i++;
-	}
-	if (stash == '\n')
-		return (1);
-	else
+	if (list == NULL)
 		return (0);
+	while (list)
+	{
+		i = 0;
+		while (list->str_buf[i] && i < BUFFER_SIZE)
+		{
+			if (list->str_buf[i] == '\n')
+				return (1);
+			++i;
+		}
+		list = list->next;
+	}
+	return (0);
+}
+
+void	unmalloc(t_list **list, t_list *clean, char *buf)
+{
+	t_list	*temp;
+
+	if (*list == NULL)
+		return ;
+	while (*list)
+	{
+		temp = (*list)->next;
+		free((*list)->str_buf);
+		free(*list);
+		*list = temp;
+	}
+	*list = NULL;
+	if (clean->str_buf[0])
+		*list = clean;
+	else
+	{
+		free(buf);
+		free(clean);
+	}
 }

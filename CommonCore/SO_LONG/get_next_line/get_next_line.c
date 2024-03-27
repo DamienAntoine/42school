@@ -6,13 +6,14 @@
 /*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 14:16:29 by dantoine          #+#    #+#             */
-/*   Updated: 2024/03/13 14:17:41 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/03/18 15:15:51 by dantoine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <limits.h>
 #include "get_next_line.h"
 
-void ft_lstclear(t_list **list)
+void	cleanlist(t_list **list)
 {
 	t_list	*last_node;
 	t_list	*clean;
@@ -65,7 +66,7 @@ void	create_lst(t_list **list, int fd)
 		if (buf == NULL)
 			return ;
 		bytesread = read(fd, buf, BUFFER_SIZE);
-		if (!bytesread)
+		if (!bytesread || bytesread < 0)
 		{
 			free(buf);
 			return ;
@@ -87,19 +88,20 @@ char	*get_line(t_list *list)
 	struct_strcpy(list, nxtline);
 	return (nxtline);
 }
+#include <fcntl.h>
 
 char	*get_next_line(int fd)
 {
 	static t_list	*list;
 	char			*nxtline;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &nxtline, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	create_lst(&list, fd);
 	if (list == NULL)
 		return (NULL);
 	nxtline = get_line(list);
-	ft_lstclear(&list);
+	cleanlist(&list);
 	return (nxtline);
 }
 /*
@@ -113,7 +115,7 @@ int     main(void)
         int lines;
 
         lines = 1;
-        fd = open("test.txt", O_RDONLY);
+        fd = open("notxt", O_RDONLY);
 
         while (line = get_next_line(fd))
         {
@@ -121,5 +123,4 @@ int     main(void)
         }
     free(line);
     return 0;
-}
-*/
+}*/
