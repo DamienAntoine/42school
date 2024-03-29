@@ -1,0 +1,58 @@
+--services--
+sudo apt install service        -install service
+sudo systemctl start service    -start service
+sudo systemctl enable service   -enable service on startup
+sudo systemctl status service   -check service's status
+
+--logs--
+cat /var/log/sudo/sudo.log      -displays sudo logs
+
+--crontab script--
+vim /usr/local/bin/monitoring.sh    -script path
+sudo crontab -u root -e             -open crontab settings
+*/1 * * * * sleep 30s && /usr/local/bin/monitoring.sh   -change last line to this so it runs every 30s
+#                                   -comment (or delete) line to turn off cronjob
+
+--partitions--
+lsblk                           -shows all partitions
+
+--check installs--
+dpkg -l | grep *name*           -check if service is installed
+(i.e: dpkg -l | grep sudo -)    -checks for sudo
+
+--firewall--
+sudo ufw enable / disable       -enables or disables firewall
+sudo ufw status numbered        -check status
+sudo ufw allow *rule*           -adds a rule for the fw to allow something
+sudo ufw delete *rule number*   -removes the rule
+
+--ssh--
+ssh *username*@127.0.0.1 -p 4242    -connects to ssh (can do outside VM)
+exit                                -disconnects
+
+--pw policies--
+vim /etc/pam.d/common-password  -file containing password policy
+vim /etc/login.defs             -file containing password reset settings
+chage -l *username*             -checks if password settings apply to the user
+
+--groups & users--
+sudo groupadd *groupname*       -create group
+getent group                    -displays all groups
+cut -d: -f1 /etc/passwd         -displays all local users
+sudo adduser *username*         -create user
+sudo usermod -aG *group* *user* -puts a user inside a group
+getent group *groupname*        -displays users belonging in the group
+groups                          -displays which groups current user belongs to
+
+--mariadb--
+sudo mariadb                    -enter mariadb
+CREATE DATABASE <db name>;      -create database
+GRANT ALL ON <db name>.* TO 'user'@'localhost' IDENTIFIED BY 'pw' WITH GRANT OPTION;        -grant full privileges to the db
+FLUSH PRIVILEGES;               -flush all privileges
+mariadb -u <username> -p        -connects to mariadb with user
+SHOW DATABASES;                 -display all databases the user can access
+exit                            -exits mariadb
+
+--ftp--
+ftp 
+
