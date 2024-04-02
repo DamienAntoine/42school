@@ -12,7 +12,7 @@ int main()
     mlx_loop(mlx);
 }
 */
-
+/*
 typedef struct	s_data {
 	void	*img;
 	char	*addr;
@@ -21,30 +21,71 @@ typedef struct	s_data {
 	int		endian;
 }				t_data;
 
-void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
-{
-	char	*dst;
-
-	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-	*(unsigned int*)dst = color;
-}
-
 int	main(void)
 {
 	void	*mlx;
 	void	*mlx_win;
-	t_data	img;
-	int	x;
-	int y;
+    t_data  img_data;
 
-	x = 5;
-	y = 5;
 	mlx = mlx_init();
+
 	mlx_win = mlx_new_window(mlx, 1920, 1080, "Hello world!");
-	img.img = mlx_new_image(mlx, 1920, 1080);
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
-	my_mlx_pixel_put(&img, x, y, 0x00FF0000);
-	mlx_put_image_to_window(mlx, mlx_win, img.img, 0, 0);
+	img_data.img = mlx_new_image(mlx, 1920, 1080);
+    addr.addr = mlx_get_data_addr(img_data.img &img_data.bits_per_pixel, &img_data.line_length, &img_data.endian)
+
     mlx_loop(mlx);
 }
+*/
+/*
+#define WIDTH 800
+#define HEIGHT 600
 
+void draw_square(void *mlx, void *win)
+{
+    int x = 100;  // X-coordinate of the square's top-left corner
+    int y = 100;  // Y-coordinate of the square's top-left corner
+    int size = 200;  // Size of the square
+    int i = x;
+
+    // Draw horizontal lines
+    while (i < x + size)
+    {
+        mlx_pixel_put(mlx, win, i, y, 0xFFFFFF); // White color
+        mlx_pixel_put(mlx, win, i, y + size, 0xFFFFFF);
+        i++;
+    }
+
+    // Draw vertical lines
+    i = y;
+    while (i < y + size)
+    {
+        mlx_pixel_put(mlx, win, x, i, 0xFFFFFF);
+        mlx_pixel_put(mlx, win, x + size, i, 0xFFFFFF);
+        i++;
+    }
+}
+
+int main()
+{
+    void *mlx;
+    void *win;
+
+    // Initialize connection to the X server
+    mlx = mlx_init();
+    if (!mlx)
+        return 1;
+
+    // Create a new window
+    win = mlx_new_window(mlx, WIDTH, HEIGHT, "Simple Square");
+    if (!win)
+        return 1;
+
+    // Draw the square
+    draw_square(mlx, win);
+
+    // Start the event loop (program will stay in this loop until the window is closed)
+    mlx_loop(mlx);
+
+    return 0;
+}
+*/
