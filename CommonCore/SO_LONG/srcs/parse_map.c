@@ -1,9 +1,10 @@
 #include "../headers/so_long.h"
 
-int		map_height(char *map)
+int		map_height(char **map)
 {
 	int	i;
 
+	i = 0;
 	while (map[i])
 		i++;
 	return (i);
