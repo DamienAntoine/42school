@@ -9,11 +9,11 @@ int	is_rectangle(t_data **data)
 
     y_map = 0;
     temp = 0;
-    height = map_height(*data.map);
+    height = map_height((*data)->map);
     while (y_map != height)
     {
         x_map = 0;
-        while (*data.map[y_map][x_map])
+        while ((*data)->map[y_map][x_map])
             x_map++;
         y_map++;
         if (temp)

@@ -19,4 +19,7 @@ typedef struct	s_data {
     int     collect;
 }		t_data;
 
+size_t	ft_strlen(const char *str);
+int		map_height(char **map);
+
 #endif
