@@ -2,9 +2,16 @@ NAME = so_long
 CFLAGS = -Wextra -Wall #-Werror
 SRCS_DIR = srcs
 OBJS_DIR = objs
-SRCS = ./srcs/utils.c ./srcs/check_map.c ./srcs/parse_map.c ./srcs/so_long.c
+SRCS = ./srcs/check_file.c \
+		./srcs/check_map.c \
+		./srcs/exit.c \
+		./srcs/movements.c \
+		./srcs/mv_counter.c \
+		./srcs/parse_map.c \
+		./srcs/print_elem.c \
+		./srcs/so_long.c
 GETNEXTLINE := includes/get_next_line/*.c
-OBJS = $(OBJS_DIR)/$(notdir $(SRCS:.c=.o))
+OBJS = $(patsubst $(SRCS_DIR)/%.c,$(OBJS_DIR)/%.o,$(SRCS))
 MLX_LIB = mlx
 MLX_FLAGS = -Lmlx -lmlx -L/usr/lib/X11 -lXext -lX11 -lm
 
@@ -29,6 +36,7 @@ $(MLX_LIB):
 	@echo "$(GREEN)mlx.a created $(DEF_COLOR)"
 
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
+	@mkdir -p $(@D)
 	@echo Compiling $< to $@
 	$(CC) $(CFLAGS) -Imlx -c $< -o $@
 
@@ -37,7 +45,7 @@ $(OBJS_DIR):
 
 $(NAME): $(MLX_LIB) $(OBJS)
 	@echo "$(YELLOW)Compiling so_long $(DEF_COLOR)"
-	@$(CC) $(CFLAGS) $(OBJS) $(GETNEXTLINE) $(MLX_FLAGS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) $(GETNEXTLINE) $(MLX_FLAGS) -L./includes -lftprintf -o $(NAME)
 	@echo "$(GREEN)so_long Compiled $(DEF_COLOR)"
 
 clean:
@@ -48,6 +56,7 @@ fclean: clean
 	make clean -C mlx/; \
 	rm -rf mlx/; \
 	fi
+#	@make fclean -C $(PRINTF_DIR)
 	rm -f $(NAME)
 
 re: fclean all
