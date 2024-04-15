@@ -1,6 +1,21 @@
+#include "../headers/minitalk.h"
+
 void    signal_sender(int pid, char c)
 {
+    int i;
 
+    i = 8;
+    while (i > 0)
+    {
+        if (c & (1 << i))
+        {
+            kill(pid, SIGUSR1);            
+        }
+        else
+            kill(pid, SIGUSR2);
+        i--;
+        usleep(2000);
+    }
 }
 
 int main(int argc, char **argv)

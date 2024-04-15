@@ -18,6 +18,8 @@ char	**parse_map(char *map)
 
 	cur_line = "";
 	all_lines = ft_strdup("");
+	if (!all_lines)
+		return (NULL);
 	fd = open(map, O_RDONLY);
 	if (fd < 0)
 		perror("ERROR: Couldn't open fd in parse_map function");
