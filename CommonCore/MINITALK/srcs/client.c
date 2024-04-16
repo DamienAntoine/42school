@@ -2,20 +2,20 @@
 
 void    signal_sender(int pid, char c)
 {
-    int i;
+	int	i;
 
-    i = 8;
-    while (i > 0)
-    {
-        if (c & (1 << i))
-        {
-            kill(pid, SIGUSR1);            
-        }
-        else
-            kill(pid, SIGUSR2);
-        i--;
-        usleep(2000);
-    }
+	i = 0;
+	while (i < 8)
+	{
+		if (c & (1 << i))
+		{
+			kill(pid, SIGUSR1);
+		}
+		else
+			kill(pid, SIGUSR2);
+		i++;
+		usleep(500);
+	}
 }
 
 int main(int argc, char **argv)

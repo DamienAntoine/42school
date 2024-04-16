@@ -4,7 +4,7 @@
 char	test(char c)
 {
 	char letter = 0;
-    int i = 7; // Start from the least significant bit
+    int i = 7;
 
     while(i >= 0)
     {
