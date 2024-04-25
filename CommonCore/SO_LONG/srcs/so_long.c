@@ -1,19 +1,20 @@
 #include "../headers/so_long.h"
+#include <stdio.h>
 
 int	controls(int key, t_data *data)
 {
 	int	i;
 
 //control keys
-	if (key == 2 || key == 124)
+	if (key == 65363 || key == 100)
 		mv_right(&data);
-	else if (key == 0 || key == 123)
+	else if (key == 65361 || key == 97)
 		mv_left(&data);
-	else if (key == 13 || key == 126)
+	else if (key == 65362 || key == 119)
 		mv_up(&data);
-	else if (key == 1 || key == 125)
+	else if (key == 65364 || key == 115)
 		mv_down(&data);
-	else if (key == 53) //close window with escape
+	else if (key == 65307) //close window with escape
 	{
 		i = 0;
 

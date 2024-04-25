@@ -131,5 +131,6 @@ void	check_elem(t_data **data)
 void    check_map(t_data *data)
 {
     is_rectangle(&data);
+	check_elem(&data);
     check_surr_walls(&data);
 }
