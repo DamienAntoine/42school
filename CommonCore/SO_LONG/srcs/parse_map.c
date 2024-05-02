@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_map.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/02 16:20:49 by dantoine          #+#    #+#             */
+/*   Updated: 2024/05/02 16:20:50 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../headers/so_long.h"
 
-int		map_height(char **map)
+int	map_height(char **map)
 {
 	int	i;
 
@@ -27,7 +39,7 @@ char	**parse_map(char *map)
 	{
 		cur_line = get_next_line(fd);
 		if (cur_line == NULL || cur_line[0] == '\n')
-			break;
+			break ;
 		all_lines = ft_strjoin(all_lines, cur_line);
 		free(cur_line);
 	}

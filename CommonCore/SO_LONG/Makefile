@@ -1,5 +1,5 @@
 NAME = so_long
-CFLAGS = -Wextra -Wall #-Werror
+CFLAGS = -Wextra -Wall -Werror
 SRCS_DIR = srcs
 OBJS_DIR = objs
 SRCS = ./srcs/check_file.c \
@@ -9,7 +9,8 @@ SRCS = ./srcs/check_file.c \
 		./srcs/mv_counter.c \
 		./srcs/parse_map.c \
 		./srcs/print_elem.c \
-		./srcs/so_long.c
+		./srcs/so_long.c \
+		./srcs/utils.c
 GETNEXTLINE := includes/get_next_line/*.c
 OBJS = $(patsubst $(SRCS_DIR)/%.c,$(OBJS_DIR)/%.o,$(SRCS))
 MLX_LIB = mlx

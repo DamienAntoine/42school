@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <fcntl.h>
 #include <limits.h>
 #include "get_next_line.h"
 
@@ -88,7 +89,6 @@ char	*get_line(t_list *list)
 	struct_strcpy(list, nxtline);
 	return (nxtline);
 }
-#include <fcntl.h>
 
 char	*get_next_line(int fd)
 {

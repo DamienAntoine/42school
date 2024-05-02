@@ -1,60 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   so_long.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/02 14:05:00 by dantoine          #+#    #+#             */
+/*   Updated: 2024/05/02 14:07:04 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../headers/so_long.h"
 #include <stdio.h>
 
-int	controls(int key, t_data *data)
-{
-	int	i;
-
-//control keys
-	if (key == 65363 || key == 100)
-		mv_right(&data);
-	else if (key == 65361 || key == 97)
-		mv_left(&data);
-	else if (key == 65362 || key == 119)
-		mv_up(&data);
-	else if (key == 65364 || key == 115)
-		mv_down(&data);
-	else if (key == 65307) //close window with escape
-	{
-		i = 0;
-
-		while (data->map[i])
-		{
-			free(data->map[i]);
-			i++;
-		}
-		free(data->map);
-		mlx_destroy_window(data->mlx, data->win);
-		mlx_destroy_display(data->mlx);
-		free(data->mlx);
-		exit(1);
-	}
-	return (0);
-}
-
-int	close_win(t_data data)
-{
-	int	i;
-
-	i = 0;
-	while (data.map[i])
-		{
-			free(data.map[i]);
-			i++;
-		}
-		free(data.map);
-		mlx_destroy_window(data.mlx, data.win);
-		exit(1);
-		return (0);
-}
-
 void	render_map(t_data *data)
 {
-	int	y1;
-	int	y_map;
-	int	backup_w;
-	int	x1;
-	int	x_map;
+	int		y1;
+	int		y_map;
+	int		backup_w;
+	int		x1;
+	int		x_map;
 
 	y1 = 0;
 	y_map = 0;
@@ -83,6 +48,52 @@ static void	init_data(t_data *data)
 	data->mvmt = 0;
 	data->win_w = ft_strlen(data->map[0]);
 	data->win_h = map_height(data->map);
+	data->mlx = mlx_init();
+}
+
+int	controls(int key, t_data *data)
+{
+	int	i;
+
+	if (key == 65363 || key == 100)
+		mv_right(&data);
+	else if (key == 65361 || key == 97)
+		mv_left(&data);
+	else if (key == 65362 || key == 119)
+		mv_up(&data);
+	else if (key == 65364 || key == 115)
+		mv_down(&data);
+	else if (key == 65307)
+	{
+		i = 0;
+		while (data->map[i])
+		{
+			free(data->map[i]);
+			i++;
+		}
+		free(data->map);
+		mlx_destroy_window(data->mlx, data->win);
+		mlx_destroy_display(data->mlx);
+		free(data->mlx);
+		exit(EXIT_SUCCESS);
+	}
+	return (0);
+}
+
+int	close_win(t_data data)
+{
+	int	i;
+
+	i = 0;
+	while (data.map[i])
+	{
+		free(data.map[i]);
+		i++;
+	}
+	free(data.map);
+	mlx_destroy_window(data.mlx, data.win);
+	exit(EXIT_SUCCESS);
+	return (0);
 }
 
 int	main(int argc, char **argv)
@@ -91,7 +102,7 @@ int	main(int argc, char **argv)
 
 	if (argc < 2)
 	{
-		perror("ERROR");
+		perror("Error: Not enough arguments");
 		return (1);
 	}
 	(void)argv;
@@ -101,15 +112,10 @@ int	main(int argc, char **argv)
 	{
 		check_map(&data);
 		init_data(&data);
-
-		data.mlx = mlx_init();
-		if (!data.mlx)
-			return (1);
-
-		data.win = mlx_new_window(data.mlx, data.win_w * 50, data.win_h * 50, "SO_LONG");
+		data.win = mlx_new_window(data.mlx, data.win_w * 50, \
+		data.win_h * 50, "SO_LONG");
 		if (!data.win)
 			return (1);
-
 		render_map(&data);
 		mlx_hook(data.win, 2, (1L << 0), controls, &data);
 		mlx_hook(data.win, 17, (1L << 0), close_win, &data);

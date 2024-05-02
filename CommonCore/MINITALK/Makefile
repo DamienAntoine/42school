@@ -1,7 +1,5 @@
 SERVER = server
 CLIENT = client
-SERVER_BONUS = server_bonus
-CLIENT_BONUS = client_bonus
 PRINTF = ./includes
 CC = gcc
 FLAGS = -Wall -Wextra -Werror
@@ -20,8 +18,6 @@ all:
 	@echo "$(YELLOW)Preparing mandatory files...$(DEF_COLOR)"
 	@$(CC) $(FLAGS) srcs/server.c -L./includes -lftprintf -o $(SERVER)
 	@$(CC) $(FLAGS) srcs/client.c -L./includes -lftprintf -o $(CLIENT)
-	@$(CC) $(FLAGS) srcs/server_bonus.c -L./includes -lftprintf -o $(SERVER_BONUS)
-	@$(CC) $(FLAGS) srcs/client_bonus.c -L./includes -lftprintf -o $(CLIENT_BONUS)
 	@echo "$(GREEN)Mandatory files ready.$(DEF_COLOR)"
 
 mandatory:
@@ -30,18 +26,12 @@ mandatory:
 	@$(CC) $(FLAGS) srcs/client.c -L./includes -lftprintf -o $(CLIENT)
 	@echo "$(GREEN)Mandatory files ready.$(DEF_COLOR)"
 
-bonus:
-	@echo "$(YELLOW)Preparing bonus files...$(DEF_COLOR)"
-	@$(CC) $(FLAGS) srcs/server_bonus.c -L./includes -lftprintf -o $(SERVER_BONUS)
-	@$(CC) $(FLAGS) srcs/client_bonus.c -L./includes -lftprintf -o $(CLIENT_BONUS)
-	@echo "$(GREEN)Bonus files ready.$(DEF_COLOR)"
-
 clean:
 	@echo "$(YELLOW)Cleaning files...$(DEF_COLOR)"
-	@rm -rf $(SERVER) $(CLIENT) $(SERVER_BONUS) $(CLIENT_BONUS)
+	@rm -rf $(SERVER) $(CLIENT)
 	@echo "$(GREEN)Files cleaned.$(DEF_COLOR)"
 
 fclean: clean
-	@rm -f $(SERVER) $(CLIENT) $(SERVER_BONUS) $(CLIENT_BONUS)
+	@rm -f $(SERVER) $(CLIENT)
 
 re: fclean all

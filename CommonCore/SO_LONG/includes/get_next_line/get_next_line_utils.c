@@ -45,7 +45,7 @@ int	charcount(t_list *list)
 			++len;
 		}
 		list = list->next;
-	}	
+	}
 	return (len);
 }
 

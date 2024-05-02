@@ -16,14 +16,14 @@
 # include <unistd.h>
 # include <stdint.h>
 
-int	ft_printchar(int c);
-int	checkformat(const char specifier, va_list ap);
-int	ft_printf(const char *format, ...);
-int	ft_printnbr(int number);
-int	ft_printstr(char *s);
-int	ft_printunsigned(unsigned int nb);
-int	ft_printhexa(unsigned int nb, const char spec);
-int     ft_printvoid(unsigned long long int ptr);
+int		ft_printchar(int c);
+int		checkformat(const char specifier, va_list ap);
+int		ft_printf(const char *format, ...);
+int		ft_printnbr(int number);
+int		ft_printstr(char *s);
+int		ft_printunsigned(unsigned int nb);
+int		ft_printhexa(unsigned int nb, const char spec);
+int		ft_printvoid(unsigned long long int ptr);
 char	*ft_itoa(int n);
 char	**ft_split(char const *s, char c);
 char	*ft_strjoin(char const *s1, char const *s2);
