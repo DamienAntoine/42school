@@ -1,67 +1,82 @@
-void    populate_struct(int value)
-{
+#include "../includes/push_swap.h"
 
+t_stack		*head;
+
+void	populate_struct(int value)
+{
+	t_stack *new_node;
+	
+	new_node = malloc(sizeof(t_stack));
+    if (new_node == NULL) {
+        ft_printf("Memory Allocation Failed\n");
+        return;
+    }
+    new_node->value = value;
+    new_node->next = head;
+    head = new_node;
 }
 
-void    *str_to_int(char *str)
+void    process_args(char **args)
 {
     int i;
+	int	j;
+    int num;
+	int flag;
+    char    *arg_cpy;
+	char	**splitarg;
 
     i = 0;
-    
-    populate_struct(ft_atoi()
-}
-
-void    handle_arrays(char **str)
-{
-    int i;
-    int res;
-    char    *split_str;
-
-    i = 0;
-    while (str[i])
+    while (args[i])
     {
-        split_str = ft_strdup(str[i]);
-        res = ft_atoi(split_str);
-        populate_struct(res);
-        free(split_str);
-        i++;
+		j = 0;
+		flag = 0;
+		while (args[i][j])
+		{
+			if (args[i][j] == ' ')
+			{
+				splitarg = ft_split(args, ' ');
+				flag = 1;
+			}
+			j++;
+		}
+        arg_cpy = ft_strdup(args[i]);
+        num = ft_atoi(arg_cpy);
+        free(arg_cpy);
+		populate_struct(num);
+		i++;
     }
 }
-
+//todo: count how many numbers, allocate memory and create nodes for all these numbers, populate these nodes with the numbers
 int main(int argc, char **argv)
 {
-    int    *astack;
-    int    *bstack;
-    int     i;
-    int     j;
+	int		i;
+	int		j;
+	int		spaceflag;
 
     if (argc < 2)
 	    return (0);
+		process_args(argv);
     if (!check_input(argv))
-	    exit_error(NULL, NULL);
-    bstack = NULL;
-    if (argc > 1)
+	{
+	    ft_printf("Invalid Arguments\n");
+		return (1);
+	}
+    i = 0;
+    while (argv[i])
     {
-        i = 0;
-        j = 0;
-        while (argv[i])
+		j = 0;
+		spaceflag = 0;
+        while (argv[i][j])
         {
-            while (argv[i][j])
-            {
-                if (argv[i][j] == ' ')
-                {
-                    handle_arrays(ft_split(argv[i], ' '));
-
-                }
-                else
-                {
-                    populate_struct(ft_atoi(argv[i]));
-                }
-                j++;
-            }
-            i++;
+            if (argv[i][j] == ' ')
+				spaceflag = 1;
+            j++;
         }
+		if (spaceflag == 0)
+        	populate_struct(ft_atoi(argv[i]));
+		else if (spaceflag == 1)
+			handle_arrays(ft_split(argv[i], ' '));
+        i++;
     }
-    
+	return (0);
 }
