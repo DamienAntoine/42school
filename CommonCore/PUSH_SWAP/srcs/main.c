@@ -1,82 +1,70 @@
 #include "../includes/push_swap.h"
 
-t_stack		*head;
-
-void	populate_struct(int value)
+void	populate_struct(int value, t_stack **head)
 {
 	t_stack *new_node;
 	
 	new_node = malloc(sizeof(t_stack));
-    if (new_node == NULL) {
-        ft_printf("Memory Allocation Failed\n");
-        return;
-    }
+    if (new_node == NULL)
+		perror("Memory Allocation Failed\n");
     new_node->value = value;
-    new_node->next = head;
-    head = new_node;
+    new_node->next = *head;
+    *head = new_node;
 }
 
-void    process_args(char **args)
+void    process_args(char **args, t_stack **head)
 {
     int i;
 	int	j;
     int num;
-	int flag;
     char    *arg_cpy;
 	char	**splitarg;
 
     i = 0;
     while (args[i])
     {
+		splitarg = ft_split(args[i], ' ');
+		if (splitarg == NULL)
+			perror("Memory Allocation Failed\n");
 		j = 0;
-		flag = 0;
-		while (args[i][j])
+		while (splitarg[j])
 		{
-			if (args[i][j] == ' ')
-			{
-				splitarg = ft_split(args, ' ');
-				flag = 1;
-			}
+			num = ft_atoi(splitarg[j]);
+			populate_struct(num, head);
 			j++;
 		}
-        arg_cpy = ft_strdup(args[i]);
-        num = ft_atoi(arg_cpy);
-        free(arg_cpy);
-		populate_struct(num);
+		free(splitarg);
 		i++;
     }
 }
-//todo: count how many numbers, allocate memory and create nodes for all these numbers, populate these nodes with the numbers
+
+int		is_sorted(t_stack *a_stack)
+{
+	/*if (!a_stack)
+		return (1);*/
+	while (a_stack->next != NULL)
+	{
+		if ((a_stack->next->value) < (a_stack->value))
+			return (0);
+		a_stack = a_stack->next;
+	}
+	return (1);
+}
+
 int main(int argc, char **argv)
 {
 	int		i;
-	int		j;
-	int		spaceflag;
+	t_stack		*a_stack;
+	t_stack		*b_stack;
 
+	b_stack = NULL;
     if (argc < 2)
 	    return (0);
-		process_args(argv);
+	i = 0;
     if (!check_input(argv))
-	{
-	    ft_printf("Invalid Arguments\n");
-		return (1);
-	}
-    i = 0;
-    while (argv[i])
-    {
-		j = 0;
-		spaceflag = 0;
-        while (argv[i][j])
-        {
-            if (argv[i][j] == ' ')
-				spaceflag = 1;
-            j++;
-        }
-		if (spaceflag == 0)
-        	populate_struct(ft_atoi(argv[i]));
-		else if (spaceflag == 1)
-			handle_arrays(ft_split(argv[i], ' '));
-        i++;
-    }
+		perror("Memory Allocation Failed\n");
+	process_args(argv, &a_stack);
+	//add algorithm things
+
 	return (0);
 }
