@@ -9,6 +9,7 @@ void	populate_struct(int value, t_stack **head)
 		perror("Memory Allocation Failed\n");
     new_node->value = value;
     new_node->next = *head;
+	new_node->index;
     *head = new_node;
 }
 
