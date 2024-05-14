@@ -60,8 +60,12 @@ int main(int argc, char **argv)
 
 	b_stack = NULL;
     if (argc < 2)
+	{
+		write(2, "Error\n", 6);
 	    return (0);
+	}
 	i = 0;
+	//error handling
     if (!check_input(argv))
 		perror("Memory Allocation Failed\n");
 	process_args(argv, &a_stack);
