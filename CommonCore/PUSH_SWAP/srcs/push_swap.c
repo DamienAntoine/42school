@@ -3,16 +3,17 @@
 void		until_five(t_stack **astack_head, t_stack **bstack_head)
 {
 	int	counter;
-	t_stack *temp;
+	t_stack *astack;
+	t_stack *bstack;
 	int	mean;
 
-	mean = 0;
 	counter = 0;
-	temp = *astack_head;
-	while (temp)
+	astack = *astack_head;
+	bstack = *bstack_head;
+	while (astack)
 	{
 		counter++;
-		temp = temp->next;
+		astack = astack->next;
 	}
 	while (counter > 5)
 	{
@@ -23,7 +24,12 @@ void		until_five(t_stack **astack_head, t_stack **bstack_head)
 		{
 			pb(*astack_head, *bstack_head);
 			*astack_head = (*astack_head)->next;
+			counter--;
 		}
-		counter--;
 	}
+}
+
+void	bf_on_top(t_stack **astack_head, t_stack **bstack_head)
+{
+
 }

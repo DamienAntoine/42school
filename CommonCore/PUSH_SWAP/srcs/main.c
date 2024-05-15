@@ -3,13 +3,12 @@
 void	populate_struct(int value, t_stack **head)
 {
 	t_stack *new_node;
-	
+
 	new_node = malloc(sizeof(t_stack));
     if (new_node == NULL)
 		perror("Memory Allocation Failed\n");
     new_node->value = value;
     new_node->next = *head;
-	new_node->index;
     *head = new_node;
 }
 
