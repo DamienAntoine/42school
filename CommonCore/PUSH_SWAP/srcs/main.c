@@ -51,6 +51,12 @@ int		is_sorted(t_stack *a_stack)
 	return (1);
 }
 
+void	algo(t_stack **astack_head, t_stack **bstack_head)
+{
+	until_five(*astack_head, *bstack_head);
+	
+}
+
 int main(int argc, char **argv)
 {
 	int		i;
@@ -66,9 +72,12 @@ int main(int argc, char **argv)
 	i = 0;
 	//error handling
     if (!check_input(argv))
-		perror("Memory Allocation Failed\n");
+	{
+		ft_printf("Memory Allocation Failed\n");
+		return (1);
+	}
 	process_args(argv, &a_stack);
-	//add algorithm things
+	algo(a_stack, b_stack);
 
 	return (0);
 }

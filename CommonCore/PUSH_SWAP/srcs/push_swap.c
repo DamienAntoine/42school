@@ -23,7 +23,6 @@ void		until_five(t_stack **astack_head, t_stack **bstack_head)
 		else if ((*astack_head)->value < mean)
 		{
 			pb(*astack_head, *bstack_head);
-			*astack_head = (*astack_head)->next;
 			counter--;
 		}
 	}
