@@ -31,7 +31,7 @@ int			find_smallest(t_stack **stack_head)
 	int			smallest;
 
 	smallest = 2147483647;
-	stack = stack_head;
+	stack = *stack_head;
 	while (stack)
 	{
 		if (stack->value < smallest)
@@ -46,11 +46,11 @@ int			find_biggest(t_stack **stack_head)
 	t_stack		*stack;
 	int			biggest;
 
-	biggest = 0;
-	stack = stack_head;
+	biggest = -2147483647;
+	stack = *stack_head;
 	while (stack)
 	{
-		if (stack->value < biggest)
+		if (stack->value > biggest)
 			biggest = stack->value;
 		stack = stack->next;
 	}
@@ -77,18 +77,60 @@ void		until_three(t_stack **astack_head, t_stack **bstack_head)
 		counter--;
 	}
 }
+
+void	back_to_five(t_stack *astack, t_stack *bstack)
+{
+
+	int		i;
+	int		bstackcounter;
+
+	i = 1;
+	bstackcounter = 2;
+	while (bstackcounter)
+	{
+		while (i <= 3)
+		{
+			if (i == 1 && bstack->value < astack->value)
+				pa(astack, bstack);
+			else if (i == 2 && bstack->value < astack->value)
+			{
+				pa(astack, bstack);
+				sa(astack);
+			}
+			else if (i == 3 && bstack->value < astack->value)
+			reduce_backtofive(&astack, &bstack);
+			i++;
+			astack = astack->next;
+		}
+		i = 0;
+		bstackcounter--;
+	}
+}
+
+void	reduce_backtofive(t_stack *astack, t_stack *bstack)
+{
+	rra(astack);
+	pa(astack, bstack);
+	ra(astack);
+	ra(astack);
+}
+
 void	sort_five(t_stack **astack_head, t_stack **bstack_head)
 {
 	t_stack	*astack;
 	t_stack	*bstack;
 	int		smallest;
 	int		biggest;
+	int		i;
+	int		bstackcounter;
 
-	astack = astack_head;
+	i = 1;
+	bstackcounter = 2;
+	astack = *astack_head;
+	bstack = *bstack_head;
 	smallest = find_smallest(astack);
 	biggest = find_biggest(astack);
-	bstack = bstack_head;
 	until_three(astack, bstack);
 	sort_three(astack, smallest, biggest);
-	if (bstack->value > )
+	back_to_five(&astack, &bstack);
 }
