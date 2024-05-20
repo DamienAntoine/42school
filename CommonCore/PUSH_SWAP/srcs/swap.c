@@ -1,6 +1,6 @@
 #include "../includes/push_swap.h"
 
-static void	swap(t_stack **head)
+void	swap(t_stack **head)
 {
 	t_stack	*temp;
 
@@ -16,14 +16,14 @@ static void	swap(t_stack **head)
 void	sa(t_stack **astack)
 {
 	swap(astack);
-	ft_putstr("sa\n");
+	ft_printf("sa\n");
 }
 
 //sb (swap b): Swap the first 2 elements at the top of stack b. Do nothing if there is only one or no elements.
-void	sa(t_stack **bstack)
+void	sb(t_stack **bstack)
 {
 	swap(bstack);
-	ft_putstr("sb\n");
+	ft_printf("sb\n");
 }
 
 //ss : sa and sb at the same time.
@@ -31,5 +31,5 @@ void	ss(t_stack **astack, t_stack **bstack)
 {
 	swap(astack);
 	swap(bstack);
-	ft_putstr("ss\n");
+	ft_printf("ss\n");
 }

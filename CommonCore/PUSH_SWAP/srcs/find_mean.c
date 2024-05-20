@@ -13,6 +13,7 @@ int	find_mean_value(t_stack **head)
 	{
 		mean += stack->value;
 		counter++;
+		stack = stack->next;
 	}
 	mean /= counter;
 	return (mean);

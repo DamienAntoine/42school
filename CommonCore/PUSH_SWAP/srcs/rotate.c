@@ -1,6 +1,6 @@
 #include "../includes/push_swap.h"
 
-static void	rotate(t_stack **head)
+void	rotate(t_stack **head)
 {
 	t_stack *temp;
 	t_stack	*last_node;
@@ -20,14 +20,14 @@ static void	rotate(t_stack **head)
 void	ra(t_stack **astack)
 {
 	rotate(astack);
-	ft_putstr("ra\n");
+	ft_printf("ra\n");
 }
 
 //rb (rotate b): Shift up all elements of stack b by 1. The first element becomes the last one.
 void	rb(t_stack **bstack)
 {
 	rotate(bstack);
-	ft_putstr("rb\n");
+	ft_printf("rb\n");
 }
 
 //rr : ra and rb at the same time.
@@ -35,5 +35,5 @@ void	rr(t_stack **astack, t_stack **bstack)
 {
 	rotate(astack);
 	rotate(bstack);
-	ft_putstr("rr\n");
+	ft_printf("rr\n");
 }

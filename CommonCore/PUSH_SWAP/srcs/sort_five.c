@@ -9,19 +9,19 @@ void	sort_three(t_stack **astack_head, int smallest, int biggest)
 		return ;
 	else if (astack->value == smallest && astack->next->value == biggest)
 	{
-		sa(astack);
-		ra(astack);
+		sa(&astack);
+		ra(&astack);
 	}
 	else if (astack->value != biggest && astack->next->value == smallest)
-		sa(astack);
+		sa(&astack);
 	else if (astack->value != biggest && astack->next->value == 3)
-		rra(astack);
+		rra(&astack);
 	else if (astack->value == biggest && astack->next->value == smallest)
-		ra(astack);
+		ra(&astack);
 	else if (astack->value == biggest && astack->next->value != smallest)
 	{
-		ra(astack);
-		sa(astack);
+		ra(&astack);
+		sa(&astack);
 	}
 }
 
@@ -61,11 +61,9 @@ void		until_three(t_stack **astack_head, t_stack **bstack_head)
 {
 	int	counter;
 	t_stack *astack;
-	t_stack *bstack;
 
 	counter = 0;
 	astack = *astack_head;
-	bstack = *bstack_head;
 	while (astack)
 	{
 		counter++;
@@ -73,46 +71,46 @@ void		until_three(t_stack **astack_head, t_stack **bstack_head)
 	}
 	while (counter > 3)
 	{
-		pb(*astack_head, *bstack_head);
+		pb(astack_head, bstack_head);
 		counter--;
 	}
 }
 
 void	back_to_five(t_stack *astack, t_stack *bstack)
 {
-
 	int		i;
 	int		bstackcounter;
+	t_stack *current;
 
+	if (astack == NULL || bstack == NULL)
+        return;
+	current = astack;
 	i = 1;
 	bstackcounter = 2;
-	while (bstackcounter)
+	while (bstackcounter && i <= 3 && current != NULL)
 	{
-		while (i <= 3)
+		if (i == 1 && bstack->value < current->value)
+			pa(&astack, &bstack);
+		else if (i == 2 && bstack->value < current->value)
 		{
-			if (i == 1 && bstack->value < astack->value)
-				pa(astack, bstack);
-			else if (i == 2 && bstack->value < astack->value)
-			{
-				pa(astack, bstack);
-				sa(astack);
-			}
-			else if (i == 3 && bstack->value < astack->value)
-			reduce_backtofive(&astack, &bstack);
-			i++;
-			astack = astack->next;
+			pa(&current, &bstack);
+			sa(&current);
 		}
-		i = 0;
-		bstackcounter--;
+		else if (i == 3 && bstack->value < current->value)
+			reduce_backtofive(current, bstack);
+		i++;
+		current = current->next;
 	}
+	i = 0;
+	bstackcounter--;
 }
 
 void	reduce_backtofive(t_stack *astack, t_stack *bstack)
 {
-	rra(astack);
-	pa(astack, bstack);
-	ra(astack);
-	ra(astack);
+	rra(&astack);
+	pa(&astack, &bstack);
+	ra(&astack);
+	ra(&astack);
 }
 
 void	sort_five(t_stack **astack_head, t_stack **bstack_head)
@@ -121,16 +119,16 @@ void	sort_five(t_stack **astack_head, t_stack **bstack_head)
 	t_stack	*bstack;
 	int		smallest;
 	int		biggest;
-	int		i;
-	int		bstackcounter;
+	//int		i;
+	//int		bstackcounter;
 
-	i = 1;
-	bstackcounter = 2;
+	//i = 1;
+	//bstackcounter = 2;
 	astack = *astack_head;
 	bstack = *bstack_head;
-	smallest = find_smallest(astack);
-	biggest = find_biggest(astack);
-	until_three(astack, bstack);
-	sort_three(astack, smallest, biggest);
-	back_to_five(&astack, &bstack);
+	smallest = find_smallest(&astack);
+	biggest = find_biggest(&astack);
+	until_three(&astack, &bstack);
+	sort_three(&astack, smallest, biggest);
+	back_to_five(astack, bstack);
 }

@@ -4,9 +4,11 @@ void	populate_struct(int value, t_stack **head)
 {
 	t_stack *new_node;
 
+	if (head == NULL)
+        return;
 	new_node = malloc(sizeof(t_stack));
     if (new_node == NULL)
-		perror("Memory Allocation Failed\n");
+		return;
     new_node->value = value;
     new_node->next = *head;
     *head = new_node;
@@ -17,10 +19,11 @@ void    process_args(char **args, t_stack **head)
     int i;
 	int	j;
     int num;
-    char    *arg_cpy;
 	char	**splitarg;
 
     i = 0;
+	if (args[i] == NULL)
+		return;
     while (args[i])
     {
 		splitarg = ft_split(args[i], ' ');
@@ -53,13 +56,16 @@ int		is_sorted(t_stack *a_stack)
 
 void	algo(t_stack **astack_head, t_stack **bstack_head)
 {
-	until_five(*astack_head, *bstack_head);
-	
+	while (!is_sorted(*astack_head))
+	{
+		until_five(astack_head, bstack_head);
+		sort_five(astack_head, bstack_head);
+		bf_on_top(astack_head, bstack_head);
+	}
 }
 
 int main(int argc, char **argv)
 {
-	int		i;
 	t_stack		*a_stack;
 	t_stack		*b_stack;
 
@@ -69,15 +75,15 @@ int main(int argc, char **argv)
 		write(2, "Error\n", 6);
 	    return (0);
 	}
-	i = 0;
 	//error handling
-    if (!check_input(argv))
+    if (!check_inputs(argc, argv))
 	{
-		ft_printf("Memory Allocation Failed\n");
+		ft_printf("Input Error\n");
 		return (1);
 	}
 	process_args(argv, &a_stack);
-	algo(a_stack, b_stack);
-
+	algo(&a_stack, &b_stack);
+	free_stack(a_stack);
+	free_stack(b_stack);
 	return (0);
 }

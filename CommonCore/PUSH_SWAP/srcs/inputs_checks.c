@@ -14,17 +14,23 @@ int	ft_issign(char c)
 	return (0);
 }
 
-int	check_inputs(char *input)
+int	check_inputs(int argc, char **input)
 {
 	int	i;
+	int	j;
 
-	i = 0;
-	while (input[i])
+	i = 1;
+	j = 0;
+	while (i < argc)
 	{
-		if (ft_isdigit(input[i] == 0))
-			return (0);
-		if (ft_issign(input[i] == 0))
-			return (0);
+		j = 0;
+        while (input[i][j] != '\0')
+        {
+            if (!ft_isdigit(input[i][j]) && !ft_issign(input[i][j]))
+                return (0);
+            j++;
+        }
+		i++;
 	}
 	return (1);
 }
