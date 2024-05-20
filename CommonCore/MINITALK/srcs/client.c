@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   client.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/20 16:41:22 by dantoine          #+#    #+#             */
+/*   Updated: 2024/05/20 16:48:33 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../headers/minitalk.h"
 
-void    signal_sender(int pid, char c)
+void	signal_sender(int pid, char c)
 {
 	int	i;
 
@@ -18,26 +30,26 @@ void    signal_sender(int pid, char c)
 	}
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-    int pid;
-    int i;
+	int	pid;
+	int	i;
 
-    i = 0;
-    if (argc == 3)
-    {
-        pid = ft_atoi(argv[1]);
-        while(argv[2][i])
-        {
-            signal_sender(pid, argv[2][i]);
-            i++;
-        }
-        signal_sender(pid, '\n');
-    }
-    else
-    {
-        ft_printf("Incorrect number of arguments");
-        return (1);
-    }
-    return (0);
+	i = 0;
+	if (argc == 3)
+	{
+		pid = ft_atoi(argv[1]);
+		while (argv[2][i])
+		{
+			signal_sender(pid, argv[2][i]);
+			i++;
+		}
+		signal_sender(pid, '\n');
+	}
+	else
+	{
+		ft_printf("Incorrect number of arguments");
+		return (1);
+	}
+	return (0);
 }

@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   server.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/20 16:48:40 by dantoine          #+#    #+#             */
+/*   Updated: 2024/05/20 16:50:14 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../headers/minitalk.h"
 
-void    signal_handler(int c)
+void	signal_handler(int c)
 {
 	static int	i;
 	static int	letter;
@@ -26,24 +38,23 @@ void    signal_handler(int c)
 	}
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-    int pid;
+	int	pid;
 
-    (void)argv;
-    if (argc != 1)
-    {
-        ft_printf("Incorrect number of arguments");
-        return (0);
-    }
-    pid = getpid();
-    ft_printf("PID: %d\n", pid);
-    while (1)
-    {
-        signal(SIGUSR1, signal_handler);
-        signal(SIGUSR2, signal_handler);
-        pause();
-    }
-    return (0);
+	(void)argv;
+	if (argc != 1)
+	{
+		ft_printf("Incorrect number of arguments");
+		return (0);
+	}
+	pid = getpid();
+	ft_printf("PID: %d\n", pid);
+	while (1)
+	{
+		signal(SIGUSR1, signal_handler);
+		signal(SIGUSR2, signal_handler);
+		pause();
+	}
+	return (0);
 }
-
