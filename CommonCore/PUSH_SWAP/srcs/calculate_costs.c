@@ -1,11 +1,25 @@
 #include "../includes/push_swap.h"
 
+t_stack	*to_last_node(t_stack *stack)
+{
+	if (stack == NULL)
+		return (NULL);
+	while (stack->next != NULL)
+	{
+		stack = stack->next;
+	}
+	return (stack);
+}
+
 int		cost_to_top(t_stack *bstack_head, int value)
 {
 	int		cost;
 	t_stack	*node;
 
+	cost = 0;
 	node = bstack_head;
+	if (!is_closer_to_top(bstack_head, value))
+		to_last_node(bstack_head);
 	while (node != NULL && node->value != value)
 	{
 		cost++;
@@ -30,9 +44,7 @@ int		is_closer_to_top(t_stack *bstack_head, int value)
 		i++;
 		temp->index = i;
 		if (temp->value == value)
-		{
 			index_temp = i;
-		}
 		temp = temp->next;
 	}
 	if (index_temp < (i / 2))

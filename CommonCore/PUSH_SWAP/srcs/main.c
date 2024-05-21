@@ -41,7 +41,7 @@ void    process_args(char **args, t_stack **head)
     {
 		splitarg = ft_split(args[i], ' ');
 		if (splitarg == NULL)
-			perror("Memory Allocation Failed\n");
+			return;
 		j = 0;
 		while (splitarg[j])
 		{
@@ -56,7 +56,7 @@ void    process_args(char **args, t_stack **head)
 
 int		is_sorted(t_stack *a_stack)
 {
-	if (a_stack == NULL || a_stack->next == NULL)
+	if (a_stack == NULL)
 		return (1);
 	while (a_stack->next != NULL)
 	{
@@ -66,13 +66,34 @@ int		is_sorted(t_stack *a_stack)
 	}
 	return (1);
 }
+int		argcounter(t_stack *astack_head)
+{
+	t_stack *temp;
+	int argcount;
+
+	temp = astack_head;
+	argcount = 0;
+	while (temp)
+	{
+		argcount++;
+		temp = temp->next;
+	}
+	return (argcount);
+}
 
 void	algo(t_stack **astack_head, t_stack **bstack_head)
 {
+	int argcount;
+
+	argcount = argcounter(*astack_head);
+	if (argcount == 1)
+		return;
 	while (!is_sorted(*astack_head))
 	{
-		until_five(astack_head, bstack_head);
-		sort_five(astack_head, bstack_head);
+		if (argcount > 5)
+			until_five(astack_head, bstack_head);
+		else if (argcount <= 5)
+			sort_five(astack_head, bstack_head);
 		bf_on_top(astack_head, bstack_head);
 	}
 }
@@ -100,6 +121,6 @@ int main(int argc, char **argv)
 		return (1);
 	algo(&a_stack, &b_stack);
 	free_stack(a_stack);
-	free_stack(b_stack);
+	//free_stack(b_stack);
 	return (0);
 }

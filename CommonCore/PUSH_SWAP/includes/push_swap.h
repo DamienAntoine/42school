@@ -35,6 +35,7 @@ void	ft_allocate(char **tab, char const *s, char sep);
 int	ft_count_words(char const *s, char sep);
 char	**ft_split(char const *s, char c);
 int	ft_atoi(const char *str);
+int		cost_to_top(t_stack *bstack_head, int value);
 void	populate_struct(int value, t_stack **head);
 void    process_args(char **args, t_stack **head);
 int		is_sorted(t_stack *a_stack);

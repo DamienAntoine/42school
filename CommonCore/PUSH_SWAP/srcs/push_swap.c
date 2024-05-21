@@ -13,7 +13,7 @@ void		until_five(t_stack **astack_head, t_stack **bstack_head)
 		counter++;
 		astack = astack->next;
 	}
-	while (counter > 5)
+	while (counter >= 5)
 	{
 		mean = find_mean_value(astack_head);
 		if (mean == -1)
@@ -51,4 +51,5 @@ void bf_on_top(t_stack **astack_head, t_stack **bstack_head)
         else
             rrb(bstack_head);
     }
+	pa(astack_head, bstack_head);
 }
