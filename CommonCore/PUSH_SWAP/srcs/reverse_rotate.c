@@ -25,14 +25,14 @@ void	reverse_rotate(t_stack **head)
 void	rra(t_stack **astack)
 {
 	reverse_rotate(astack);
-	ft_printf("ra\n");
+	ft_printf("rra\n");
 }
 
 //rrb (reverse rotate b): Shift down all elements of stack b by 1. The last element becomes the first one.
 void	rrb(t_stack **bstack)
 {
 	reverse_rotate(bstack);
-	ft_printf("rb\n");
+	ft_printf("rrb\n");
 }
 
 //rrr : rra and rrb at the same time.
@@ -40,5 +40,5 @@ void	rrr(t_stack **astack, t_stack **bstack)
 {
 	reverse_rotate(astack);
 	reverse_rotate(bstack);
-	ft_printf("rr\n");
+	ft_printf("rrr\n");
 }

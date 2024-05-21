@@ -14,7 +14,7 @@ void	sort_three(t_stack **astack_head, int smallest, int biggest)
 	}
 	else if (astack->value != biggest && astack->next->value == smallest)
 		sa(&astack);
-	else if (astack->value != biggest && astack->next->value == 3)
+	else if (astack->value != biggest && astack->value != smallest && astack->next->value == biggest)
 		rra(&astack);
 	else if (astack->value == biggest && astack->next->value == smallest)
 		ra(&astack);
@@ -115,20 +115,16 @@ void	reduce_backtofive(t_stack *astack, t_stack *bstack)
 
 void	sort_five(t_stack **astack_head, t_stack **bstack_head)
 {
-	t_stack	*astack;
-	t_stack	*bstack;
-	int		smallest;
-	int		biggest;
-	//int		i;
-	//int		bstackcounter;
+    t_stack	*astack;
+    t_stack	*bstack;
+    int		smallest;
+    int		biggest;
 
-	//i = 1;
-	//bstackcounter = 2;
-	astack = *astack_head;
-	bstack = *bstack_head;
+    astack = *astack_head;
+    bstack = *bstack_head;
+    until_three(&astack, &bstack);
 	smallest = find_smallest(&astack);
-	biggest = find_biggest(&astack);
-	until_three(&astack, &bstack);
-	sort_three(&astack, smallest, biggest);
-	back_to_five(astack, bstack);
+    biggest = find_biggest(&astack);
+    sort_three(&astack, smallest, biggest);
+    back_to_five(astack, bstack);
 }

@@ -121,10 +121,8 @@ int main(int argc, char **argv)
 		return (1);
 	}
 	process_args(argv, &a_stack);
-	ft_printf("processed\n");
 	if (is_sorted(a_stack) == 1)
 		return (1);
-	ft_printf("checked\n");
 	algo(&a_stack, &b_stack);
 	free_stack(a_stack);
 	//free_stack(b_stack);
