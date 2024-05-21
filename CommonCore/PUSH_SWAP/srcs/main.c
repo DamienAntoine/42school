@@ -1,17 +1,25 @@
 #include "../includes/push_swap.h"
 
-void	populate_struct(int value, t_stack **head)
+void populate_struct(int value, t_stack **astack_head)
 {
-	t_stack *new_node;
+    t_stack *new_node;
+    t_stack *last_node;
 
-	if (head == NULL)
-        return;
-	new_node = malloc(sizeof(t_stack));
+    new_node = malloc(sizeof(t_stack));
     if (new_node == NULL)
-		return;
+        return;
     new_node->value = value;
-    new_node->next = *head;
-    *head = new_node;
+    new_node->next = NULL;
+    if (*astack_head == NULL)
+    {
+        *astack_head = new_node;
+        return;
+    }
+    last_node = *astack_head;
+    while (last_node->next != NULL)
+        last_node = last_node->next;
+
+    last_node->next = new_node;
 }
 
 void	free_args(char **args)
@@ -27,30 +35,28 @@ void	free_args(char **args)
 	free(args);
 }
 
-void    process_args(char **args, t_stack **head)
+void process_args(char **args, t_stack **astack_head)
 {
     int i;
-	int	j;
+    int j;
     int num;
-	char	**splitarg;
+    char **splitarg;
 
-    i = 0;
-	if (args[i] == NULL)
-		return;
+    i = 1;
     while (args[i])
     {
-		splitarg = ft_split(args[i], ' ');
-		if (splitarg == NULL)
-			return;
-		j = 0;
-		while (splitarg[j])
-		{
-			num = ft_atoi(splitarg[j]);
-			populate_struct(num, head);
-			j++;
-		}
-		free_args(splitarg);
-		i++;
+        splitarg = ft_split(args[i], ' ');
+        if (splitarg == NULL)
+            return;
+        j = 0;
+        while (splitarg[j])
+        {
+            num = ft_atoi(splitarg[j]);
+            populate_struct(num, astack_head);
+            j++;
+        }
+        free_args(splitarg);
+        i++;
     }
 }
 
@@ -85,11 +91,9 @@ void	algo(t_stack **astack_head, t_stack **bstack_head)
 {
 	int argcount;
 
-	argcount = argcounter(*astack_head);
-	if (argcount == 1)
-		return;
 	while (!is_sorted(*astack_head))
 	{
+		argcount = argcounter(*astack_head);
 		if (argcount > 5)
 			until_five(astack_head, bstack_head);
 		else if (argcount <= 5)
@@ -117,8 +121,10 @@ int main(int argc, char **argv)
 		return (1);
 	}
 	process_args(argv, &a_stack);
+	ft_printf("processed\n");
 	if (is_sorted(a_stack) == 1)
 		return (1);
+	ft_printf("checked\n");
 	algo(&a_stack, &b_stack);
 	free_stack(a_stack);
 	//free_stack(b_stack);
