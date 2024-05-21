@@ -14,6 +14,19 @@ void	populate_struct(int value, t_stack **head)
     *head = new_node;
 }
 
+void	free_args(char **args)
+{
+	int	k;
+
+	k = 0;
+	while (args[k])
+	{
+		free(args[k]);
+		k++;
+	}
+	free(args);
+}
+
 void    process_args(char **args, t_stack **head)
 {
     int i;
@@ -36,15 +49,15 @@ void    process_args(char **args, t_stack **head)
 			populate_struct(num, head);
 			j++;
 		}
-		free(splitarg);
+		free_args(splitarg);
 		i++;
     }
 }
 
 int		is_sorted(t_stack *a_stack)
 {
-	/*if (!a_stack)
-		return (1);*/
+	if (a_stack == NULL || a_stack->next == NULL)
+		return (1);
 	while (a_stack->next != NULL)
 	{
 		if ((a_stack->next->value) < (a_stack->value))
@@ -69,6 +82,7 @@ int main(int argc, char **argv)
 	t_stack		*a_stack;
 	t_stack		*b_stack;
 
+	a_stack = NULL;
 	b_stack = NULL;
     if (argc < 2)
 	{
@@ -82,6 +96,8 @@ int main(int argc, char **argv)
 		return (1);
 	}
 	process_args(argv, &a_stack);
+	if (is_sorted(a_stack) == 1)
+		return (1);
 	algo(&a_stack, &b_stack);
 	free_stack(a_stack);
 	free_stack(b_stack);

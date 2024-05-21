@@ -15,6 +15,8 @@ int	find_mean_value(t_stack **head)
 		counter++;
 		stack = stack->next;
 	}
+	if (counter == 0)
+        return (-1);
 	mean /= counter;
 	return (mean);
 }

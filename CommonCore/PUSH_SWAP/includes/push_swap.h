@@ -42,6 +42,7 @@ void	algo(t_stack **astack_head, t_stack **bstack_head);
 int	find_mean_value(t_stack **head);
 t_stack		*find_bf(t_stack **a_stack_node, t_stack **b_stack_head);
 void		until_five(t_stack **astack_head, t_stack **bstack_head);
+void	untilfive_helper(t_stack **astack_head, t_stack **bstack_head, int *counter);
 void bf_on_top(t_stack **astack_head, t_stack **bstack_head);
 int		cost_to_top(t_stack *bstack_head, int value);
 int		is_closer_to_top(t_stack *bstack_head, int value);
