@@ -91,7 +91,7 @@ void	algo(t_stack **astack_head, t_stack **bstack_head)
 {
 	int argcount;
 
-	while (!is_sorted(*astack_head))
+	while (!is_sorted(*astack_head)) // || (*bstack_head) != NULL
 	{
 		argcount = argcounter(*astack_head);
 		if (argcount > 5)
