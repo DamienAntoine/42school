@@ -76,7 +76,17 @@ void		until_three(t_stack **astack_head, t_stack **bstack_head)
 	}
 }
 
-void	back_to_five(t_stack *astack, t_stack *bstack)
+void back_to_five(t_stack **astack, t_stack **bstack)
+{
+    while (stack_length(bstack) > 0)
+    {
+        pa(astack, bstack);
+        if (stack_length(bstack) > 0 && (*bstack)->next && (*bstack)->value > (*bstack)->next->value)
+            sa(astack);
+    }
+}
+
+/*void	back_to_five(t_stack *astack, t_stack *bstack)
 {
 	int		i;
 	int		bstackcounter;
@@ -111,6 +121,77 @@ void	reduce_backtofive(t_stack *astack, t_stack *bstack)
 	pa(&astack, &bstack);
 	ra(&astack);
 	ra(&astack);
+}*/
+
+void back_to_four(t_stack **astack, t_stack **bstack)
+{
+    while (stack_length(bstack) > 0)
+    {
+        pa(astack, bstack);
+        if (stack_length(bstack) > 0 && (*bstack)->next && (*bstack)->value > (*bstack)->next->value)
+            sa(astack);
+    }
+}
+
+/*void back_to_four(t_stack *astack, t_stack *bstack)
+{
+    int i;
+    int bstackcounter;
+    t_stack *current;
+
+    if (astack == NULL || bstack == NULL)
+        return;
+    current = astack;
+    i = 1;
+    bstackcounter = 1;
+    while (bstackcounter && i <= 2 && current != NULL)
+    {
+        if (i == 1 && bstack->value < current->value)
+            pa(&astack, &bstack);
+        else if (i == 2 && bstack->value < current->value)
+        {
+            pa(&current, &bstack);
+            sa(&current);
+        }
+        i++;
+        current = current->next;
+    }
+    i = 0;
+    bstackcounter--;
+}*/
+
+int	stack_length(t_stack **astack_head)
+{
+	int	i;
+	t_stack *temp;
+
+	i = 0;
+	temp = *astack_head;
+	while (temp)
+	{
+		temp = temp->next;
+		i++;
+	}
+	return (i);
+}
+int	last_three_sorted(t_stack **astack_head)
+{
+    t_stack *temp;
+
+    temp = *astack_head;
+    if (!temp || !temp->next || !temp->next->next)
+        return 0;
+    while (temp->next->next->next)
+        temp = temp->next;
+    if (temp->value > temp->next->value)
+        return(0);
+    if (temp->next)
+    {
+        temp = temp->next;
+        if (temp->next && temp->value > temp->next->value)
+            return(0);
+    }
+    return (1);
 }
 
 void	sort_five(t_stack **astack_head, t_stack **bstack_head)
@@ -119,12 +200,23 @@ void	sort_five(t_stack **astack_head, t_stack **bstack_head)
     t_stack	*bstack;
     int		smallest;
     int		biggest;
+	int stack_size;
 
     astack = *astack_head;
     bstack = *bstack_head;
-    until_three(&astack, &bstack);
+	stack_size = stack_length(astack_head);
+	if (stack_size > 3)
+    	until_three(&astack, &bstack);
 	smallest = find_smallest(&astack);
     biggest = find_biggest(&astack);
-    sort_three(&astack, smallest, biggest);
-    back_to_five(astack, bstack);
+	if (stack_length(&astack) <= 3)
+    	sort_three(&astack, smallest, biggest);
+	if (stack_size == 5)
+    	back_to_five(&astack, &bstack);
+	else if (stack_size == 4)
+		back_to_four(&astack, &bstack);
+	*astack_head = astack;
+    *bstack_head = bstack;
 }
+//empecher le programme dentrer dans until 3 et sort 3 si
+//les trois derniers nombres sont deja sorted

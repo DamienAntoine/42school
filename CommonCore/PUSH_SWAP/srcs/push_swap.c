@@ -51,5 +51,5 @@ void bf_on_top(t_stack **astack_head, t_stack **bstack_head)
         else
             rrb(bstack_head);
     }
-	pa(astack_head, bstack_head);
+	//pa(astack_head, bstack_head);
 }

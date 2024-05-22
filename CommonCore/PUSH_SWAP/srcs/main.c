@@ -96,7 +96,7 @@ void	algo(t_stack **astack_head, t_stack **bstack_head)
 		argcount = argcounter(*astack_head);
 		if (argcount > 5)
 			until_five(astack_head, bstack_head);
-		else if (argcount <= 5)
+		else if (argcount <= 5 && !is_sorted(*astack_head))
 			sort_five(astack_head, bstack_head);
 		bf_on_top(astack_head, bstack_head);
 	}
