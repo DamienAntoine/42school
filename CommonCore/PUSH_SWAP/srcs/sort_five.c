@@ -64,11 +64,7 @@ void		until_three(t_stack **astack_head, t_stack **bstack_head)
 
 	counter = 0;
 	astack = *astack_head;
-	while (astack)
-	{
-		counter++;
-		astack = astack->next;
-	}
+	counter = stack_length(&astack);
 	while (counter > 3)
 	{
 		pb(astack_head, bstack_head);
@@ -78,87 +74,47 @@ void		until_three(t_stack **astack_head, t_stack **bstack_head)
 
 void back_to_five(t_stack **astack, t_stack **bstack)
 {
-    while (stack_length(bstack) > 0)
-    {
-        pa(astack, bstack);
-        if (stack_length(bstack) > 0 && (*bstack)->next && (*bstack)->value > (*bstack)->next->value)
-            sa(astack);
-    }
-}
-
-/*void	back_to_five(t_stack *astack, t_stack *bstack)
-{
-	int		i;
-	int		bstackcounter;
-	t_stack *current;
-
-	if (astack == NULL || bstack == NULL)
-        return;
-	current = astack;
-	i = 1;
-	bstackcounter = 2;
-	while (bstackcounter && i <= 3 && current != NULL)
-	{
-		if (i == 1 && bstack->value < current->value)
-			pa(&astack, &bstack);
-		else if (i == 2 && bstack->value < current->value)
-		{
-			pa(&current, &bstack);
-			sa(&current);
-		}
-		else if (i == 3 && bstack->value < current->value)
-			reduce_backtofive(current, bstack);
-		i++;
-		current = current->next;
-	}
-	i = 0;
-	bstackcounter--;
-}
-
-void	reduce_backtofive(t_stack *astack, t_stack *bstack)
-{
-	rra(&astack);
-	pa(&astack, &bstack);
-	ra(&astack);
-	ra(&astack);
-}*/
-
-void back_to_four(t_stack **astack, t_stack **bstack)
-{
-    while (stack_length(bstack) > 0)
-    {
-        pa(astack, bstack);
-        if (stack_length(bstack) > 0 && (*bstack)->next && (*bstack)->value > (*bstack)->next->value)
-            sa(astack);
-    }
-}
-
-/*void back_to_four(t_stack *astack, t_stack *bstack)
-{
-    int i;
-    int bstackcounter;
     t_stack *current;
 
     if (astack == NULL || bstack == NULL)
         return;
-    current = astack;
-    i = 1;
-    bstackcounter = 1;
-    while (bstackcounter && i <= 2 && current != NULL)
+
+    while (stack_length(astack) < 5 && *bstack != NULL)
     {
-        if (i == 1 && bstack->value < current->value)
-            pa(&astack, &bstack);
-        else if (i == 2 && bstack->value < current->value)
+        current = *astack;
+        if (current == NULL || (*bstack)->value < current->value)
         {
-            pa(&current, &bstack);
-            sa(&current);
+            pa(astack, bstack);
         }
-        i++;
-        current = current->next;
+        else
+        {
+            pa(astack, bstack);
+            sa(astack);
+        }
     }
-    i = 0;
-    bstackcounter--;
-}*/
+}
+
+void back_to_four(t_stack **astack, t_stack **bstack)
+{
+    t_stack *current;
+
+    if (astack == NULL || bstack == NULL)
+        return;
+
+    while (stack_length(astack) < 4 && *bstack != NULL)
+    {
+        current = *astack;
+        if (current == NULL || (*bstack)->value < current->value)
+        {
+            pa(astack, bstack);
+        }
+        else
+        {
+            pa(astack, bstack);
+            sa(astack);
+        }
+    }
+}
 
 int	stack_length(t_stack **astack_head)
 {
@@ -218,5 +174,3 @@ void	sort_five(t_stack **astack_head, t_stack **bstack_head)
 	*astack_head = astack;
     *bstack_head = bstack;
 }
-//empecher le programme dentrer dans until 3 et sort 3 si
-//les trois derniers nombres sont deja sorted
