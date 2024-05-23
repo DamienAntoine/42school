@@ -37,19 +37,16 @@ void	untilfive_helper(t_stack **astack_head, t_stack **bstack_head, int *counter
 void bf_on_top(t_stack **astack_head, t_stack **bstack_head)
 {
     t_stack *temp;
-    int cost;
 
     temp = find_bf(astack_head, bstack_head);
     if (temp == NULL)
         return;
 
-    cost = cost_to_top(*bstack_head, temp->value);
-    while (cost--)
+    while ((*bstack_head)->value != temp->value)
     {
         if (is_closer_to_top(*bstack_head, temp->value))
             rb(bstack_head);
         else
             rrb(bstack_head);
     }
-	//pa(astack_head, bstack_head);
 }

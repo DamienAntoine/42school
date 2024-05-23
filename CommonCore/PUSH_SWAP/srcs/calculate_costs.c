@@ -18,13 +18,22 @@ int		cost_to_top(t_stack *bstack_head, int value)
 
 	cost = 0;
 	node = bstack_head;
-	if (!is_closer_to_top(bstack_head, value))
-		to_last_node(bstack_head);
-	while (node != NULL && node->value != value)
+	if (is_closer_to_top(bstack_head, value))
+		while (node != NULL && node->value != value)
+		{
+			cost++;
+			node = node->next;
+		}
+	else
 	{
-		cost++;
-		node = node->next;
-	}
+		while (node->value != value)
+			node = node->next;
+		while (node)
+		{
+			cost++;
+			node = node->next;
+		}
+	}	
 	return (cost);
 }
 

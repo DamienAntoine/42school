@@ -91,17 +91,40 @@ void	algo(t_stack **astack_head, t_stack **bstack_head)
 {
 	int argcount;
 
-	while (!is_sorted(*astack_head)) // || (*bstack_head) != NULL
+	while ((!is_sorted(*astack_head)) || (*bstack_head) != NULL)
 	{
 		argcount = argcounter(*astack_head);
 		if (argcount > 5)
 			until_five(astack_head, bstack_head);
 		else if (argcount <= 5 && !is_sorted(*astack_head))
 			sort_five(astack_head, bstack_head);
-		bf_on_top(astack_head, bstack_head);
+		while ((*bstack_head) != NULL)
+		{
+			bf_on_top(astack_head, bstack_head);
+			pa(astack_head, bstack_head);
+		}
+		if ((*bstack_head) != NULL)
+			break ;
 	}
+	while (!is_sorted(*astack_head))
+		ra(astack_head);
 }
-
+void print_stacks(t_stack *a, t_stack *b)
+{
+    printf("Stack A: ");
+    while (a)
+    {
+        printf("%d ", a->value);
+        a = a->next;
+    }
+    printf("\nStack B: ");
+    while (b)
+    {
+        printf("%d ", b->value);
+        b = b->next;
+    }
+    printf("\n");
+}
 int main(int argc, char **argv)
 {
 	t_stack		*a_stack;

@@ -2,27 +2,24 @@
 
 void	sort_three(t_stack **astack_head, int smallest, int biggest)
 {
-	t_stack		*astack;
-
-	astack = *astack_head;
-	if (astack->value == smallest && astack->next->value != biggest)
-		return ;
-	else if (astack->value == smallest && astack->next->value == biggest)
-	{
-		sa(&astack);
-		ra(&astack);
-	}
-	else if (astack->value != biggest && astack->next->value == smallest)
-		sa(&astack);
-	else if (astack->value != biggest && astack->value != smallest && astack->next->value == biggest)
-		rra(&astack);
-	else if (astack->value == biggest && astack->next->value == smallest)
-		ra(&astack);
-	else if (astack->value == biggest && astack->next->value != smallest)
-	{
-		ra(&astack);
-		sa(&astack);
-	}
+    if ((*astack_head)->value == smallest && (*astack_head)->next->value != biggest)
+        return ;
+    else if ((*astack_head)->value == smallest && (*astack_head)->next->value == biggest)
+    {
+        sa(astack_head);
+        ra(astack_head);
+    }
+    else if ((*astack_head)->value != biggest && (*astack_head)->next->value == smallest)
+        sa(astack_head);
+    else if ((*astack_head)->value != biggest && (*astack_head)->value != smallest && (*astack_head)->next->value == biggest)
+        rra(astack_head);
+    else if ((*astack_head)->value == biggest && (*astack_head)->next->value == smallest)
+        ra(astack_head);
+    else if ((*astack_head)->value == biggest && (*astack_head)->next->value != smallest)
+    {
+        ra(astack_head);
+        sa(astack_head);
+    }
 }
 
 int			find_smallest(t_stack **stack_head)
@@ -105,9 +102,7 @@ void back_to_four(t_stack **astack, t_stack **bstack)
     {
         current = *astack;
         if (current == NULL || (*bstack)->value < current->value)
-        {
             pa(astack, bstack);
-        }
         else
         {
             pa(astack, bstack);

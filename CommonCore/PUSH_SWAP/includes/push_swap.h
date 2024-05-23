@@ -76,5 +76,6 @@ void	swap(t_stack **head);
 void	sa(t_stack **astack);
 void	sb(t_stack **bstack);
 void	ss(t_stack **astack, t_stack **bstack);
+void print_stacks(t_stack *a, t_stack *b);
 
 #endif
