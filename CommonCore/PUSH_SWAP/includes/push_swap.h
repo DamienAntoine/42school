@@ -77,5 +77,6 @@ void	sa(t_stack **astack);
 void	sb(t_stack **bstack);
 void	ss(t_stack **astack, t_stack **bstack);
 void print_stacks(t_stack *a, t_stack *b);
+void insert_sorted(t_stack **astack, t_stack **bstack);
 
 #endif

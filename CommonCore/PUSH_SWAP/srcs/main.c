@@ -89,22 +89,34 @@ int		argcounter(t_stack *astack_head)
 
 void	algo(t_stack **astack_head, t_stack **bstack_head)
 {
-	int argcount;
+	//int argcount;
+	int	flag;
 
+	flag = 0;
 	while ((!is_sorted(*astack_head)) || (*bstack_head) != NULL)
 	{
-		argcount = argcounter(*astack_head);
-		if (argcount > 5)
+		//argcount = argcounter(*astack_head);
+		if (argcounter(*astack_head) > 5 && flag < 1)
+		{
+			printf("untilfivestart\n");
 			until_five(astack_head, bstack_head);
-		else if (argcount <= 5 && !is_sorted(*astack_head))
+			flag = 1;
+			printf("untilfiveend\n");
+		}
+		if (argcounter(*astack_head) <= 5 && !is_sorted(*astack_head))
+		{
+			ft_printf("sortfivestart\n");
 			sort_five(astack_head, bstack_head);
+			ft_printf("sortfiveend\n");
+		}
+		//print_stacks(*astack_head, *bstack_head);
 		while ((*bstack_head) != NULL)
 		{
+			ft_printf("bfontopstart\n");
 			bf_on_top(astack_head, bstack_head);
 			pa(astack_head, bstack_head);
+			ft_printf("bfontopend\n");
 		}
-		if ((*bstack_head) != NULL)
-			break ;
 	}
 	while (!is_sorted(*astack_head))
 		ra(astack_head);

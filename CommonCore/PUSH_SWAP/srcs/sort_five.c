@@ -110,6 +110,44 @@ void back_to_four(t_stack **astack, t_stack **bstack)
         }
     }
 }
+/*
+void insert_sorted(t_stack **astack, t_stack **bstack)
+{
+    t_stack *current;
+    int value;
+
+    if (astack == NULL || bstack == NULL || *bstack == NULL)
+        return;
+
+    value = (*bstack)->value;
+    current = *astack;
+    while (current != NULL && current->value < value)
+    {
+        ra(astack);
+        current = *astack;
+    }
+    pa(astack, bstack);
+    while ((*astack)->value != value)
+        rra(astack);
+}
+
+void back_to_five(t_stack **astack, t_stack **bstack)
+{
+    if (astack == NULL || bstack == NULL)
+        return;
+
+    while (stack_length(astack) < 5 && *bstack != NULL)
+        insert_sorted(astack, bstack);
+}
+
+void back_to_four(t_stack **astack, t_stack **bstack)
+{
+    if (astack == NULL || bstack == NULL)
+        return;
+
+    while (stack_length(astack) < 4 && *bstack != NULL)
+        insert_sorted(astack, bstack);
+}*/
 
 int	stack_length(t_stack **astack_head)
 {
