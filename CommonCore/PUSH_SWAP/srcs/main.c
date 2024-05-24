@@ -89,54 +89,20 @@ int		argcounter(t_stack *astack_head)
 
 void	algo(t_stack **astack_head, t_stack **bstack_head)
 {
-	//int argcount;
-	int	flag;
-
-	flag = 0;
-	while ((!is_sorted(*astack_head)) || (*bstack_head) != NULL)
+	if ((!is_sorted(*astack_head)) || (*bstack_head) != NULL)
 	{
-		//argcount = argcounter(*astack_head);
-		if (argcounter(*astack_head) > 5 && flag < 1)
-		{
-			printf("untilfivestart\n");
+		if (argcounter(*astack_head) > 5)
 			until_five(astack_head, bstack_head);
-			flag = 1;
-			printf("untilfiveend\n");
-		}
 		if (argcounter(*astack_head) <= 5 && !is_sorted(*astack_head))
-		{
-			ft_printf("sortfivestart\n");
 			sort_five(astack_head, bstack_head);
-			ft_printf("sortfiveend\n");
-		}
-		//print_stacks(*astack_head, *bstack_head);
 		while ((*bstack_head) != NULL)
 		{
-			ft_printf("bfontopstart\n");
 			bf_on_top(astack_head, bstack_head);
 			pa(astack_head, bstack_head);
-			ft_printf("bfontopend\n");
 		}
 	}
-	while (!is_sorted(*astack_head))
-		ra(astack_head);
 }
-void print_stacks(t_stack *a, t_stack *b)
-{
-    printf("Stack A: ");
-    while (a)
-    {
-        printf("%d ", a->value);
-        a = a->next;
-    }
-    printf("\nStack B: ");
-    while (b)
-    {
-        printf("%d ", b->value);
-        b = b->next;
-    }
-    printf("\n");
-}
+
 int main(int argc, char **argv)
 {
 	t_stack		*a_stack;
@@ -160,6 +126,5 @@ int main(int argc, char **argv)
 		return (1);
 	algo(&a_stack, &b_stack);
 	free_stack(a_stack);
-	//free_stack(b_stack);
 	return (0);
 }

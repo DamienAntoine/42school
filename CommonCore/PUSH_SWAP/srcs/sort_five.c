@@ -69,85 +69,33 @@ void		until_three(t_stack **astack_head, t_stack **bstack_head)
 	}
 }
 
-void back_to_five(t_stack **astack, t_stack **bstack)
+void	insert_sorted(t_stack **astack, t_stack **bstack)
 {
-    t_stack *current;
-
-    if (astack == NULL || bstack == NULL)
-        return;
-
-    while (stack_length(astack) < 5 && *bstack != NULL)
-    {
-        current = *astack;
-        if (current == NULL || (*bstack)->value < current->value)
-        {
-            pa(astack, bstack);
-        }
-        else
-        {
-            pa(astack, bstack);
-            sa(astack);
-        }
-    }
-}
-
-void back_to_four(t_stack **astack, t_stack **bstack)
-{
-    t_stack *current;
-
-    if (astack == NULL || bstack == NULL)
-        return;
-
-    while (stack_length(astack) < 4 && *bstack != NULL)
-    {
-        current = *astack;
-        if (current == NULL || (*bstack)->value < current->value)
-            pa(astack, bstack);
-        else
-        {
-            pa(astack, bstack);
-            sa(astack);
-        }
-    }
-}
-/*
-void insert_sorted(t_stack **astack, t_stack **bstack)
-{
-    t_stack *current;
     int value;
+    int rotations = 0;
 
     if (astack == NULL || bstack == NULL || *bstack == NULL)
         return;
 
     value = (*bstack)->value;
-    current = *astack;
-    while (current != NULL && current->value < value)
+    while ((*astack)->value < value && rotations < stack_length(astack))
     {
         ra(astack);
-        current = *astack;
+        rotations++;
     }
     pa(astack, bstack);
-    while ((*astack)->value != value)
+    while (rotations--)
         rra(astack);
 }
 
-void back_to_five(t_stack **astack, t_stack **bstack)
-{
-    if (astack == NULL || bstack == NULL)
-        return;
 
-    while (stack_length(astack) < 5 && *bstack != NULL)
+void	back_to_astack(t_stack **astack, t_stack **bstack)
+{
+    while (*bstack)
+    {
         insert_sorted(astack, bstack);
+    }
 }
-
-void back_to_four(t_stack **astack, t_stack **bstack)
-{
-    if (astack == NULL || bstack == NULL)
-        return;
-
-    while (stack_length(astack) < 4 && *bstack != NULL)
-        insert_sorted(astack, bstack);
-}*/
 
 int	stack_length(t_stack **astack_head)
 {
@@ -163,6 +111,7 @@ int	stack_length(t_stack **astack_head)
 	}
 	return (i);
 }
+
 int	last_three_sorted(t_stack **astack_head)
 {
     t_stack *temp;
@@ -189,21 +138,18 @@ void	sort_five(t_stack **astack_head, t_stack **bstack_head)
     t_stack	*bstack;
     int		smallest;
     int		biggest;
-	int stack_size;
+    int stack_size;
 
     astack = *astack_head;
     bstack = *bstack_head;
-	stack_size = stack_length(astack_head);
-	if (stack_size > 3)
-    	until_three(&astack, &bstack);
-	smallest = find_smallest(&astack);
+    stack_size = stack_length(astack_head);
+    if (stack_size > 3)
+        until_three(&astack, &bstack);
+    smallest = find_smallest(&astack);
     biggest = find_biggest(&astack);
-	if (stack_length(&astack) <= 3)
-    	sort_three(&astack, smallest, biggest);
-	if (stack_size == 5)
-    	back_to_five(&astack, &bstack);
-	else if (stack_size == 4)
-		back_to_four(&astack, &bstack);
-	*astack_head = astack;
+    if (stack_length(&astack) <= 3)
+        sort_three(&astack, smallest, biggest);
+    back_to_astack(&astack, &bstack);
+    *astack_head = astack;
     *bstack_head = bstack;
 }

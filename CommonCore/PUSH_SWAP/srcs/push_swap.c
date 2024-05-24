@@ -21,9 +21,9 @@ void		until_five(t_stack **astack_head, t_stack **bstack_head)
             ft_printf("Error: Unable to calculate mean value\n");
             return;
         }
-		if ((*astack_head)->value >= mean)
+		if ((*astack_head)->value > mean)
 			ra(astack_head);
-		else if ((*astack_head)->value < mean)
+		else if ((*astack_head)->value <= mean)
 			untilfive_helper(astack_head, bstack_head, &counter);
 	}
 }
@@ -42,11 +42,11 @@ void bf_on_top(t_stack **astack_head, t_stack **bstack_head)
     if (temp == NULL)
         return;
 
-    while ((*bstack_head)->value != temp->value)
+    while ((*astack_head)->value != temp->value)
     {
-        if (is_closer_to_top(*bstack_head, temp->value))
-            rb(bstack_head);
+        if (is_closer_to_top(*astack_head, temp->value))
+            rb(astack_head);
         else
-            rrb(bstack_head);
+            rrb(astack_head);
     }
 }
