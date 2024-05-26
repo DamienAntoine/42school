@@ -22,6 +22,15 @@ void	sort_three(t_stack **astack_head, int smallest, int biggest)
     }
 }
 
+void sort_four(t_stack **astack_head, t_stack **bstack_head)
+{
+    int smallest = find_smallest(astack_head);
+    put_on_top(astack_head, smallest);
+    pb(astack_head, bstack_head);
+    sort_three(astack_head, find_smallest(astack_head), find_biggest(astack_head));
+    pa(astack_head, bstack_head);
+}
+
 int			find_smallest(t_stack **stack_head)
 {
 	t_stack		*stack;
@@ -57,7 +66,6 @@ int			find_biggest(t_stack **stack_head)
 void insert_sorted(t_stack **astack, t_stack **bstack)
 {
     t_stack *bfnode;
-    //int flag = 0;
     int rotations = 0;
     int stack_len;
     int is_closer;
@@ -74,7 +82,6 @@ void insert_sorted(t_stack **astack, t_stack **bstack)
     {
         while (*astack != bfnode && rotations < stack_len)
         {
-            //flag = 1;
             ra(astack);
             rotations++;
         }
@@ -133,51 +140,20 @@ int	last_three_sorted(t_stack **astack_head)
     return (1);
 }
 
-void    put_on_top(t_stack **astack_head, int biggest)
+void put_on_top(t_stack **astack_head, int value)
 {
-    if (is_closer_to_top(*astack_head, biggest) == 1)
-        put_on_top_ra(astack_head, biggest);
-    else if (is_closer_to_top(*astack_head, biggest) == 0)
-        put_on_top_rra(astack_head, biggest);
-}
-
-void put_on_top_rra(t_stack **astack_head, int biggest)
-{
-    t_stack *current = *astack_head;
-    int counter;
-
-    counter = 0;
-    while (current != NULL && current->value != biggest)
-        current = current->next;
-    while (current)
+    if (is_closer_to_top(*astack_head, value))
     {
-        counter++;
-        current = current->next;
+        while ((*astack_head)->value != value)
+            ra(astack_head);
     }
-    while (counter)
+    else
     {
-        rra(astack_head);
-        counter--;
+        while ((*astack_head)->value != value)
+            rra(astack_head);
     }
 }
 
-void put_on_top_ra(t_stack **astack_head, int biggest)
-{
-    t_stack *current = *astack_head;
-    int counter;
-
-    counter = 0;
-    while (current != NULL && current->value != biggest)
-    {
-        counter++;
-        current = current->next;
-    }
-    while (counter)
-    {
-        ra(astack_head);
-        counter--;
-    }
-}
 
 void		until_three(t_stack **astack_head, t_stack **bstack_head)
 {

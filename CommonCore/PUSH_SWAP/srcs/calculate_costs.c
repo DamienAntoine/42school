@@ -47,6 +47,8 @@ int		is_closer_to_top(t_stack *bstack_head, int value)
 	temp = bstack_head;
 	counter = 0;
 	i = 0;
+	if (temp->value == value)
+		return (-1);
 	while (temp)
 	{
 		counter++;

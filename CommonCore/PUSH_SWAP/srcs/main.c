@@ -91,7 +91,7 @@ void	algo(t_stack **astack_head, t_stack **bstack_head)
 {
 	int		smallest;
     int		biggest;
-//add sort 4
+
 	smallest = find_smallest(astack_head);
     biggest = find_biggest(astack_head);
 	if ((!is_sorted(*astack_head)) || (*bstack_head) != NULL)
@@ -100,10 +100,12 @@ void	algo(t_stack **astack_head, t_stack **bstack_head)
 			until_five(astack_head, bstack_head);
 		if (argcounter(*astack_head) == 3)
 			sort_three(astack_head, smallest, biggest);
+		//if (argcounter(*astack_head) == 4)
+		//	sort_four(astack_head, smallest, biggest);//add sort 4
 		if (argcounter(*astack_head) == 5)
 			sort_stacks(astack_head, bstack_head);
-		while (!is_sorted(*astack_head))//ra if lowest closest to top and rra if lowest closest to bottom
-			ra(astack_head);
+		while (!is_sorted(*astack_head))
+        	put_on_top(astack_head, find_smallest(astack_head));
 	}
 }
 
