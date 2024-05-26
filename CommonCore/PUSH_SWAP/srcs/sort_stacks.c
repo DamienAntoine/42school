@@ -54,40 +54,41 @@ int			find_biggest(t_stack **stack_head)
 	return (biggest);
 }
 
-void		until_three(t_stack **astack_head, t_stack **bstack_head)
+void insert_sorted(t_stack **astack, t_stack **bstack)
 {
-	int	counter;
-	t_stack *astack;
-
-	counter = 0;
-	astack = *astack_head;
-	counter = stack_length(&astack);
-	while (counter > 3)
-	{
-		pb(astack_head, bstack_head);
-		counter--;
-	}
-}
-
-void	insert_sorted(t_stack **astack, t_stack **bstack)
-{
-    int value;
+    t_stack *bfnode;
+    //int flag = 0;
     int rotations = 0;
+    int stack_len;
+    int is_closer;
 
     if (astack == NULL || bstack == NULL || *bstack == NULL)
         return;
 
-    value = (*bstack)->value;
-    while ((*astack)->value < value && rotations < stack_length(astack))
+    bfnode = find_bf(astack, bstack);
+    if (bfnode == NULL)
+        return;
+    stack_len = stack_length(astack);
+    is_closer = is_closer_to_top(*astack, bfnode->value);
+    if (is_closer == 1)
     {
-        ra(astack);
-        rotations++;
+        while (*astack != bfnode && rotations < stack_len)
+        {
+            //flag = 1;
+            ra(astack);
+            rotations++;
+        }
+    }
+    else if (is_closer == 0)
+    {
+        while (*astack != bfnode && rotations < stack_len)
+        {
+            rra(astack);
+            rotations++;
+        }
     }
     pa(astack, bstack);
-    while (rotations--)
-        rra(astack);
 }
-
 
 void	back_to_astack(t_stack **astack, t_stack **bstack)
 {
@@ -132,23 +133,85 @@ int	last_three_sorted(t_stack **astack_head)
     return (1);
 }
 
-void	sort_five(t_stack **astack_head, t_stack **bstack_head)
+void    put_on_top(t_stack **astack_head, int biggest)
+{
+    if (is_closer_to_top(*astack_head, biggest) == 1)
+        put_on_top_ra(astack_head, biggest);
+    else if (is_closer_to_top(*astack_head, biggest) == 0)
+        put_on_top_rra(astack_head, biggest);
+}
+
+void put_on_top_rra(t_stack **astack_head, int biggest)
+{
+    t_stack *current = *astack_head;
+    int counter;
+
+    counter = 0;
+    while (current != NULL && current->value != biggest)
+        current = current->next;
+    while (current)
+    {
+        counter++;
+        current = current->next;
+    }
+    while (counter)
+    {
+        rra(astack_head);
+        counter--;
+    }
+}
+
+void put_on_top_ra(t_stack **astack_head, int biggest)
+{
+    t_stack *current = *astack_head;
+    int counter;
+
+    counter = 0;
+    while (current != NULL && current->value != biggest)
+    {
+        counter++;
+        current = current->next;
+    }
+    while (counter)
+    {
+        ra(astack_head);
+        counter--;
+    }
+}
+
+void		until_three(t_stack **astack_head, t_stack **bstack_head)
+{
+    int		biggest;
+    int     i;
+
+    i = 0;
+    while (i < 2)
+    {
+        biggest = find_biggest(astack_head);
+        put_on_top(astack_head, biggest);
+        pb(astack_head, bstack_head);
+        i++;
+    }
+}
+
+void	sort_stacks(t_stack **astack_head, t_stack **bstack_head)
 {
     t_stack	*astack;
     t_stack	*bstack;
     int		smallest;
     int		biggest;
-    int stack_size;
 
     astack = *astack_head;
     bstack = *bstack_head;
-    stack_size = stack_length(astack_head);
-    if (stack_size > 3)
-        until_three(&astack, &bstack);
+    until_three(&astack, &bstack);
     smallest = find_smallest(&astack);
     biggest = find_biggest(&astack);
-    if (stack_length(&astack) <= 3)
-        sort_three(&astack, smallest, biggest);
+    sort_three(&astack, smallest, biggest);
+    sb(&bstack);
+    pa(&astack, &bstack);
+    pa(&astack, &bstack);
+    ra(&astack);
+    ra(&astack);
     back_to_astack(&astack, &bstack);
     *astack_head = astack;
     *bstack_head = bstack;

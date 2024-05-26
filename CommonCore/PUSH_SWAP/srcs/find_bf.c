@@ -1,35 +1,6 @@
 #include "../includes/push_swap.h"
 
-/*
-t_stack		*find_bf(t_stack **a_stack_node, t_stack **b_stack_head)
-{
-    int		bf;
-    int		tempcost;
-    int     newcost;
-    t_stack	*bstack;
-    t_stack *bfnode;
-
-    bf = 2147483647;
-    tempcost = 2147483647;
-    bstack = *b_stack_head;
-    bfnode = NULL;
-    while (bstack)
-    {
-        if (bstack->value < (*a_stack_node)->value && bstack->value < bf)
-        {
-            bf = bstack->value;
-            bfnode = bstack;
-            newcost = cost_to_top(*b_stack_head, bfnode->value);
-            if (newcost < tempcost)
-                tempcost = newcost;
-        }
-        bstack = bstack->next;
-    }
-    return (bfnode);
-}
-*/
-
-t_stack		*find_bf(t_stack **a_stack_head, t_stack **b_stack_head)
+/*t_stack		*find_bf(t_stack **a_stack_head, t_stack **b_stack_head)
 {
     long int	bf_diff;
     long int	temp_diff;
@@ -61,4 +32,32 @@ t_stack		*find_bf(t_stack **a_stack_head, t_stack **b_stack_head)
         astack = astack->next;
     }
     return (bfnode);
+}*/
+
+t_stack	*find_bf(t_stack **a_stack_head, t_stack **b_stack_head)
+{
+    long int	best_buddy;
+    long int	counter;
+    long int	tmp;
+    t_stack		*temp;
+    t_stack		*best_buddy_node = NULL;
+
+    counter = __LONG_LONG_MAX__;
+    best_buddy = __LONG_LONG_MAX__;
+    temp = *a_stack_head;
+    while (*a_stack_head)
+    {
+        tmp = (*a_stack_head)->value - (*b_stack_head)->value;
+        if ((tmp < counter) && ((*a_stack_head)->value > (*b_stack_head)->value))
+        {
+            counter = tmp;
+            best_buddy = (*a_stack_head)->value;
+            best_buddy_node = *a_stack_head;
+        }
+        (*a_stack_head) = (*a_stack_head)->next;
+    }
+    *a_stack_head = temp;
+    if (best_buddy == __LONG_LONG_MAX__)
+        return (NULL);
+    return (best_buddy_node);
 }
