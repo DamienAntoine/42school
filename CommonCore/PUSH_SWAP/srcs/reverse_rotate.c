@@ -19,6 +19,9 @@ void	reverse_rotate(t_stack **head)
     prev_node->next = NULL;
     temp->next = *head;
     *head = temp;
+	printf("\n");
+	print_one_stack(head);
+	printf("\n");
 }
 
 //rra (reverse rotate a): Shift down all elements of stack a by 1. The last element becomes the first one.

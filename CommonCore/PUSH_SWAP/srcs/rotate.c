@@ -14,6 +14,9 @@ void	rotate(t_stack **head)
     (*head)->next = NULL;
     last_node->next = *head;
     *head = temp;
+	printf("\n");
+	print_one_stack(head);
+	printf("\n");
 }
 
 //ra (rotate a): Shift up all elements of stack a by 1. The first element becomes the last one.

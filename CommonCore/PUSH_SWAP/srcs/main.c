@@ -100,13 +100,44 @@ void	algo(t_stack **astack_head, t_stack **bstack_head)
 			until_five(astack_head, bstack_head);
 		if (argcounter(*astack_head) == 3)
 			sort_three(astack_head, smallest, biggest);
-		//if (argcounter(*astack_head) == 4)
-		//	sort_four(astack_head, smallest, biggest);//add sort 4
+		if (argcounter(*astack_head) == 4)
+			sort_four(astack_head, bstack_head);
 		if (argcounter(*astack_head) == 5)
 			sort_stacks(astack_head, bstack_head);
 		while (!is_sorted(*astack_head))
         	put_on_top(astack_head, find_smallest(astack_head));
+		//print_stacks(astack_head, bstack_head);
 	}
+}
+void print_one_stack(t_stack **stack)
+{
+    t_stack *temp;
+    printf("Stack:\n");
+    temp = *stack;
+    while (temp)
+    {
+        printf("%d\n", temp->value);
+        temp = temp->next;
+    }
+}
+
+void print_stacks(t_stack **astack_head, t_stack **bstack_head)
+{
+    t_stack *temp;
+    printf("A Stack:\n");
+    temp = *astack_head;
+    while (temp)
+    {
+        printf("%d\n", temp->value);
+        temp = temp->next;
+    }
+    printf("B Stack:\n");
+    temp = *bstack_head;
+    while (temp)
+    {
+        printf("%d\n", temp->value);
+        temp = temp->next;
+    }
 }
 
 int main(int argc, char **argv)

@@ -5,6 +5,7 @@ void		until_five(t_stack **astack_head, t_stack **bstack_head)
 	int	counter;
 	t_stack *astack;
 	int	mean;
+	int	target;
 
 	counter = 0;
 	astack = *astack_head;
@@ -22,7 +23,13 @@ void		until_five(t_stack **astack_head, t_stack **bstack_head)
             return;
         }
 		if ((*astack_head)->value > mean)
-			ra(astack_head);
+		{
+			target = (*astack_head)->value;
+			if (is_closer_to_top(*astack_head, target))
+				ra(astack_head);
+			else
+				rra(astack_head);
+		}
 		else if ((*astack_head)->value <= mean)
 			untilfive_helper(astack_head, bstack_head, &counter);
 	}
@@ -32,21 +39,4 @@ void	untilfive_helper(t_stack **astack_head, t_stack **bstack_head, int *counter
 {
 	pb(astack_head, bstack_head);
 	(*counter)--;
-}
-
-void bf_on_top(t_stack **astack_head, t_stack **bstack_head)
-{
-    t_stack *temp;
-
-    temp = find_bf(astack_head, bstack_head);
-    if (temp == NULL)
-        return;
-
-    while ((*astack_head)->value != temp->value)
-    {
-        if (is_closer_to_top(*astack_head, temp->value))
-            rb(astack_head);
-        else
-            rrb(astack_head);
-    }
 }

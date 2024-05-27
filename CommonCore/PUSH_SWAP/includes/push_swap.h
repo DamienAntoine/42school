@@ -17,6 +17,13 @@ typedef struct s_stack
 	struct s_stack	*next;
 }	t_stack;
 
+typedef struct s_bf
+{
+    t_stack *a_node;
+    t_stack *b_node;
+    int cost;
+}	t_bf;
+
 int	ft_printchar(int c);
 int	ft_atoi(const char *str);
 int	checkformat(const char specifier, va_list ap);
@@ -57,6 +64,8 @@ void	back_to_astack(t_stack **astack, t_stack **bstack);
 int	check_inputs(int argc, char **input);
 void	sort_three(t_stack **astack_head, int smallest, int biggest);
 void sort_four(t_stack **astack_head, t_stack **bstack_head);
+void print_one_stack(t_stack **stack);
+t_bf *find_optimal_nodes(t_stack **a_stack_head, t_stack **b_stack_head);
 int		argcounter(t_stack *astack_head);
 int	stack_length(t_stack **astack_head);
 int			find_smallest(t_stack **stack_head);
@@ -81,7 +90,7 @@ void	swap(t_stack **head);
 void	sa(t_stack **astack);
 void	sb(t_stack **bstack);
 void	ss(t_stack **astack, t_stack **bstack);
-void print_stacks(t_stack *a, t_stack *b);
+void print_stacks(t_stack **astack_head, t_stack **bstack_head);
 void insert_sorted(t_stack **astack, t_stack **bstack);
 
 #endif

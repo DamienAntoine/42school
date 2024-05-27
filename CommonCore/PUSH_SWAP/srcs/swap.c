@@ -10,6 +10,9 @@ void	swap(t_stack **head)
 	(*head)->next = temp->next;
 	temp->next = *head;
 	*head = temp;
+	printf("\n");
+	print_one_stack(head);
+	printf("\n");
 }
 
 //sa (swap a): Swap the first 2 elements at the top of stack a. Do nothing if there is only one or no elements.

@@ -65,35 +65,20 @@ int			find_biggest(t_stack **stack_head)
 
 void insert_sorted(t_stack **astack, t_stack **bstack)
 {
-    t_stack *bfnode;
-    int rotations = 0;
-    int stack_len;
-    int is_closer;
+    //t_stack *bfnode;
+	t_bf *bfnode;
 
     if (astack == NULL || bstack == NULL || *bstack == NULL)
         return;
 
-    bfnode = find_bf(astack, bstack);
-    if (bfnode == NULL)
-        return;
-    stack_len = stack_length(astack);
-    is_closer = is_closer_to_top(*astack, bfnode->value);
-    if (is_closer == 1)
-    {
-        while (*astack != bfnode && rotations < stack_len)
-        {
-            ra(astack);
-            rotations++;
-        }
-    }
-    else if (is_closer == 0)
-    {
-        while (*astack != bfnode && rotations < stack_len)
-        {
-            rra(astack);
-            rotations++;
-        }
-    }
+    //bfnode = find_bf(astack, bstack);
+	bfnode = find_optimal_nodes(astack, bstack);
+	
+	if (bfnode == NULL)
+		return;
+	//put_on_top(astack, bfnode->value);
+	put_on_top(astack, bfnode->a_node->value);
+	put_on_top(bstack, bfnode->b_node->value);
     pa(astack, bstack);
 }
 
