@@ -10,23 +10,20 @@ void	swap(t_stack **head)
 	(*head)->next = temp->next;
 	temp->next = *head;
 	*head = temp;
-	printf("\n");
-	print_one_stack(head);
-	printf("\n");
 }
 
 //sa (swap a): Swap the first 2 elements at the top of stack a. Do nothing if there is only one or no elements.
 void	sa(t_stack **astack)
 {
 	swap(astack);
-	ft_printf("sa\n");
+	store_op(4);
 }
 
 //sb (swap b): Swap the first 2 elements at the top of stack b. Do nothing if there is only one or no elements.
 void	sb(t_stack **bstack)
 {
 	swap(bstack);
-	ft_printf("sb\n");
+	store_op(5);
 }
 
 //ss : sa and sb at the same time.
@@ -34,5 +31,5 @@ void	ss(t_stack **astack, t_stack **bstack)
 {
 	swap(astack);
 	swap(bstack);
-	ft_printf("ss\n");
+	store_op(6);
 }

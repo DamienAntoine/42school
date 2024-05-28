@@ -24,6 +24,12 @@ typedef struct s_bf
     int cost;
 }	t_bf;
 
+typedef struct s_moves
+{
+    int move;
+    struct s_moves *next;
+}	t_moves;
+
 int	ft_printchar(int c);
 int	ft_atoi(const char *str);
 int	checkformat(const char specifier, va_list ap);
@@ -46,6 +52,8 @@ int		cost_to_top(t_stack *bstack_head, int value);
 void	populate_struct(int value, t_stack **astack_head);
 void    process_args(char **args, t_stack **astack_head);
 int		is_sorted(t_stack *a_stack);
+void    store_op(int move);
+void print_op(t_moves *head);
 void	algo(t_stack **astack_head, t_stack **bstack_head);
 int	find_mean_value(t_stack **head);
 t_stack		*find_bf(t_stack **a_stack_head, t_stack **b_stack_head);
@@ -58,6 +66,7 @@ void	untilfive_helper(t_stack **astack_head, t_stack **bstack_head, int *counter
 void bf_on_top(t_stack **astack_head, t_stack **bstack_head);
 int		cost_to_top(t_stack *bstack_head, int value);
 int		is_closer_to_top(t_stack *bstack_head, int value);
+void put_on_top_bstack(t_stack **bstack_head, int value);
 int	ft_isdigit(int c);
 int	ft_issign(char c);
 void	back_to_astack(t_stack **astack, t_stack **bstack);

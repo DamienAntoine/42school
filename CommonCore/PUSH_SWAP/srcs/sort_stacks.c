@@ -78,7 +78,7 @@ void insert_sorted(t_stack **astack, t_stack **bstack)
 		return;
 	//put_on_top(astack, bfnode->value);
 	put_on_top(astack, bfnode->a_node->value);
-	put_on_top(bstack, bfnode->b_node->value);
+	put_on_top_bstack(bstack, bfnode->b_node->value);
     pa(astack, bstack);
 }
 
@@ -86,6 +86,9 @@ void	back_to_astack(t_stack **astack, t_stack **bstack)
 {
     while (*bstack)
     {
+        //printf("\n");
+        //print_stacks(astack, bstack);
+        //printf("\n");
         insert_sorted(astack, bstack);
     }
 }
@@ -139,6 +142,19 @@ void put_on_top(t_stack **astack_head, int value)
     }
 }
 
+void put_on_top_bstack(t_stack **bstack_head, int value)
+{
+    if (is_closer_to_top(*bstack_head, value))
+    {
+        while ((*bstack_head)->value != value)
+            rb(bstack_head);
+    }
+    else
+    {
+        while ((*bstack_head)->value != value)
+            rrb(bstack_head);
+    }
+}
 
 void		until_three(t_stack **astack_head, t_stack **bstack_head)
 {

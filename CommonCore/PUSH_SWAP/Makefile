@@ -12,6 +12,7 @@ SRCS = ./srcs/calculate_costs.c \
 		./srcs/push.c \
 		./srcs/reverse_rotate.c \
 		./srcs/rotate.c \
+		./srcs/print_operations.c \
 		./srcs/sort_stacks.c \
 		./srcs/swap.c
 OBJS = $(patsubst $(SRCS_DIR)/%.c,$(OBJS_DIR)/%.o,$(SRCS))
