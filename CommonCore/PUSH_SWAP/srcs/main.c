@@ -104,10 +104,12 @@ void	algo(t_stack **astack_head, t_stack **bstack_head)
 			sort_four(astack_head, bstack_head);
 		if (argcounter(*astack_head) == 5)
 			sort_stacks(astack_head, bstack_head);
-		while (!is_sorted(*astack_head))
+        
+		if (!is_sorted(*astack_head))
         {
             //print_stacks(astack_head, bstack_head);
         	put_on_top(astack_head, find_smallest(astack_head));
+            //print_one_stack(astack_head);
         }
         if (is_sorted(*astack_head))
             store_op(0);

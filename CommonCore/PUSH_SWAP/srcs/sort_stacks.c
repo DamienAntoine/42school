@@ -65,20 +65,14 @@ int			find_biggest(t_stack **stack_head)
 
 void insert_sorted(t_stack **astack, t_stack **bstack)
 {
-    //t_stack *bfnode;
 	t_bf *bfnode;
 
     if (astack == NULL || bstack == NULL || *bstack == NULL)
         return;
-
-    //bfnode = find_bf(astack, bstack);
-	bfnode = find_optimal_nodes(astack, bstack);
-	
+    bfnode = find_optimal_nodes(astack, bstack);
 	if (bfnode == NULL)
 		return;
-	//put_on_top(astack, bfnode->value);
-	put_on_top(astack, bfnode->a_node->value);
-	put_on_top_bstack(bstack, bfnode->b_node->value);
+	put_on_top_both(astack, bstack, bfnode->a_node->value, bfnode->b_node->value);
     pa(astack, bstack);
 }
 
@@ -140,6 +134,32 @@ void put_on_top(t_stack **astack_head, int value)
         while ((*astack_head)->value != value)
             rra(astack_head);
     }
+}
+
+void put_on_top_both(t_stack **astack_head, t_stack **bstack_head, int avalue, int bvalue)
+{
+    int astack_value = (*astack_head)->value;
+    int bstack_value = (*bstack_head)->value;
+    
+    while (astack_value != avalue && bstack_value != bvalue)
+    {
+        if (is_closer_to_top(*astack_head, astack_value) && is_closer_to_top(*bstack_head, bstack_value))
+            rr(astack_head, bstack_head);
+        else if (!is_closer_to_top(*astack_head, astack_value) && !is_closer_to_top(*bstack_head, bstack_value))
+            rrr(astack_head, bstack_head);
+        else if (is_closer_to_top(*astack_head, astack_value))
+            ra(astack_head);
+        else if (is_closer_to_top(*bstack_head, bstack_value))
+            rb(bstack_head);
+        
+        astack_value = (*astack_head)->value;
+        bstack_value = (*bstack_head)->value;
+    }
+    
+    if (astack_value != avalue)
+        put_on_top(astack_head, avalue);
+    else if (bstack_value != bvalue)
+        put_on_top_bstack(bstack_head, bvalue);
 }
 
 void put_on_top_bstack(t_stack **bstack_head, int value)

@@ -11,33 +11,33 @@ t_stack	*to_last_node(t_stack *stack)
 	return (stack);
 }
 
-int		cost_to_top(t_stack *bstack_head, int value)
+int cost_to_top(t_stack *stack_head, int value)
 {
-	int		cost;
-	t_stack	*node;
+    int cost = 0;
+	int reverse_cost;
+	int size;
+    t_stack *node;
 
-	cost = 0;
-	node = bstack_head;
-	if (node->next == NULL)
-		return (0);
-	if (is_closer_to_top(bstack_head, value))
-		while (node != NULL && node->value != value)
-		{
-			cost++;
-			node = node->next;
-		}
-	else
+	node = stack_head;
+    while (node != NULL && node->value != value)
 	{
-		while (node->value != value)
-			node = node->next;
-		while (node)
-		{
-			cost++;
-			node = node->next;
-		}
-	}	
-	return (cost);
+        cost++;
+        node = node->next;
+    }
+    size = 0;
+    node = stack_head;
+    while (node != NULL)
+	{
+        size++;
+        node = node->next;
+    }
+	reverse_cost = size - cost;
+	if (cost < reverse_cost)
+		return (cost);
+	else
+    	return (reverse_cost);
 }
+
 
 int		is_closer_to_top(t_stack *bstack_head, int value)
 {
