@@ -5,8 +5,6 @@ t_bf *find_optimal_nodes(t_stack **astack_head, t_stack **bstack_head)
     t_stack *a_temp;
     t_stack *b_temp;
     t_bf *optimal_pair;
-    int a_cost;
-    int b_cost;
     int total_cost;
     int min_difference = __INT_MAX__;
     int difference;
@@ -22,12 +20,12 @@ t_bf *find_optimal_nodes(t_stack **astack_head, t_stack **bstack_head)
             if (a_temp->value > b_temp->value)
             {
                 difference = a_temp->value - b_temp->value;
+				if (difference < 0)
+					difference = __INT_MAX__;
                 if (difference < min_difference)
                 {
                     min_difference = difference;
-                    a_cost = cost_to_top(*astack_head, a_temp->value);
-                    b_cost = cost_to_top(*bstack_head, b_temp->value);
-                    total_cost = a_cost + b_cost;
+                    total_cost = cost_to_top_both(*astack_head, *bstack_head, a_temp->value, b_temp->value);
                     if (total_cost < optimal_pair->cost)
                     {
                         optimal_pair->a_node = a_temp;
@@ -56,6 +54,9 @@ t_bf *find_optimal_nodes(t_stack **astack_head, t_stack **bstack_head)
     t_bf *result;
 
     optimal_pairs = find_pairs(astack_head, bstack_head);
+	//printf("\npair");
+	//printf("\n%d\n", optimal_pairs->a_node->value);
+	//printf("\n%d\n", optimal_pairs->b_node->value);
     optimal_node = find_smaller_cost(optimal_pairs);
     if (optimal_node != NULL)
     {
@@ -131,13 +132,11 @@ t_bf *find_smaller_cost(t_bf *optimal_pairs)
     current = optimal_pairs;
     if (optimal_pairs == NULL)
         return NULL;
-    best_cost->cost = cost_to_top(current->a_node, current->a_node->value) +
-                      cost_to_top(current->b_node, current->b_node->value);
+    best_cost->cost = cost_to_top_both(current->a_node, current->b_node, current->a_node->value, current->b_node->value);
     current = current->next;
     while (current)
     {
-        current->cost = cost_to_top(current->a_node, current->a_node->value) +
-                        cost_to_top(current->b_node, current->b_node->value);
+        current->cost = cost_to_top_both(current->a_node, current->b_node, current->a_node->value, current->b_node->value);
         if (current->cost < best_cost->cost)
             best_cost = current;
         current = current->next;

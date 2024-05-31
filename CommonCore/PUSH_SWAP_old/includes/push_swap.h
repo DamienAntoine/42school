@@ -22,6 +22,7 @@ typedef struct s_bf
     t_stack *a_node;
     t_stack *b_node;
     int cost;
+	struct s_bf *next;
 }	t_bf;
 
 typedef struct s_moves
@@ -49,6 +50,7 @@ int	ft_count_words(char const *s, char sep);
 char	**ft_split(char const *s, char c);
 int	ft_atoi(const char *str);
 int		cost_to_top(t_stack *bstack_head, int value);
+int	cost_to_top_both(t_stack *astack, t_stack *bstack, int avalue, int bvalue);
 void put_on_top_both(t_stack **astack_head, t_stack **bstack_head, int avalue, int bvalue);
 void	populate_struct(int value, t_stack **astack_head);
 void    process_args(char **args, t_stack **astack_head);
@@ -75,6 +77,9 @@ void	sort_three(t_stack **astack_head, int smallest, int biggest);
 void sort_four(t_stack **astack_head, t_stack **bstack_head);
 void print_one_stack(t_stack **stack);
 t_bf *find_optimal_nodes(t_stack **a_stack_head, t_stack **b_stack_head);
+//t_bf *find_optimal_nodes(t_stack *astack_head, t_stack *bstack_head);
+t_bf *find_pairs(t_stack *astack_head, t_stack *bstack_head);
+t_bf *find_smaller_cost(t_bf *optimal_pairs);
 int		argcounter(t_stack *astack_head);
 int	stack_length(t_stack **astack_head);
 int			find_smallest(t_stack **stack_head);
