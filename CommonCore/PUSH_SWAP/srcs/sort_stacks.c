@@ -69,7 +69,7 @@ void insert_sorted(t_stack **astack, t_stack **bstack)
 
     if (astack == NULL || bstack == NULL || *bstack == NULL)
         return;
-    bfnode = find_optimal_nodes(astack, bstack);
+    bfnode = find_optimal_nodes(*astack, *bstack);
 	if (bfnode == NULL)
 		return;
 	put_on_top_both(astack, bstack, bfnode->a_node->value, bfnode->b_node->value);
@@ -135,33 +135,6 @@ void put_on_top(t_stack **astack_head, int value)
             rra(astack_head);
     }
 }
-
-void put_on_top_both(t_stack **astack_head, t_stack **bstack_head, int avalue, int bvalue)
-{
-    int astack_value = (*astack_head)->value;
-    int bstack_value = (*bstack_head)->value;
-    
-    while (astack_value != avalue && bstack_value != bvalue)
-    {
-        if (is_closer_to_top(*astack_head, astack_value) && is_closer_to_top(*bstack_head, bstack_value))
-            rr(astack_head, bstack_head);
-        else if (!is_closer_to_top(*astack_head, astack_value) && !is_closer_to_top(*bstack_head, bstack_value))
-            rrr(astack_head, bstack_head);
-        else if (is_closer_to_top(*astack_head, astack_value))
-            ra(astack_head);
-        else if (is_closer_to_top(*bstack_head, bstack_value))
-            rb(bstack_head);
-        
-        astack_value = (*astack_head)->value;
-        bstack_value = (*bstack_head)->value;
-    }
-    
-    if (astack_value != avalue)
-        put_on_top(astack_head, avalue);
-    else if (bstack_value != bvalue)
-        put_on_top_bstack(bstack_head, bvalue);
-}
-
 void put_on_top_bstack(t_stack **bstack_head, int value)
 {
     if (is_closer_to_top(*bstack_head, value))
@@ -173,6 +146,38 @@ void put_on_top_bstack(t_stack **bstack_head, int value)
     {
         while ((*bstack_head)->value != value)
             rrb(bstack_head);
+    }
+}
+
+void put_on_top_both(t_stack **astack_head, t_stack **bstack_head, int avalue, int bvalue)
+{
+    while ((*astack_head)->value != avalue || (*bstack_head)->value != bvalue)
+    {
+        if ((*astack_head)->value != avalue && (*bstack_head)->value != bvalue)
+        {
+            if (is_closer_to_top(*astack_head, avalue) && is_closer_to_top(*bstack_head, bvalue))
+                rr(astack_head, bstack_head);
+            else if (!is_closer_to_top(*astack_head, avalue) && !is_closer_to_top(*bstack_head, bvalue))
+                rrr(astack_head, bstack_head);
+            else if (is_closer_to_top(*astack_head, avalue))
+                ra(astack_head);
+            else if (is_closer_to_top(*bstack_head, bvalue))
+                rb(bstack_head);
+        }
+        else if ((*astack_head)->value != avalue)
+        {
+            if (is_closer_to_top(*astack_head, avalue))
+                ra(astack_head);
+            else
+                rra(astack_head);
+        }
+        else if ((*bstack_head)->value != bvalue)
+        {
+            if (is_closer_to_top(*bstack_head, bvalue))
+                rb(bstack_head);
+            else
+                rrb(bstack_head);
+        }
     }
 }
 

@@ -57,7 +57,7 @@ int		is_closer_to_top(t_stack *bstack_head, int value)
 			index_temp = i;
 		temp = temp->next;
 	}
-	if (index_temp < (i / 2))
+	if (index_temp <= ((i / 2) + 1))
 		return (1);
 	else
 		return (0);

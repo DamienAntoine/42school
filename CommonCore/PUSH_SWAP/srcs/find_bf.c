@@ -1,6 +1,6 @@
 #include "../includes/push_swap.h"
 
-t_bf *find_optimal_nodes(t_stack **astack_head, t_stack **bstack_head)
+/*t_bf *find_optimal_nodes(t_stack **astack_head, t_stack **bstack_head)
 {
     t_stack *a_temp;
     t_stack *b_temp;
@@ -46,9 +46,9 @@ t_bf *find_optimal_nodes(t_stack **astack_head, t_stack **bstack_head)
         return NULL;
     }
     return optimal_pair;
-}
+}*/
 
-/*t_bf *find_optimal_nodes(t_stack *astack_head, t_stack *bstack_head)
+t_bf *find_optimal_nodes(t_stack *astack_head, t_stack *bstack_head)
 {
     t_bf *optimal_pairs;
     t_bf *optimal_node;
@@ -56,7 +56,7 @@ t_bf *find_optimal_nodes(t_stack **astack_head, t_stack **bstack_head)
     t_bf *result;
 
     optimal_pairs = find_pairs(astack_head, bstack_head);
-    optimal_node = find_smaller_cost(optimal_pairs);
+    optimal_node = find_smaller_cost(optimal_pairs, astack_head, bstack_head);
     if (optimal_node != NULL)
     {
         result = (t_bf *)malloc(sizeof(t_bf));
@@ -90,39 +90,47 @@ t_bf *find_pairs(t_stack *astack_head, t_stack *bstack_head)
     t_bf *new_pair;
     t_stack *a_node;
     t_stack *b_node;
+    t_stack *min_a_node;
 
-    a_node = astack_head;
-    while (a_node)
+    b_node = bstack_head;
+    while (b_node)
     {
-        b_node = bstack_head;
-        while (b_node)
+        a_node = astack_head;
+        min_a_node = NULL;
+        while (a_node)
         {
-            if (b_node->value < a_node->value)
+            if (a_node->value > b_node->value && (min_a_node == NULL || a_node->value < min_a_node->value))
             {
-                new_pair = (t_bf *)malloc(sizeof(t_bf));
-                new_pair->a_node = a_node;
-                new_pair->b_node = b_node;
-                new_pair->next = NULL;
-
-                if (head == NULL)
-                {
-                    head = new_pair;
-                    tail = new_pair;
-                }
-                else
-                {
-                    tail->next = new_pair;
-                    tail = new_pair;
-                }
+                min_a_node = a_node;
             }
-            b_node = b_node->next;
+            a_node = a_node->next;
         }
-        a_node = a_node->next;
+
+        if (min_a_node != NULL)
+        {
+            new_pair = (t_bf *)malloc(sizeof(t_bf));
+            new_pair->a_node = min_a_node;
+            new_pair->b_node = b_node;
+            new_pair->next = NULL;
+
+            if (head == NULL)
+            {
+                head = new_pair;
+                tail = new_pair;
+            }
+            else
+            {
+                tail->next = new_pair;
+                tail = new_pair;
+            }
+        }
+
+        b_node = b_node->next;
     }
     return (head);
 }
 
-t_bf *find_smaller_cost(t_bf *optimal_pairs)
+t_bf *find_smaller_cost(t_bf *optimal_pairs, t_stack *astack_head, t_stack *bstack_head)
 {
     t_bf *best_cost;
     t_bf *current;
@@ -131,19 +139,19 @@ t_bf *find_smaller_cost(t_bf *optimal_pairs)
     current = optimal_pairs;
     if (optimal_pairs == NULL)
         return NULL;
-    best_cost->cost = cost_to_top(current->a_node, current->a_node->value) +
-                      cost_to_top(current->b_node, current->b_node->value);
+    best_cost->cost = cost_to_top(astack_head, current->a_node->value) +
+                      cost_to_top(bstack_head, current->b_node->value);
     current = current->next;
     while (current)
     {
-        current->cost = cost_to_top(current->a_node, current->a_node->value) +
-                        cost_to_top(current->b_node, current->b_node->value);
+        current->cost = cost_to_top(astack_head, current->a_node->value) +
+                        cost_to_top(bstack_head, current->b_node->value);
         if (current->cost < best_cost->cost)
             best_cost = current;
         current = current->next;
     }
     return (best_cost);
-}*/
+}
 //trouver pairs
 //trouver la pair avec le plus petit cout
 
