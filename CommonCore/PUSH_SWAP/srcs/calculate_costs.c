@@ -13,11 +13,12 @@ t_stack	*to_last_node(t_stack *stack)
 
 int cost_to_top(t_stack *stack_head, int value)
 {
-    int cost = 0;
+    int cost;
 	int reverse_cost;
 	int size;
     t_stack *node;
 
+	cost = 0;
 	node = stack_head;
     while (node != NULL && node->value != value)
 	{

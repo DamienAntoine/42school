@@ -2,19 +2,22 @@ NAME = push_swap
 CFLAGS = -Wextra -Wall -Werror
 SRCS_DIR = srcs
 OBJS_DIR = objs
-SRCS = ./srcs/calculate_costs.c \
+SRCS = 	./srcs/calculate_costs.c \
 		./srcs/clear_stacks.c \
 		./srcs/find_bf.c \
-		./srcs/find_mean.c \
+		./srcs/find_pairs.c \
 		./srcs/inputs_checks.c \
-		./srcs/main.c \
 		./srcs/push_swap.c \
 		./srcs/push.c \
 		./srcs/reverse_rotate.c \
 		./srcs/rotate.c \
 		./srcs/print_operations.c \
 		./srcs/sort_stacks.c \
-		./srcs/swap.c
+		./srcs/swap.c \
+		./srcs/sorting_helpers.c \
+		./srcs/put_on_top.c \
+		./srcs/inputs_process.c \
+		./srcs/main.c
 OBJS = $(patsubst $(SRCS_DIR)/%.c,$(OBJS_DIR)/%.o,$(SRCS))
 
 DEF_COLOR = \033[0;39m
