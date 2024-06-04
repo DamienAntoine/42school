@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   inputs_checks.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/04 12:22:37 by dantoine          #+#    #+#             */
+/*   Updated: 2024/06/04 12:23:31 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 int	ft_isdigit(int c)
 {
 	if ((c >= '0' && c <= '9') || c == ' ')
@@ -24,12 +36,12 @@ int	check_inputs(int argc, char **input)
 	while (i < argc)
 	{
 		j = 0;
-        while (input[i][j] != '\0')
-        {
-            if (!ft_isdigit(input[i][j]) && !ft_issign(input[i][j]))
-                return (0);
-            j++;
-        }
+	while (input[i][j] != '\0')
+	{
+		if (!ft_isdigit(input[i][j]) && !ft_issign(input[i][j]))
+			return (0);
+		j++;
+	}
 		i++;
 	}
 	return (1);

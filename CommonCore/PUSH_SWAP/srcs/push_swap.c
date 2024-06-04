@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   push_swap.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/04 12:30:08 by dantoine          #+#    #+#             */
+/*   Updated: 2024/06/04 12:30:40 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/push_swap.h"
 
-void		until_five(t_stack **astack_head, t_stack **bstack_head)
+void	until_five(t_stack **astack_head, t_stack **bstack_head)
 {
 	int	counter;
-	t_stack *astack;
+	t_stack	*astack;
 	int	mean;
 
 	counter = 0;
@@ -28,7 +40,7 @@ void		until_five(t_stack **astack_head, t_stack **bstack_head)
 
 void	untilfive_helper(t_stack **astack_head)
 {
-	int target;
+	int	target;
 
 	target = (*astack_head)->value;
 	if (is_closer_to_top(*astack_head, target))

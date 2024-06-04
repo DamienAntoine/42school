@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   calculate_costs.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/04 12:33:07 by dantoine          #+#    #+#             */
+/*   Updated: 2024/06/04 12:34:14 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/push_swap.h"
 
 t_stack	*to_last_node(t_stack *stack)
@@ -11,32 +23,32 @@ t_stack	*to_last_node(t_stack *stack)
 	return (stack);
 }
 
-int cost_to_top(t_stack *stack_head, int value)
+int	cost_to_top(t_stack *stack_head, int value)
 {
-    int cost;
-	int reverse_cost;
-	int size;
-    t_stack *node;
+	int	cost;
+	int	reverse_cost;
+	int	size;
+	t_stack	*node;
 
 	cost = 0;
 	node = stack_head;
-    while (node != NULL && node->value != value)
+	while (node != NULL && node->value != value)
 	{
-        cost++;
-        node = node->next;
-    }
-    size = 0;
-    node = stack_head;
-    while (node != NULL)
+		cost++;
+		node = node->next;
+	}
+	size = 0;
+	node = stack_head;
+	while (node != NULL)
 	{
-        size++;
-        node = node->next;
-    }
+		size++;
+		node = node->next;
+	}
 	reverse_cost = size - cost;
 	if (cost < reverse_cost)
 		return (cost);
 	else
-    	return (reverse_cost);
+		return (reverse_cost);
 }
 
 
