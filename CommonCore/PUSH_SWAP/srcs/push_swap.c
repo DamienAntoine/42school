@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bfleitas <bfleitas@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 12:30:08 by dantoine          #+#    #+#             */
-/*   Updated: 2024/06/04 12:30:40 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/06/04 12:51:34 by bfleitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 void	until_five(t_stack **astack_head, t_stack **bstack_head)
 {
-	int	counter;
+	int		counter;
 	t_stack	*astack;
-	int	mean;
+	int		mean;
 
 	counter = 0;
 	astack = *astack_head;

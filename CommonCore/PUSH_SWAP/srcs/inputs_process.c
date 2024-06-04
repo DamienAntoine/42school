@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   inputs_process.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bfleitas <bfleitas@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 12:38:50 by dantoine          #+#    #+#             */
-/*   Updated: 2024/06/04 12:41:23 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/06/04 12:51:20 by bfleitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@ void	populate_struct(int value, t_stack **astack_head)
 
 	new_node = malloc(sizeof(t_stack));
 	if (new_node == NULL)
-		return;
+		return ;
 	new_node->value = value;
 	new_node->next = NULL;
 	if (*astack_head == NULL)
 	{
 		*astack_head = new_node;
-		return;
+		return ;
 	}
 	last_node = *astack_head;
 	while (last_node->next != NULL)
@@ -46,11 +46,11 @@ void	free_args(char **args)
 	free(args);
 }
 
-void process_args(char **args, t_stack **astack_head)
+void	process_args(char **args, t_stack **astack_head)
 {
-	int	i;
-	int	j;
-	int	num;
+	int		i;
+	int		j;
+	int		num;
 	char	**splitarg;
 
 	i = 1;
@@ -58,7 +58,7 @@ void process_args(char **args, t_stack **astack_head)
 	{
 		splitarg = ft_split(args[i], ' ');
 		if (splitarg == NULL)
-			return;
+			return ;
 		j = 0;
 		while (splitarg[j])
 		{
@@ -67,7 +67,7 @@ void process_args(char **args, t_stack **astack_head)
 			j++;
 		}
 		free_args(splitarg);
-	i++;
+		i++;
 	}
 }
 
@@ -86,7 +86,7 @@ int	is_sorted(t_stack *a_stack)
 int	argcounter(t_stack *astack_head)
 {
 	t_stack	*temp;
-	int	argcount;
+	int		argcount;
 
 	temp = astack_head;
 	argcount = 0;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bfleitas <bfleitas@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 12:28:21 by dantoine          #+#    #+#             */
-/*   Updated: 2024/06/04 12:29:35 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/06/04 12:51:38 by bfleitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	push(t_stack **src_head, t_stack **dest_head)
 {
 	t_stack	*temp;
-        
+
 	if (*src_head == NULL)
 		return ;
 	temp = *src_head;
@@ -24,20 +24,20 @@ void	push(t_stack **src_head, t_stack **dest_head)
 	*dest_head = temp;
 }
 
-//pa (push a): Take the first element at the top of b and put it at the top of a. Do nothing if b is empty
+// pa (push a): Take the first element at the top of b and put it at the top of a. Do nothing if b is empty
 void	pa(t_stack **astack, t_stack **bstack)
 {
 	if (!*bstack)
-		return;
+		return ;
 	push(bstack, astack);
 	store_op(10);
 }
 
-//pb (push b): Take the first element at the top of a and put it at the top of b. Do nothing if a is empty
+// pb (push b): Take the first element at the top of a and put it at the top of b. Do nothing if a is empty
 void	pb(t_stack **astack, t_stack **bstack)
 {
 	if (!*astack)
-		return;
+		return ;
 	push(astack, bstack);
 	store_op(11);
 }

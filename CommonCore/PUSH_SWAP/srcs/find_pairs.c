@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   find_pairs.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bfleitas <bfleitas@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 12:36:53 by dantoine          #+#    #+#             */
-/*   Updated: 2024/06/04 12:38:28 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/06/04 12:51:07 by bfleitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ t_stack	*find_min_a_node(t_stack *astack, int b_value)
 	min_astack = NULL;
 	while (astack)
 	{
-		if (astack->value > b_value && (!min_astack || astack->value < min_astack->value))
+		if (astack->value > b_value && (!min_astack
+				|| astack->value < min_astack->value))
 			min_astack = astack;
 		astack = astack->next;
 	}
@@ -28,7 +29,7 @@ t_stack	*find_min_a_node(t_stack *astack, int b_value)
 
 void	append_pair(t_bf **head, t_bf **tail, t_stack *astack, t_stack *bstack)
 {
-	t_bf *new_pair;
+	t_bf	*new_pair;
 
 	new_pair = (t_bf *)malloc(sizeof(t_bf));
 	new_pair->a_node = astack;

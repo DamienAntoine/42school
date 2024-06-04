@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   calculate_costs.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bfleitas <bfleitas@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 12:33:07 by dantoine          #+#    #+#             */
-/*   Updated: 2024/06/04 12:34:14 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/06/04 12:50:43 by bfleitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ t_stack	*to_last_node(t_stack *stack)
 
 int	cost_to_top(t_stack *stack_head, int value)
 {
-	int	cost;
-	int	reverse_cost;
-	int	size;
+	int		cost;
+	int		reverse_cost;
+	int		size;
 	t_stack	*node;
 
 	cost = 0;
@@ -51,12 +51,11 @@ int	cost_to_top(t_stack *stack_head, int value)
 		return (reverse_cost);
 }
 
-
-int		is_closer_to_top(t_stack *bstack_head, int value)
+int	is_closer_to_top(t_stack *bstack_head, int value)
 {
-	t_stack *temp;
-	int	i;
-	int	index_temp;
+	t_stack	*temp;
+	int		i;
+	int		index_temp;
 
 	temp = bstack_head;
 	i = 0;
