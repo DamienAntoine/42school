@@ -6,7 +6,7 @@
 /*   By: bfleitas <bfleitas@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 12:38:50 by dantoine          #+#    #+#             */
-/*   Updated: 2024/06/04 12:51:20 by bfleitas         ###   ########.fr       */
+/*   Updated: 2024/06/04 12:56:38 by dantoine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ int	is_sorted(t_stack *a_stack)
 	}
 	return (1);
 }
+
 int	argcounter(t_stack *astack_head)
 {
 	t_stack	*temp;

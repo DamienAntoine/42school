@@ -17,6 +17,7 @@ SRCS = 	./srcs/calculate_costs.c \
 		./srcs/sorting_helpers.c \
 		./srcs/put_on_top.c \
 		./srcs/inputs_process.c \
+		./srcs/stack_check.c \
 		./srcs/main.c
 OBJS = $(patsubst $(SRCS_DIR)/%.c,$(OBJS_DIR)/%.o,$(SRCS))
 

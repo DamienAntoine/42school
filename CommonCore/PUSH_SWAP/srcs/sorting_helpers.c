@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sorting_helpers.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/04 12:57:47 by dantoine          #+#    #+#             */
+/*   Updated: 2024/06/04 12:58:45 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/push_swap.h"
 
 int	find_smallest(t_stack **stack_head)
@@ -64,9 +76,9 @@ void	until_three(t_stack **astack_head, t_stack **bstack_head)
 
 int	find_mean_value(t_stack **head)
 {
-	int mean;
-	int counter;
-	t_stack *stack;
+	int		mean;
+	int		counter;
+	t_stack	*stack;
 
 	mean = 0;
 	counter = 0;

@@ -2,23 +2,19 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   swap.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+        
-	+:+     */
-/*   By: dantoine <marvin@42.fr>                    +#+  +:+      
-	+#+        */
-/*                                                +#+#+#+#+#+  
-	+#+           */
-/*   Created: 2024/06/04 12:32:27 by dantoine          #+#    #+#             */
-/*   Updated: 2024/06/04 12:32:54 by dantoine         ###   ########.fr       */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/04 12:58:59 by dantoine          #+#    #+#             */
+/*   Updated: 2024/06/04 12:59:26 by dantoine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/push_swap.h"
 
-
 void	swap(t_stack **head)
 {
-	t_stack *temp;
+	t_stack	*temp;
 
 	if (*head == NULL || (*head)->next == NULL)
 		return ;
@@ -28,21 +24,18 @@ void	swap(t_stack **head)
 	*head = temp;
 }
 
-// sa (swap a): Swap the first 2 elements at the top of stack a. Do nothing if there is only one or no elements.
 void	sa(t_stack **astack)
 {
 	swap(astack);
 	store_op(4);
 }
 
-// sb (swap b): Swap the first 2 elements at the top of stack b. Do nothing if there is only one or no elements.
 void	sb(t_stack **bstack)
 {
 	swap(bstack);
 	store_op(5);
 }
 
-// ss : sa and sb at the same time.
 void	ss(t_stack **astack, t_stack **bstack)
 {
 	swap(astack);

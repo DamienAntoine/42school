@@ -40,11 +40,10 @@ void	put_on_top_bstack(t_stack **bstack_head, int value)
 	}
 }
 
-void	put_on_top_both(t_stack **astack_head, t_stack **bstack_head,
-		int avalue, int bvalue)
+void	put_on_top_both(t_stack **a, t_stack **b, int av, int bv)
 {
-	while ((*astack_head)->value != avalue || (*bstack_head)->value != bvalue)
-		rotate_stacks(astack_head, bstack_head, avalue, bvalue);
+	while ((*a)->value != av || (*b)->value != bv)
+		rotate_stacks(a, b, av, bv);
 }
 
 void	rotate_stacks(t_stack **a, t_stack **b, int av, int bv)

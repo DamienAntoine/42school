@@ -44,16 +44,18 @@ int	main(int argc, char **argv)
 	a_stack = NULL;
 	b_stack = NULL;
 	if (argc < 2)
-	{
-		write(2, "Error\n", 6);
-		return (0);
-	}
+		return (1);
 	if (!check_inputs(argc, argv))
 	{
-		ft_printf("Input Error\n");
+		write(2, "Error\n", 6);
 		return (1);
 	}
 	process_args(argv, &a_stack);
+	if (check_stack(&a_stack))
+	{
+		write(2, "Error\n", 6);
+		return (1);
+	}
 	if (is_sorted(a_stack) == 1)
 		return (1);
 	algo(&a_stack, &b_stack);

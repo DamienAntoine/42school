@@ -1,41 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   push.c                                             :+:      :+:    :+:   */
+/*   stack_check.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/04 12:54:30 by dantoine          #+#    #+#             */
-/*   Updated: 2024/06/04 12:54:35 by dantoine         ###   ########.fr       */
+/*   Created: 2024/06/04 14:52:46 by dantoine          #+#    #+#             */
+/*   Updated: 2024/06/04 14:53:03 by dantoine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/push_swap.h"
 
-void	push(t_stack **src_head, t_stack **dest_head)
+int	check_stack(t_stack **stack_head)
 {
 	t_stack	*temp;
+	t_stack	*current;
 
-	if (*src_head == NULL)
-		return ;
-	temp = *src_head;
-	*src_head = (*src_head)->next;
-	temp->next = *dest_head;
-	*dest_head = temp;
-}
-
-void	pa(t_stack **astack, t_stack **bstack)
-{
-	if (!*bstack)
-		return ;
-	push(bstack, astack);
-	store_op(10);
-}
-
-void	pb(t_stack **astack, t_stack **bstack)
-{
-	if (!*astack)
-		return ;
-	push(astack, bstack);
-	store_op(11);
+	current = *stack_head;
+	while (current)
+	{
+		temp = current;
+		while (temp->next)
+		{
+			temp = temp->next;
+			if (temp->value == current->value)
+				return (1);
+		}
+		current = current->next;
+	}
+	return (0);
 }
