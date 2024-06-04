@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_operations.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfleitas <bfleitas@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/04 12:23:43 by dantoine          #+#    #+#             */
-/*   Updated: 2024/06/04 13:08:20 by dantoine         ###   ########.fr       */
+/*   Created: 2024/06/04 15:35:51 by dantoine          #+#    #+#             */
+/*   Updated: 2024/06/04 15:35:52 by dantoine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	store_op(int move)
 {
-	static t_moves	*head = NULL;
-	static t_moves	*current = NULL;
+	static t_moves	*head;
+	static t_moves	*current;
 	t_moves			*new_node;
 
 	new_node = malloc(sizeof(t_moves));

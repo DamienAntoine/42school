@@ -14,17 +14,10 @@
 
 int	ft_isdigit(int c)
 {
-	if ((c >= '0' && c <= '9') || c == ' ')
+	if ((c >= '0' && c <= '9') || c == ' ' || c == '+' || c == '-')
 	{
 		return (1);
 	}
-	return (0);
-}
-
-int	ft_issign(char c)
-{
-	if (c == '+' || c == '-')
-		return (1);
 	return (0);
 }
 
@@ -42,7 +35,7 @@ int	check_inputs(int argc, char **input)
 		j = 0;
 		while (input[i][j] != '\0')
 		{
-			if (!ft_isdigit(input[i][j]) || ft_issign(input[i][j]))
+			if (!ft_isdigit(input[i][j]))
 				return (0);
 			j++;
 		}
@@ -80,6 +73,20 @@ long	ft_atol(const char *str)
 	return (sign * result);
 }
 
+int	check_plus_sign(char *str)
+{
+	int	i;
+
+	i = 1;
+	while (str[i])
+	{
+		if (str[i] == '+' || str[i] == '-')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 int	check_int_limits(char **input)
 {
 	int		i;
@@ -96,6 +103,8 @@ int	check_int_limits(char **input)
 		j = 0;
 		while (splitarg[j])
 		{
+			if (check_plus_sign(splitarg[j]))
+				return (0);
 			num = ft_atol(splitarg[j]);
 			if (num > INT_MAX || num < INT_MIN)
 				return (0);

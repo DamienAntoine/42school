@@ -22,4 +22,18 @@ void	free_stack(t_stack *a_stack)
 		free(a_stack);
 		a_stack = temp;
 	}
+	free(a_stack);
+}
+
+void	free_moves(t_moves **moves)
+{
+	t_moves	*temp;
+
+	while (moves)
+	{
+		temp = (*moves)->next;
+		free(moves);
+		*moves = temp;
+	}
+	free(moves);
 }

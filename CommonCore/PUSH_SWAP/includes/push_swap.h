@@ -76,6 +76,7 @@ void	print_op(t_moves *head);
 void	print_other_op(t_moves *head);
 void	algo(t_stack **astack_head, t_stack **bstack_head);
 int		find_mean_value(t_stack **head);
+void	free_moves(t_moves **moves);
 
 void	until_three(t_stack **astack_head, t_stack **bstack_head);
 void	sort_three(t_stack **astack_head, int smallest, int biggest);
