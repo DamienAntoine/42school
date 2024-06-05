@@ -46,3 +46,9 @@ void	rr(t_stack **astack, t_stack **bstack)
 	rotate(bstack);
 	store_op(3);
 }
+
+void	do_rr(t_stack **astack, t_stack **bstack)
+{
+	rotate(astack);
+	rotate(bstack);
+}

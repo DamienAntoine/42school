@@ -24,16 +24,17 @@ void	free_stack(t_stack *a_stack)
     }
 }
 
-void	free_moves(t_moves **moves)
+void	free_moves(t_checker *head)
 {
-	t_moves	*temp;
+	t_checker *temp;
 
-	while (moves)
-	{
-		temp = (*moves)->next;
-		free(moves);
-		*moves = temp;
-	}
+	while (head)
+    {
+        temp = head;
+        head = head->next;
+        free(temp->line);
+        free(temp);
+    }
 }
 
 long	ft_atol(const char *str)

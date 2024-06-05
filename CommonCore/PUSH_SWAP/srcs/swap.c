@@ -42,3 +42,9 @@ void	ss(t_stack **astack, t_stack **bstack)
 	swap(bstack);
 	store_op(6);
 }
+
+void	do_ss(t_stack **astack, t_stack **bstack)
+{
+	swap(astack);
+	swap(bstack);
+}

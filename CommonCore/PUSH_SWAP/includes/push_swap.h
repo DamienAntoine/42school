@@ -42,6 +42,12 @@ typedef struct s_moves
 	struct s_moves	*next;
 }					t_moves;
 
+typedef struct s_checker
+{
+	char				*line;
+	struct s_checker	*next;
+}					t_checker;
+
 int		main(int argc, char **argv);
 int		ft_printchar(int c);
 int		ft_atoi(const char *str);
@@ -53,10 +59,12 @@ int		ft_printunsigned(unsigned int nb);
 int		ft_printhexa(unsigned int nb, const char spec);
 int		ft_printvoid(unsigned long long int ptr);
 char	*ft_itoa(int n);
+long	ft_atol(const char *str);
 char	**ft_split(char const *s, char c);
 char	*ft_strjoin(char const *s1, char const *s2);
 size_t	ft_strlen(const char *str);
 char	*ft_strdup(const char *src);
+int		ft_strncmp(char const *s1, char const *s2, size_t n);
 void	ft_allocate(char **tab, char const *s, char sep);
 int		ft_isdigit(int c);
 int		ft_issign(char c);
@@ -67,6 +75,7 @@ int		ft_count_words(char const *s, char sep);
 void	populate_struct(int value, t_stack **astack_head);
 void	process_args(char **args, t_stack **astack_head);
 void	free_args(char **args);
+void	free_moves(t_checker *head);
 int		is_sorted(t_stack *a_stack);
 
 void	store_op(int move);
@@ -74,7 +83,6 @@ void	print_op(t_moves *head);
 void	print_other_op(t_moves *head);
 void	algo(t_stack **astack_head, t_stack **bstack_head);
 int		find_mean_value(t_stack **head);
-void	free_moves(t_moves **moves);
 
 void	until_three(t_stack **astack_head, t_stack **bstack_head);
 void	sort_three(t_stack **astack_head, int smallest, int biggest);
@@ -112,13 +120,21 @@ void	reverse_rotate(t_stack **head);
 void	rra(t_stack **astack);
 void	rrb(t_stack **bstack);
 void	rrr(t_stack **astack, t_stack **bstack);
+void	do_rrr(t_stack **astack, t_stack **bstack);
 void	rotate(t_stack **head);
 void	ra(t_stack **astack);
 void	rb(t_stack **bstack);
 void	rr(t_stack **astack, t_stack **bstack);
+void	do_rr(t_stack **astack, t_stack **bstack);
 void	swap(t_stack **head);
 void	sa(t_stack **astack);
 void	sb(t_stack **bstack);
 void	ss(t_stack **astack, t_stack **bstack);
+void	do_ss(t_stack **astack, t_stack **bstack);
+
+void 	run_op(t_stack **astack, t_stack **bstack, char *line);
+void 	perform_instructions(t_stack **astack, t_stack **bstack, t_checker *instructions);
+int     check_instructions(char *line);
+void    process_instructions(t_stack **astack, t_stack **bstack);
 
 #endif

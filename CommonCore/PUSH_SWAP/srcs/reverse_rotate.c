@@ -51,3 +51,9 @@ void	rrr(t_stack **astack, t_stack **bstack)
 	reverse_rotate(bstack);
 	store_op(9);
 }
+
+void	do_rrr(t_stack **astack, t_stack **bstack)
+{
+	reverse_rotate(astack);
+	reverse_rotate(bstack);
+}
