@@ -66,6 +66,7 @@ void	insert_sorted(t_stack **astack, t_stack **bstack)
 			return ;
 		put_on_top_both(astack, bstack, bfnode->a_node->value,
 			bfnode->b_node->value);
+		free(bfnode);
 		pa(astack, bstack);
 	}
 }

@@ -14,15 +14,14 @@
 
 void	free_stack(t_stack *a_stack)
 {
-	t_stack	*temp;
+    t_stack *temp;
 
-	while (a_stack)
-	{
-		temp = a_stack->next;
-		free(a_stack);
-		a_stack = temp;
-	}
-	free(a_stack);
+    while (a_stack)
+    {
+        temp = a_stack;
+        a_stack = a_stack->next;
+        free(temp);
+    }
 }
 
 void	free_moves(t_moves **moves)
@@ -35,5 +34,33 @@ void	free_moves(t_moves **moves)
 		free(moves);
 		*moves = temp;
 	}
-	free(moves);
+}
+
+long	ft_atol(const char *str)
+{
+	long	sign;
+	long	result;
+	long	i;
+
+	sign = 1;
+	result = 0;
+	i = 0;
+	while ((str[i] == 32) || (str[i] >= 9 && str[i] <= 13))
+	{
+		i++;
+	}
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+		{
+			sign *= -1;
+		}
+		i++;
+	}
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		result = result * 10 + (str[i] - '0');
+		i++;
+	}
+	return (sign * result);
 }

@@ -24,6 +24,7 @@ void	store_op(int move)
 	if (move == 0)
 	{
 		print_op(head);
+		free(new_node);
 		return ;
 	}
 	if (head == NULL)

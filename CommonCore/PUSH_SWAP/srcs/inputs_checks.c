@@ -87,31 +87,45 @@ int	check_plus_sign(char *str)
 	return (0);
 }
 
+int	check_splitarg(char **splitarg)
+{
+    int		j;
+    long	num;
+
+    j = 0;
+    while (splitarg[j])
+    {
+        if (check_plus_sign(splitarg[j]))
+        {
+            free_args(splitarg);
+            return (0);
+        }
+        num = ft_atol(splitarg[j]);
+        if (num > INT_MAX || num < INT_MIN)
+        {
+            free_args(splitarg);
+            return (0);
+        }
+        j++;
+    }
+    free_args(splitarg);
+    return (1);
+}
+
 int	check_int_limits(char **input)
 {
-	int		i;
-	int		j;
-	long	num;
-	char	**splitarg;
+    int		i;
+    char	**splitarg;
 
-	i = 1;
-	while (input[i])
-	{
-		splitarg = ft_split(input[i], ' ');
-		if (splitarg == NULL)
-			return (0);
-		j = 0;
-		while (splitarg[j])
-		{
-			if (check_plus_sign(splitarg[j]))
-				return (0);
-			num = ft_atol(splitarg[j]);
-			if (num > INT_MAX || num < INT_MIN)
-				return (0);
-			j++;
-		}
-		free_args(splitarg);
-		i++;
-	}
-	return (1);
+    i = 1;
+    while (input[i])
+    {
+        splitarg = ft_split(input[i], ' ');
+        if (splitarg == NULL)
+            return (0);
+        if (!check_splitarg(splitarg))
+            return (0);
+        i++;
+    }
+    return (1);
 }

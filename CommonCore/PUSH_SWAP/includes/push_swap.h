@@ -64,8 +64,6 @@ int		check_inputs(int argc, char **input);
 int		check_int_limits(char **input);
 int		check_stack(t_stack **stack_head);
 int		ft_count_words(char const *s, char sep);
-char	**ft_split(char const *s, char c);
-int		ft_atoi(const char *str);
 void	populate_struct(int value, t_stack **astack_head);
 void	process_args(char **args, t_stack **astack_head);
 void	free_args(char **args);

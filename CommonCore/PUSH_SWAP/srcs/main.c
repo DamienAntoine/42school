@@ -36,6 +36,7 @@ void	algo(t_stack **astack_head, t_stack **bstack_head)
 	}
 }
 
+
 int	main(int argc, char **argv)
 {
 	t_stack	*a_stack;
@@ -43,8 +44,6 @@ int	main(int argc, char **argv)
 
 	a_stack = NULL;
 	b_stack = NULL;
-	if (argc < 2)
-		return (1);
 	if (!check_inputs(argc, argv))
 	{
 		write(2, "Error\n", 6);
@@ -54,11 +53,12 @@ int	main(int argc, char **argv)
 	if (check_stack(&a_stack))
 	{
 		write(2, "Error\n", 6);
+		free_stack(a_stack);
 		return (1);
 	}
-	if (is_sorted(a_stack) == 1)
-		return (1);
-	algo(&a_stack, &b_stack);
+	if (is_sorted(a_stack) != 1 && argc >= 2)
+		algo(&a_stack, &b_stack);
 	free_stack(a_stack);
+	free_stack(b_stack);
 	return (0);
 }
