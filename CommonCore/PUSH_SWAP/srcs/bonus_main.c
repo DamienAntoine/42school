@@ -76,18 +76,18 @@ void run_op(t_stack **astack, t_stack **bstack, char *line)
         push(bstack, astack);
     else if (ft_strncmp(line, "pb", 2) == 0)
         push(astack, bstack);
-    else if (ft_strncmp(line, "ra", 2) == 0)
-        rotate(astack);
-    else if (ft_strncmp(line, "rb", 2) == 0)
-        rotate(bstack);
-    else if (ft_strncmp(line, "rr", 2) == 0)
-        do_rr(astack, bstack);
     else if (ft_strncmp(line, "rra", 3) == 0)
         reverse_rotate(astack);
     else if (ft_strncmp(line, "rrb", 3) == 0)
         reverse_rotate(bstack);
     else if (ft_strncmp(line, "rrr", 3) == 0)
         do_rrr(astack, bstack);
+    else if (ft_strncmp(line, "ra", 2) == 0)
+        rotate(astack);
+    else if (ft_strncmp(line, "rb", 2) == 0)
+        rotate(bstack);
+    else if (ft_strncmp(line, "rr", 2) == 0)
+        do_rr(astack, bstack);
 }
 
 int	main(int argc, char **argv)
