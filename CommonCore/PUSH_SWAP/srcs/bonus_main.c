@@ -16,6 +16,7 @@ void    process_instructions(t_stack **astack, t_stack **bstack)
             break;
         if (check_instructions(instructions->line) == 0)
             {
+                free_moves(head);
                 write(2, "Error\n", 6);
                 exit(1);
             }
