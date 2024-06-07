@@ -6,7 +6,7 @@
 /*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:51:48 by dantoine          #+#    #+#             */
-/*   Updated: 2024/06/04 14:52:14 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/06/07 17:25:20 by dantoine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,16 @@ int	check_inputs(int argc, char **input)
 	int	i;
 	int	j;
 
-	i = 1;
+	i = 0;
 	j = 0;
-	if (!check_int_limits(input))
+	if (!check_int_limits(input) || !check_empty(argc, input))
 		return (0);
+	while (++i < argc)
+	{
+		if ((input[i][0] == '+' || input[i][0] == '-') && !input[i][1])
+			return (0);
+	}
+	i = 1;
 	while (i < argc)
 	{
 		j = 0;
@@ -60,43 +66,43 @@ int	check_plus_sign(char *str)
 
 int	check_splitarg(char **splitarg)
 {
-    int		j;
-    long	num;
+	long	num;
+	int		j;
 
-    j = 0;
-    while (splitarg[j])
-    {
-        if (check_plus_sign(splitarg[j]))
-        {
-            free_args(splitarg);
-            return (0);
-        }
-        num = ft_atol(splitarg[j]);
-        if (num > INT_MAX || num < INT_MIN)
-        {
-            free_args(splitarg);
-            return (0);
-        }
-        j++;
-    }
-    free_args(splitarg);
-    return (1);
+	j = 0;
+	while (splitarg[j])
+	{
+		if ((check_plus_sign(splitarg[j])) || (*splitarg[0] == '\0'))
+		{
+			free_args(splitarg);
+			return (0);
+		}
+		num = ft_atol(splitarg[j]);
+		if (num > INT_MAX || num < INT_MIN)
+		{
+			free_args(splitarg);
+			return (0);
+		}
+		j++;
+	}
+	free_args(splitarg);
+	return (1);
 }
 
 int	check_int_limits(char **input)
 {
-    int		i;
-    char	**splitarg;
+	int		i;
+	char	**splitarg;
 
-    i = 1;
-    while (input[i])
-    {
-        splitarg = ft_split(input[i], ' ');
-        if (splitarg == NULL)
-            return (0);
-        if (!check_splitarg(splitarg))
-            return (0);
-        i++;
-    }
-    return (1);
+	i = 1;
+	while (input[i])
+	{
+		splitarg = ft_split(input[i], ' ');
+		if (splitarg == NULL)
+			return (0);
+		if (!check_splitarg(splitarg))
+			return (0);
+		i++;
+	}
+	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 12:57:41 by dantoine          #+#    #+#             */
-/*   Updated: 2024/06/04 12:57:44 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/06/07 17:19:39 by dantoine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,12 +88,6 @@ void	sort_stacks(t_stack **astack_head, t_stack **bstack_head)
 	ra(&astack);
 	pa(&astack, &bstack);
 	ra(&astack);
-	/*
-	sb(&bstack);
-	pa(&astack, &bstack);
-	pa(&astack, &bstack);
-	ra(&astack);
-	ra(&astack);*/
 	insert_sorted(&astack, &bstack);
 	*astack_head = astack;
 	*bstack_head = bstack;

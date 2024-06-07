@@ -6,12 +6,13 @@
 /*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 14:16:29 by dantoine          #+#    #+#             */
-/*   Updated: 2024/03/18 15:15:51 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/06/07 17:22:15 by dantoine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <limits.h>
 #include "../includes/get_next_line.h"
+#include <fcntl.h>
 
 void	cleanlist(t_list **list)
 {
@@ -88,7 +89,6 @@ char	*get_line(t_list *list)
 	struct_strcpy(list, nxtline);
 	return (nxtline);
 }
-#include <fcntl.h>
 
 char	*get_next_line(int fd)
 {

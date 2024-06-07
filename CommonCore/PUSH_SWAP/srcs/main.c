@@ -6,7 +6,7 @@
 /*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 15:35:42 by dantoine          #+#    #+#             */
-/*   Updated: 2024/06/04 15:35:43 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/06/07 17:09:21 by dantoine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void	algo(t_stack **astack_head, t_stack **bstack_head)
 	}
 }
 
-
 int	main(int argc, char **argv)
 {
 	t_stack	*a_stack;
@@ -44,7 +43,7 @@ int	main(int argc, char **argv)
 
 	a_stack = NULL;
 	b_stack = NULL;
-	if (!check_inputs(argc, argv))
+	if ((!check_inputs(argc, argv)) || (argc == 1))
 	{
 		write(2, "Error\n", 6);
 		return (1);

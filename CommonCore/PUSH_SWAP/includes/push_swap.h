@@ -77,6 +77,7 @@ void	process_args(char **args, t_stack **astack_head);
 void	free_args(char **args);
 void	free_moves(t_checker *head);
 int		is_sorted(t_stack *a_stack);
+int		check_empty(int argc, char **argv);
 
 void	store_op(int move);
 void	print_op(t_moves *head);
@@ -132,9 +133,9 @@ void	sb(t_stack **bstack);
 void	ss(t_stack **astack, t_stack **bstack);
 void	do_ss(t_stack **astack, t_stack **bstack);
 
-void 	run_op(t_stack **astack, t_stack **bstack, char *line);
-void 	perform_instructions(t_stack **astack, t_stack **bstack, t_checker *instructions);
-int     check_instructions(char *line);
-void    process_instructions(t_stack **astack, t_stack **bstack);
+void	run_op(t_stack **astack, t_stack **bstack, char *line);
+void	perform_instructions(t_stack **a, t_stack **b, t_checker *inst);
+int		check_instructions(char *line);
+void	process_instructions(t_stack **astack, t_stack **bstack);
 
 #endif
