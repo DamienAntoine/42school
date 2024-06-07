@@ -84,11 +84,16 @@ void	sort_stacks(t_stack **astack_head, t_stack **bstack_head)
 	smallest = find_smallest(&astack);
 	biggest = find_biggest(&astack);
 	sort_three(&astack, smallest, biggest);
+	pa(&astack, &bstack);
+	ra(&astack);
+	pa(&astack, &bstack);
+	ra(&astack);
+	/*
 	sb(&bstack);
 	pa(&astack, &bstack);
 	pa(&astack, &bstack);
 	ra(&astack);
-	ra(&astack);
+	ra(&astack);*/
 	insert_sorted(&astack, &bstack);
 	*astack_head = astack;
 	*bstack_head = bstack;
