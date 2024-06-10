@@ -35,9 +35,7 @@ void	check_file(char *line)
 		if (*line == '.')
 		{
 			if (find(line, ".ber"))
-			{
-				return ;
-			}
+				return;
 		}
 		line++;
 	}
