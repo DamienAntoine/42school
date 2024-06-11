@@ -26,6 +26,7 @@ char	**parse_map(char *map)
 {
 	char	*cur_line;
 	char	*all_lines;
+	char	*temp;
 	char	**split_lines;
 	int		fd;
 
@@ -37,19 +38,24 @@ char	**parse_map(char *map)
 	if (fd < 0)
 	{
 		perror("ERROR: Couldn't open fd in parse_map function");
+		free(all_lines);
 		return (NULL);
 	}
 	while ((cur_line = get_next_line(fd))!= NULL && cur_line[0]!= '\n')
 	{
+		temp = all_lines;
         all_lines = ft_strjoin(all_lines, cur_line);
+		free(temp);
         free(cur_line);
     }
-	free(cur_line);
+	if(cur_line)
+		free(cur_line);
 	close(fd);
 	if (all_lines[0] == '\0')
 	{
 		perror("ERROR: Selected map is NULL");
 		free(all_lines);
+		return (NULL);
 	}
 	split_lines = ft_split(all_lines, '\n');
 	free(all_lines);
