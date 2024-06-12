@@ -23,6 +23,8 @@ typedef struct s_data
 {
 	void	*mlx;
 	void	*img;
+	void	**images;
+	int		image_count;
 	void	*win;
 	int		win_w;
 	int		win_h;
