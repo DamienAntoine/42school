@@ -23,6 +23,7 @@ void	exit_door(t_data ***data)
 		x++;
 	}
 	free((**data)->map);
+	mlx_destroy_image((**data)->mlx, (**data)->images);
 	mlx_destroy_window((**data)->mlx, (**data)->win);
 	exit(EXIT_SUCCESS);
 }

@@ -24,15 +24,21 @@ void	put_image(t_data ***data, int x, int y, char *img)
 void	print_elem(char p, int x1, int y1, t_data **data)
 {
 	if (p == '1')
-		put_image(&data, x1, y1, "./sprites/stolenwall.xpm");
+	{
+		put_image(&data, x1, y1, "./sprites/stolenfloor.xpm");
+		put_image(&data, x1, y1, "./sprites/tree.xpm");
+	}
 	else if (p == 'C')
 	{
 		put_image(&data, x1, y1, "./sprites/stolenfloor.xpm");
-		put_image(&data, x1, y1, "./sprites/pac_open_left.xpm");
+		put_image(&data, x1, y1, "./sprites/Egg.xpm");
 		(*data)->collect++;
 	}
 	else if (p == 'E')
+	{
+		put_image(&data, x1, y1, "./sprites/stolenfloor.xpm");
 		put_image(&data, x1, y1, "./sprites/pac_open_left.xpm");
+	}
 	else if (p == 'P')
 	{
 		(*data)->y_p = y1;
