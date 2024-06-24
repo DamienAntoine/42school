@@ -7,7 +7,8 @@ SRCS = ./srcs/main.c \
         ./srcs/display.c \
         ./srcs/controls.c \
         ./srcs/utils.c \
-		./srcs/libft_utils.c
+		./srcs/libft_utils.c \
+		./srcs/more_utils.c
 OBJS = $(patsubst $(SRCS_DIR)/%.c,$(OBJS_DIR)/%.o,$(SRCS))
 MLX_LIB = mlx
 MLX_FLAGS = -Lmlx -lmlx -L/usr/lib/X11 -lXext -lX11 -lm

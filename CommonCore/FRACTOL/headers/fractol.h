@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fractol.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/24 16:29:25 by dantoine          #+#    #+#             */
+/*   Updated: 2024/06/24 16:29:27 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef GRAPHICS_H
 # define GRAPHICS_H
 
@@ -15,7 +27,6 @@
 # define R_ARR 65363
 # define U_ARR 65362
 # define D_ARR 65364
-# define RESET_KEY 32
 # define A_KEY 97
 # define Z_KEY 122
 # define O_KEY 111
@@ -51,9 +62,16 @@ typedef struct s_fractal_data
 
 void		initialize_fractal(t_fractal_data *data, const char *type,
 				char **argv);
-void		ft_putstr(char *s, int fd);
-void		ft_putchar_fd(char c, int fd);
+void		ft_putstr(char *s);
+void		ft_putchar(char c);
+int         ft_strcmp(const char *s1, char *s2);
+char        *ft_strdup(const char *src);
+int         ft_isdigit(char *arg);
+void	    *ft_memcpy(void *dst, const void *src, size_t n);
+size_t	    ft_strlen(const char *str);
+double       ft_atof(char *str);
 void		setup_graphics(t_fractal_data *data);
+int         check_type(t_fractal_data *data);
 void		render_burningship(t_fractal_data *data);
 void		render_julia(t_fractal_data *data);
 void		*render_mandelbrot(t_fractal_data *data);

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   controls.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/24 16:10:40 by dantoine          #+#    #+#             */
+/*   Updated: 2024/06/24 16:10:43 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../headers/fractol.h"
 
 void	apply_zoom(t_fractal_data *data, int x, int y, int direction)
@@ -35,8 +47,6 @@ int	handle_key(int key_code, t_fractal_data *data)
 		data->offset_y -= 50 / data->zoom_level;
 	else if (key_code == D_ARR)
 		data->offset_y += 50 / data->zoom_level;
-	else if (key_code == RESET_KEY)
-		initialize_fractal(data, data->type, NULL);
 	else if (key_code == A_KEY)
 		data->color_code += (255 * 255 * 255) / 100;
 	else if (key_code == O_KEY || key_code == P_KEY)

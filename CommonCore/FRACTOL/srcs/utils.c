@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/24 16:11:24 by dantoine          #+#    #+#             */
+/*   Updated: 2024/06/24 16:11:25 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../headers/fractol.h"
 
 void	put_pixel_to_image(t_fractal_data *data, int x, int y, int color)
@@ -31,4 +43,32 @@ void	modify_iterations(t_fractal_data *data, int key_code)
 		if (data->max_iters < 4000)
 			data->max_iters += 10;
 	}
+}
+
+int check_type(t_fractal_data *data)
+{
+    if (ft_strcmp(data->type, "mandelbrot") != 0 && \
+                ft_strcmp(data->type, "burningship") != 0 && \
+                ft_strcmp(data->type, "julia") != 0)
+    {
+		ft_putstr("Supported fractals: mandelbrot, julia, burningship");
+		return (1);
+	}
+    else
+        return (0);
+}
+
+int ft_isdigit(char *arg)
+{
+    int i;
+
+    i = 0;
+    while (arg[i])
+    {
+        if ((arg[i] <= '9' && arg[i] >= '0') || arg[i] == '.')
+            i++;
+        else
+            return (0);
+    }
+    return (1);
 }
