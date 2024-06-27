@@ -16,8 +16,8 @@ void	put_pixel_to_image(t_fractal_data *data, int x, int y, int color)
 {
 	char	*dst;
 
-	dst = data->img_addr + (y * data->line_size + x
-			* (data->bits_per_pixel / 8));
+	dst = data->img_addr + (y * data->line_size + x * (data->bits_per_pixel
+				/ 8));
 	*(unsigned int *)dst = color;
 }
 
@@ -45,30 +45,29 @@ void	modify_iterations(t_fractal_data *data, int key_code)
 	}
 }
 
-int check_type(t_fractal_data *data)
+int	check_type(t_fractal_data *data)
 {
-    if (ft_strcmp(data->type, "mandelbrot") != 0 && \
-                ft_strcmp(data->type, "burningship") != 0 && \
-                ft_strcmp(data->type, "julia") != 0)
-    {
+	if (ft_strcmp(data->type, "mandelbrot") != 0 && ft_strcmp(data->type,
+			"burningship") != 0 && ft_strcmp(data->type, "julia") != 0)
+	{
 		ft_putstr("Supported fractals: mandelbrot, julia, burningship");
 		return (1);
 	}
-    else
-        return (0);
+	else
+		return (0);
 }
 
-int ft_isdigit(char *arg)
+int	ft_isdigit(char *arg)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (arg[i])
-    {
-        if ((arg[i] <= '9' && arg[i] >= '0') || arg[i] == '.')
-            i++;
-        else
-            return (0);
-    }
-    return (1);
+	i = 0;
+	while (arg[i])
+	{
+		if ((arg[i] <= '9' && arg[i] >= '0') || arg[i] == '.')
+			i++;
+		else
+			return (0);
+	}
+	return (1);
 }

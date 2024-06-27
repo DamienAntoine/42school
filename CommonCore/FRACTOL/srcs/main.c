@@ -51,16 +51,16 @@ void	initialize_fractal(t_fractal_data *data, const char *type, char **argv)
 	data->type = ft_strdup(type);
 	if (ft_strcmp(type, "julia") == 0)
 	{
-        	if (ft_isdigit(argv[2]) == 1 && ft_isdigit(argv[3]) == 1)
-        	{
-        		data->const_real = ft_atof(argv[2]);
+		if (ft_isdigit(argv[2]) == 1 && ft_isdigit(argv[3]) == 1)
+		{
+			data->const_real = ft_atof(argv[2]);
 			data->const_imag = ft_atof(argv[3]);
 		}
-	else
-        {
-            ft_putstr("Usage: ./fractol <fractal> [<const_real> <const_imag>]");
-            exit(0);
-        }
+		else
+		{
+			ft_putstr("Usage: ./fractol <fractal> [<const_real> <const_imag>]");
+			exit(0);
+		}
 	}
 }
 
@@ -68,7 +68,7 @@ int	main(int argc, char **argv)
 {
 	t_fractal_data	*data;
 
-    if ((argc != 2 && argc != 4) || (ft_strcmp(argv[1], "julia") == 0
+	if ((argc != 2 && argc != 4) || (ft_strcmp(argv[1], "julia") == 0
 			&& argc != 4))
 	{
 		ft_putstr("Usage: ./fractol <fractal> [<const_real> <const_imag>]");
@@ -77,10 +77,10 @@ int	main(int argc, char **argv)
 	}
 	data = malloc(sizeof(t_fractal_data));
 	initialize_fractal(data, argv[1], argv);
-    if (check_type(data) == 1)
-        return (1);
-    setup_graphics(data);
-    mlx_key_hook(data->win, handle_key, data);
+	if (check_type(data) == 1)
+		return (1);
+	setup_graphics(data);
+	mlx_key_hook(data->win, handle_key, data);
 	mlx_mouse_hook(data->win, handle_mouse, data);
 	mlx_hook(data->win, 17, 0L, exit_program, data);
 	render_fractal(data);

@@ -29,25 +29,25 @@ void	*ft_memcpy(void *dst, const void *src, size_t n)
 	return (dst);
 }
 
-double   ft_atof(char *str)
+double	ft_atof(char *str)
 {
 	int		i;
 	int		sign;
 	double	fraction;
 	double	afterdec;
-    double	beforedec;
+	double	beforedec;
 
 	i = 0;
 	sign = 1;
-    fraction = 1;
+	fraction = 1;
 	afterdec = 0;
-    beforedec = 0;
-    while (str[i] <= 32 || str[i] == '-' || str[i] == '+')
-    {
-	    if (str[i] == '-')
-		    sign = -1;
-        i++;
-    }
+	beforedec = 0;
+	while (str[i] <= 32 || str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;
+	}
 	while (str[i] && str[i] != '.')
 	{
 		beforedec = beforedec * 10 + (str[i] - '0');
