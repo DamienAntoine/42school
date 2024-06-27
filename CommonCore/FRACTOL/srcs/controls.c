@@ -48,7 +48,7 @@ int	handle_key(int key_code, t_fractal_data *data)
 	else if (key_code == D_ARR)
 		data->offset_y += 50 / data->zoom_level;
 	else if (key_code == A_KEY)
-		data->color_code += (255 * 255 * 255) / 100;
+		data->color_code += 50;
 	else if (key_code == O_KEY || key_code == P_KEY)
 		modify_iterations(data, key_code);
 	render_fractal(data);
