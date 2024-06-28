@@ -64,7 +64,7 @@ int	ft_isdigit(char *arg)
 	i = 0;
 	while (arg[i])
 	{
-		if ((arg[i] <= '9' && arg[i] >= '0') || arg[i] == '.')
+		if ((arg[i] <= '9' && arg[i] >= '0') || arg[i] == '.' || arg[i] == '-')
 			i++;
 		else
 			return (0);
