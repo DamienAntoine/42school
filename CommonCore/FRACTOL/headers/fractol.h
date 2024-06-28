@@ -6,12 +6,12 @@
 /*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 16:29:25 by dantoine          #+#    #+#             */
-/*   Updated: 2024/06/24 16:29:27 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/06/28 14:10:15 by dantoine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GRAPHICS_H
-# define GRAPHICS_H
+#ifndef FRACTOL_H
+# define FRACTOL_H
 
 # include "../mlx/mlx.h"
 # include <fcntl.h>
@@ -70,6 +70,8 @@ int			ft_isdigit(char *arg);
 void		*ft_memcpy(void *dst, const void *src, size_t n);
 size_t		ft_strlen(const char *str);
 double		ft_atof(char *str);
+void		atof_init(int *i, int *sign, double *fraction);
+void		atof_helper(char *str, int *i, int *sign);
 void		setup_graphics(t_fractal_data *data);
 int			check_type(t_fractal_data *data);
 void		render_burningship(t_fractal_data *data);

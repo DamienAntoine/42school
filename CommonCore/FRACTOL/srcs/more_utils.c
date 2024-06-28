@@ -6,7 +6,7 @@
 /*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 16:11:40 by dantoine          #+#    #+#             */
-/*   Updated: 2024/06/24 16:11:41 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/06/28 14:04:36 by dantoine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,17 +37,10 @@ double	ft_atof(char *str)
 	double	afterdec;
 	double	beforedec;
 
-	i = 0;
-	sign = 1;
-	fraction = 1;
+	atof_init(&i, &sign, &fraction);
 	afterdec = 0;
 	beforedec = 0;
-	while (str[i] <= 32 || str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			sign = -1;
-		i++;
-	}
+	atof_helper(str, &i, &sign);
 	while (str[i] && str[i] != '.')
 	{
 		beforedec = beforedec * 10 + (str[i] - '0');
@@ -62,4 +55,21 @@ double	ft_atof(char *str)
 		i++;
 	}
 	return (sign * (beforedec + afterdec));
+}
+
+void	atof_init(int *i, int *sign, double *fraction)
+{
+	*i = 0;
+	*sign = 1;
+	*fraction = 1;
+}
+
+void	atof_helper(char *str, int *i, int *sign)
+{
+	while (str[*i] <= 32 || str[*i] == '-' || str[*i] == '+')
+	{
+		if (str[*i] == '-')
+			*sign = -1;
+		(*i)++;
+	}
 }
