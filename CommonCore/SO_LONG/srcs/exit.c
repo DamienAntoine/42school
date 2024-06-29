@@ -12,18 +12,8 @@
 
 #include "../headers/so_long.h"
 
-void	exit_door(t_data ***data)
+void exit_door(t_data **data)
 {
-	int	x;
-
-	x = 0;
-	while ((**data)->map[x])
-	{
-		free((**data)->map[x]);
-		x++;
-	}
-	free((**data)->map);
-	mlx_destroy_image((**data)->mlx, (**data)->images);
-	mlx_destroy_window((**data)->mlx, (**data)->win);
-	exit(EXIT_SUCCESS);
+    free_resources(*data);
+    exit(EXIT_SUCCESS);
 }

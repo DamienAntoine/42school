@@ -48,4 +48,5 @@ void	print_elem(char p, int x1, int y1, t_data **data)
 	}
 	else
 		put_image(&data, x1, y1, "./sprites/stolenfloor.xpm");
+	free_images(*data);
 }

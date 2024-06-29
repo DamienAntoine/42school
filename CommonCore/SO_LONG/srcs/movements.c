@@ -23,6 +23,7 @@ static void	coins(t_data ***data)
 	"./sprites/stolenfloor.xpm", &img_w, &img_h);
 	mlx_put_image_to_window((**data)->mlx, (**data)->win, \
 	(**data)->img, (**data)->x_p, (**data)->y_p);
+	free_images(**data);
 }
 
 void	mv_up(t_data **data)
@@ -37,7 +38,7 @@ void	mv_up(t_data **data)
 	if ((*data)->map[((*data)->y_p / 50) - 1][((*data)->x_p / 50)] == 'E')
 	{
 		if ((*data)->collect <= 0)
-			exit_door(&data);
+			exit_door(data);
 	}
 	else if ((*data)->map[((*data)->y_p / 50) - 1][((*data)->x_p / 50)] != '1')
 	{
@@ -50,6 +51,7 @@ void	mv_up(t_data **data)
 	"./sprites/pac_open_left.xpm", &img_w, &img_h);
 	mlx_put_image_to_window((*data)->mlx, (*data)->win, \
 	(*data)->img, (*data)->x_p, (*data)->y_p);
+	free_images(*data);
 }
 
 void	mv_down(t_data **data)
@@ -64,7 +66,7 @@ void	mv_down(t_data **data)
 	if ((*data)->map[((*data)->y_p / 50) + 1][((*data)->x_p / 50)] == 'E')
 	{
 		if ((*data)->collect <= 0)
-			exit_door(&data);
+			exit_door(data);
 	}
 	else if ((*data)->map[((*data)->y_p / 50) + 1][((*data)->x_p / 50)] != '1')
 	{
@@ -77,6 +79,7 @@ void	mv_down(t_data **data)
 	"./sprites/pac_open_left.xpm", &img_w, &img_h);
 	mlx_put_image_to_window((*data)->mlx, (*data)->win, \
 	(*data)->img, (*data)->x_p, (*data)->y_p);
+	free_images(*data);
 }
 
 void	mv_left(t_data **data)
@@ -91,7 +94,7 @@ void	mv_left(t_data **data)
 	if ((*data)->map[((*data)->y_p / 50)][((*data)->x_p / 50 - 1)] == 'E')
 	{
 		if ((*data)->collect <= 0)
-			exit_door(&data);
+			exit_door(data);
 	}
 	else if ((*data)->map[((*data)->y_p / 50)][((*data)->x_p / 50 - 1)] != '1')
 	{
@@ -104,6 +107,7 @@ void	mv_left(t_data **data)
 	"./sprites/pac_open_left.xpm", &img_w, &img_h);
 	mlx_put_image_to_window((*data)->mlx, (*data)->win, \
 	(*data)->img, (*data)->x_p, (*data)->y_p);
+	free_images(*data);
 }
 
 void	mv_right(t_data **data)
@@ -118,7 +122,7 @@ void	mv_right(t_data **data)
 	if ((*data)->map[((*data)->y_p / 50)][((*data)->x_p / 50 + 1)] == 'E')
 	{
 		if ((*data)->collect <= 0)
-			exit_door(&data);
+			exit_door(data);
 	}
 	else if ((*data)->map[((*data)->y_p / 50)][((*data)->x_p / 50 + 1)] != '1')
 	{
@@ -131,4 +135,5 @@ void	mv_right(t_data **data)
 	"./sprites/pac_open_left.xpm", &img_w, &img_h);
 	mlx_put_image_to_window((*data)->mlx, (*data)->win, \
 	(*data)->img, (*data)->x_p, (*data)->y_p);
+	free_images(*data);
 }

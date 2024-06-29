@@ -37,11 +37,11 @@ char	**parse_map(char *map)
 	fd = open(map, O_RDONLY);
 	if (fd < 0)
 	{
-		perror("ERROR: Couldn't open fd in parse_map function");
+		perror("ERROR: Couldn't open fd");
 		free(all_lines);
 		return (NULL);
 	}
-	while ((cur_line = get_next_line(fd))!= NULL && cur_line[0]!= '\n')
+	while ((cur_line = get_next_line(fd)) != NULL && cur_line[0] != '\n')
 	{
 		temp = all_lines;
         all_lines = ft_strjoin(all_lines, cur_line);

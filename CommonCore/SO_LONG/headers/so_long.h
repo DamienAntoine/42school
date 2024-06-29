@@ -23,8 +23,6 @@ typedef struct s_data
 {
 	void	*mlx;
 	void	*img;
-	void	**images;
-	int		image_count;
 	void	*win;
 	int		win_w;
 	int		win_h;
@@ -55,9 +53,13 @@ void	check_map(t_data *data);
 void	check_elem(t_data **data);
 void	check_surr_walls(t_data **data);
 void	clean_map(t_data ***data);
+void	free_resources(t_data *data);
+void free_images(t_data *data);
+int	close_win(t_data *data);
 int		map_height(char **map);
 void	check_file(char *line);
-void	exit_door(t_data ***data);
+//void	exit_door(t_data ***data);
+void	exit_door(t_data **data);
 void	put_image(t_data ***data, int x, int y, char *img);
 
 #endif

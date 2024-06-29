@@ -12,11 +12,27 @@
 
 #include "libft.h"
 
-static void	ft_allocate(char **tab, char const *s, char sep)
+static void	free_tab(char **tab, int size)
 {
+	int	i;
+
+	i = 0;
+	while (i < size)
+	{
+		if (tab[i])
+			free(tab[i]);
+		i++;
+	}
+	free(tab);
+}
+
+static int	ft_allocate(char **tab, char const *s, char sep)
+{
+	int		count;
 	char		**tab1;
 	char const	*tmp;
 
+	count = 0;
 	tmp = s;
 	tab1 = tab;
 	while (*tmp)
@@ -29,11 +45,18 @@ static void	ft_allocate(char **tab, char const *s, char sep)
 		if (*tmp == sep || tmp > s)
 		{
 			*tab1 = ft_substr(s, 0, tmp - s);
+			if (!*tab1)
+			{
+				free_tab(tab, count);
+				return (0);
+			}
 			s = tmp;
 			++tab1;
+			++count;
 		}
 	}
 	*tab1 = NULL;
+	return (1);
 }
 
 static int	ft_count_words(char const *s, char sep)
@@ -64,7 +87,8 @@ char	**ft_split(char const *s, char c)
 	new = (char **)malloc(sizeof(char *) * (size + 1));
 	if (!new)
 		return (NULL);
-	ft_allocate(new, s, c);
+	if (!ft_allocate(new, s, c))
+		return (NULL);
 	return (new);
 }
 /*
