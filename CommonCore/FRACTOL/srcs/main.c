@@ -34,7 +34,17 @@ void	setup_graphics(t_fractal_data *data)
 {
 	data->mlx = mlx_init();
 	data->win = mlx_new_window(data->mlx, WINDOW_SIZE, WINDOW_SIZE, "FRACTOL");
+    if (!data->win)
+    {
+        perror("Window init failed");
+        exit(1);
+    }
 	data->img = mlx_new_image(data->mlx, WINDOW_SIZE, WINDOW_SIZE);
+    if (!data->img)
+    {
+        perror("Img init failed");
+        mlx_destroy_window(data->mlx, data->win);
+    }
 	data->img_addr = mlx_get_data_addr(data->img, &data->bits_per_pixel,
 			&data->line_size, &data->endian);
 }

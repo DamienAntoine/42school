@@ -38,7 +38,7 @@ void	apply_zoom(t_fractal_data *data, int x, int y, int direction)
 int	handle_key(int key_code, t_fractal_data *data)
 {
 	if (key_code == ESC)
-		exit(1);
+		exit_program(data);
 	else if (key_code == L_ARR)
 		data->offset_x -= 50 / data->zoom_level;
 	else if (key_code == R_ARR)

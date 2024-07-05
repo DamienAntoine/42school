@@ -26,6 +26,7 @@ void	*render_mandelbrot(t_fractal_data *data)
 		data->pos_x++;
 		data->pos_y = 0;
 	}
+    free(data->type);
 	return (NULL);
 }
 
@@ -43,6 +44,7 @@ void	render_julia(t_fractal_data *data)
 		data->pos_x++;
 		data->pos_y = 0;
 	}
+    free(data->type);
 }
 
 void	render_burningship(t_fractal_data *data)
@@ -59,4 +61,5 @@ void	render_burningship(t_fractal_data *data)
 		data->pos_x++;
 		data->pos_y = 0;
 	}
+    free(data->type);
 }

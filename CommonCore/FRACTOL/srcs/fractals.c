@@ -18,7 +18,6 @@ void	draw_burningship(t_fractal_data *data)
 	int		color;
 	double	temp_real;
 
-	data->type = "burningship";
 	iter = 0;
 	data->z_real = 0.0;
 	data->z_imag = 0.0;
@@ -47,7 +46,6 @@ void	draw_julia(t_fractal_data *data)
 	int		color;
 	double	temp_real;
 
-	data->type = "julia";
 	data->z_real = data->pos_x / data->zoom_level + data->offset_x;
 	data->z_imag = data->pos_y / data->zoom_level + data->offset_y;
 	iter = 0;
@@ -74,7 +72,6 @@ void	draw_mandelbrot(t_fractal_data *data)
 	int		color;
 	double	temp_real;
 
-	data->type = "mandelbrot";
 	iter = 0;
 	data->z_real = 0.0;
 	data->z_imag = 0.0;

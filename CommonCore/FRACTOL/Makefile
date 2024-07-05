@@ -1,5 +1,5 @@
 NAME = fractol
-CFLAGS = -Wextra -Wall -Werror
+CFLAGS = -g -Wextra -Wall -Werror
 SRCS_DIR = srcs
 OBJS_DIR = objs
 SRCS = ./srcs/main.c \
