@@ -43,7 +43,9 @@ int	main(int argc, char **argv)
 
 	a_stack = NULL;
 	b_stack = NULL;
-	if ((!check_inputs(argc, argv)) || (argc == 1))
+	if (argc == 1)
+		return (1);
+	if (!check_inputs(argc, argv))
 	{
 		write(2, "Error\n", 6);
 		return (1);

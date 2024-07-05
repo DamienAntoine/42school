@@ -6,7 +6,7 @@
 /*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 16:11:11 by dantoine          #+#    #+#             */
-/*   Updated: 2024/06/24 16:13:04 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:54:39 by dantoine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,17 +34,17 @@ void	setup_graphics(t_fractal_data *data)
 {
 	data->mlx = mlx_init();
 	data->win = mlx_new_window(data->mlx, WINDOW_SIZE, WINDOW_SIZE, "FRACTOL");
-    if (!data->win)
-    {
-        perror("Window init failed");
-        exit(1);
-    }
+	if (!data->win)
+	{
+		perror("Window init failed");
+		exit(1);
+	}
 	data->img = mlx_new_image(data->mlx, WINDOW_SIZE, WINDOW_SIZE);
-    if (!data->img)
-    {
-        perror("Img init failed");
-        mlx_destroy_window(data->mlx, data->win);
-    }
+	if (!data->img)
+	{
+		perror("Img init failed");
+		mlx_destroy_window(data->mlx, data->win);
+	}
 	data->img_addr = mlx_get_data_addr(data->img, &data->bits_per_pixel,
 			&data->line_size, &data->endian);
 }
@@ -57,7 +57,7 @@ void	initialize_fractal(t_fractal_data *data, const char *type, char **argv)
 	data->zoom_level = 300;
 	data->offset_x = -1.4;
 	data->offset_y = -1.2;
-	data->max_iters = 50;
+	data->max_iters = 100;
 	data->type = ft_strdup(type);
 	if (ft_strcmp(type, "julia") == 0)
 	{

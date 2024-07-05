@@ -6,7 +6,7 @@
 /*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 16:11:24 by dantoine          #+#    #+#             */
-/*   Updated: 2024/06/24 16:11:25 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:54:58 by dantoine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,11 @@ int	exit_program(t_fractal_data *data)
 {
 	mlx_destroy_image(data->mlx, data->img);
 	mlx_destroy_window(data->mlx, data->win);
-    mlx_destroy_display(data->mlx);
+	mlx_destroy_display(data->mlx);
 	free(data->mlx);
+	free(data->type);
 	free(data);
-	exit(1);
+	exit(0);
 	return (0);
 }
 
