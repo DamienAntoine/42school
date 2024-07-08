@@ -1,5 +1,9 @@
 #include "../headers/philosophers.h"
 
+//functions needed :
+    //countdown function (create a thread used exclusively to run this function ?)
+    //reset countdown function
+    //print gettimeofday() in ms
 int	main(int argc, char **argv)
 {
 	t_data	*data;
