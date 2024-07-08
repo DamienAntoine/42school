@@ -15,7 +15,7 @@ void    take_fork(t_philo *philo)
         pthread_mutex_lock(&data->forks[philo->id]);
         pthread_mutex_lock(&data->forks[(philo->id) + 1]);//locks philo's fork + neighbour's fork
     }
-    ft_printf("%lf | Philosopher %d has taken a fork", gettimeofday(), philo->id);
+    ft_printf("%lf | Philosopher %d has taken a fork", gettime_ms(), philo->id);
 }
 
 void    drop_fork(t_philo *philo)
@@ -33,7 +33,7 @@ void    drop_fork(t_philo *philo)
         pthread_mutex_unlock(&data->forks[(philo->id) + 1]);
         pthread_mutex_unlock(&data->forks[philo->id]);//unlocks philo's fork + neighbour's fork
     }
-    ft_printf("%lf | Philosopher %d has taken a fork", gettimeofday(), philo->id);
+    ft_printf("%lf | Philosopher %d has taken a fork", gettime_ms(), philo->id);
 }
 
 void    eat(t_philo *philo)
@@ -42,15 +42,16 @@ void    eat(t_philo *philo)
 
     data = philo->data;
     philo->eat_counter++;
-    
+    philo->last_meal = gettime_ms();
+
     take_fork(philo); //lock 2 forks for current philo
-    ft_printf("%lf | Philosopher %d is eating", gettimeofday(), philo->id);
+    ft_printf("%lf | Philosopher %d is eating", gettime_ms(), philo->id);
     usleep(data->eatingtime);
     drop_fork(philo); //drops the 2 forks
     philo_sleep(philo);
     if (philo->eat_counter == data->eat_max)
     {
-        ft_printf("%ls | Target reached, program closing.", gettimeofday());
+        ft_printf("%ls | Target reached, program closing.", gettime_ms());
         free_data(data);
         exit(0);
     }

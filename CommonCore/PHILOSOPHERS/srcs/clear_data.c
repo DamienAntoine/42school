@@ -10,11 +10,11 @@ void	free_data(t_data *data)
 	free(data);
 }
 
-//send all philo threads here
-void    free_philo(t_philo *philo)
+// send all philo threads here
+void	free_philo(t_philo *philo)
 {
-    free(philo->data);
-    free(philo->eat_counter);
-    free(philo->id);
-    free(philo);
+	free(philo->data);
+	free(philo->eat_counter);
+	free(philo->id);
+	free(philo);
 }

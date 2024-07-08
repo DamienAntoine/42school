@@ -20,13 +20,13 @@ int	threads_init(t_data *data)
 {
 	t_philo	*philo;
 	int		i;
-    int     flag;
+	int		flag;
 
-    if (flag != 0)
-    {
-        flag = 0;
-        i = 0;
-    }
+	if (flag != 0)
+	{
+		flag = 0;
+		i = 0;
+	}
 	philo = (t_philo *)malloc(sizeof(t_philo) * data->philo_nb);
 	if (philo == NULL)
 	{
@@ -40,8 +40,8 @@ int	threads_init(t_data *data)
 		free(philo);
 		return (1);
 	}
-    philo->id = i;
-    i++;
+	philo->id = i;
+	i++;
 	mutexes_init(data);
 	threads_create(data, philo);
 	threads_join(data);
