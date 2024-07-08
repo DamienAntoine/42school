@@ -10,7 +10,7 @@ void	struct_init(t_data *data, char **argv, int argc)
 	if (argc == 6)
 		data->eat_max = ft_atoi(argv[5]);
 	else
-		data->eat_max = -1;
+		data->eat_max = -1; // -1 if no limit
 	data->th = (pthread_t *)malloc(sizeof(pthread_t) * data->philo_nb);
 	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
 			* data->philo_nb);
@@ -20,7 +20,13 @@ int	threads_init(t_data *data)
 {
 	t_philo	*philo;
 	int		i;
+    int     flag;
 
+    if (flag != 0)
+    {
+        flag = 0;
+        i = 0;
+    }
 	philo = (t_philo *)malloc(sizeof(t_philo) * data->philo_nb);
 	if (philo == NULL)
 	{
@@ -34,6 +40,8 @@ int	threads_init(t_data *data)
 		free(philo);
 		return (1);
 	}
+    philo->id = i;
+    i++;
 	mutexes_init(data);
 	threads_create(data, philo);
 	threads_join(data);
