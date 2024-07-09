@@ -22,6 +22,18 @@ void	threads_create(t_data *data, t_philo *philo)
 	}
 }
 
+void	monitor_create(t_data *data, t_philo *philo)
+{
+	pthread_t monitor;
+
+	if (pthread_create(&monitor, NULL, monitor_routine, (void *)philo) != 0)
+	{
+		perror("Failed to create monitor thread");
+		exit(1);
+	}
+	pthread_detach(monitor);
+}
+
 void	threads_join(t_data *data)
 {
 	int i;
