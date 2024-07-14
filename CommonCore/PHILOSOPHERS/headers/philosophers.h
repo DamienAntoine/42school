@@ -19,6 +19,7 @@ typedef struct s_data
 	pthread_mutex_t	*w_lock;
 	pthread_mutex_t	*d_lock;
 	pthread_mutex_t	*meal_lock;
+	struct s_philo	*philos;
 }					t_data;
 
 typedef struct s_philo

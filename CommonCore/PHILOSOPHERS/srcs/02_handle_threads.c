@@ -11,6 +11,7 @@ void	threads_create(t_data *data, t_philo *philo)
 		philo[i].data = data;
 		philo[i].eat_counter = 0;
 		philo[i].data->death_flag = 0;
+		philo[i].last_meal = gettime_ms();
 		if (pthread_create(&data->th[i], NULL, philo_actions,
 				(void *)&philo[i]) != 0)
 		{
@@ -20,18 +21,6 @@ void	threads_create(t_data *data, t_philo *philo)
 		}
 		i++;
 	}
-}
-
-void	monitor_create(t_data *data, t_philo *philo)
-{
-	pthread_t monitor;
-
-	if (pthread_create(&monitor, NULL, monitor_routine, (void *)philo) != 0)
-	{
-		perror("Failed to create monitor thread");
-		exit(1);
-	}
-	pthread_detach(monitor);
 }
 
 void	threads_join(t_data *data)

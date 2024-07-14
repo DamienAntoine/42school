@@ -12,8 +12,20 @@ void	struct_init(t_data *data, char **argv, int argc)
 	else
 		data->eat_max = -1; // -1 if no limit
 	data->th = (pthread_t *)malloc(sizeof(pthread_t) * data->philo_nb);
+	if (data->th == NULL)
+	{
+		perror("Failed to allocate memory for thread IDs");
+		free(data);
+		return (1);
+	}
 	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
 			* data->philo_nb);
+	if (data->forks == NULL)
+	{
+		perror("Failed to allocate memory for forks");
+		free(data);
+		return (1);
+	}
 }
 
 int	threads_init(t_data *data)
@@ -22,32 +34,28 @@ int	threads_init(t_data *data)
 	int		i;
 	int		flag;
 
-	if (flag != 0)
-	{
-		flag = 0;
-		i = 0;
-	}
 	philo = (t_philo *)malloc(sizeof(t_philo) * data->philo_nb);
 	if (philo == NULL)
 	{
 		perror("Failed to allocate memory for philosophers");
 		return (1);
 	}
-	data->th = (pthread_t *)malloc(sizeof(pthread_t) * data->philo_nb);
-	if (data->th == NULL)
-	{
-		perror("Failed to allocate memory for thread IDs");
-		free(philo);
-		return (1);
-	}
-	philo->id = i;
-	i++;
 	mutexes_init(data);
 	threads_create(data, philo);
-	threads_join(data);
-	free(philo);
-	free(data->th);
-	mutexes_destroy(data);
+	data->philos = philo;
+	return (0);
+}
+
+int	monitor_init(t_data *data, t_philo *philo)
+{
+	pthread_t monitor;
+
+	if (pthread_create(&monitor, NULL, (void *)monitor_routine, (void *)data) != 0)
+	{
+		perror("Failed to create monitor thread");
+		return (1);
+	}
+	pthread_detach(monitor);
 	return (0);
 }
 
