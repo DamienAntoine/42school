@@ -7,6 +7,7 @@
 //  -add &lld support to ft_printf
 //  -replace every printf with ft_printf
 //  -add mutexes on every function that prints so they dont print at the same time
+//  -change makefile so libftprintf.a gets cleaned too
 int	main(int argc, char **argv)
 {
 	t_data	*data;
