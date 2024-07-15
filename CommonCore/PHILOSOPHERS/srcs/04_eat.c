@@ -15,7 +15,9 @@ void	take_fork(t_philo *philo)
 		pthread_mutex_lock(&data->forks[philo->id]);
 		pthread_mutex_lock(&data->forks[(philo->id) + 1]); // locks philo's fork + neighbour's fork
 	}
-	ft_printf("%lf | Philosopher %d has taken a fork", gettime_ms(), philo->id);
+    pthread_mutex_lock(data->print_lock);
+	printf("%lld | Philosopher %d has taken a fork\n", gettime_ms(), philo->id);
+    pthread_mutex_unlock(data->print_lock);
 }
 
 void	drop_fork(t_philo *philo)
@@ -33,26 +35,30 @@ void	drop_fork(t_philo *philo)
 		pthread_mutex_unlock(&data->forks[(philo->id) + 1]);
 		pthread_mutex_unlock(&data->forks[philo->id]); // unlocks philo's fork + neighbour's fork
 	}
-	ft_printf("%lf | Philosopher %d has taken a fork", gettime_ms(), philo->id);
 }
 
 void	eat(t_philo *philo)
 {
 	t_data	*data;
 
-	data = philo->data;
-	philo->eat_counter++;
-	philo->last_meal = gettime_ms();
+    data = philo->data;
 	take_fork(philo); // lock 2 forks for current philo
-	ft_printf("%lf | Philosopher %d is eating", gettime_ms(), philo->id);
+    pthread_mutex_lock(data->print_lock);
+    philo->last_meal = gettime_ms();
+	printf("%lld | Philosopher %d is eating\n", gettime_ms(), philo->id);
+    pthread_mutex_unlock(data->print_lock);
 	usleep(data->eatingtime);
+    philo->eat_counter++;
 	drop_fork(philo); // drops the 2 forks
+    philo->next_to_eat = 0;
 	philo_sleep(philo);
 	if (philo->eat_counter == data->eat_max)
 	{
-		ft_printf("%ls | Target reached, program closing.", gettime_ms());
-		free_data(data);
-		exit(0);
+        data->eat_max_flag = 1;
+        pthread_mutex_lock(data->print_lock);
+		printf("%lld | Target reached, end of simulation.\n", gettime_ms());
+        pthread_mutex_unlock(data->print_lock);
+        return ;
 	}
-	// find a way to print time in ms
+    return ;
 }

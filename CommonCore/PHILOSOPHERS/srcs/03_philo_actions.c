@@ -8,7 +8,6 @@
 void	philo_actions(t_philo *philo)
 {
 	t_data	*data;
-	int		current_time;
 
 	//&data->forks[philo->id] = fourchette correspondant au philo
 	// data->philo_nb = last philo
@@ -20,27 +19,14 @@ void	philo_actions(t_philo *philo)
 	data = philo->data;
 	while (data->death_flag == 0)
 	{
-		if (philo->id % 2 == 0)
-		{
-			eat(philo);
-		}
-		else if (philo->id % 2 != 0)
-		{
-			think(philo);
-		}
-		current_time = get_time_in_ms();
-		if (current_time - philo->last_meal >= data->deathtimer)
-		{
-			pthread_mutex_lock(&data->d_lock);
-			if (data->death_flag == 0)
-			{
-				data->death_flag = 1;
-				ft_printf("%d | Philosopher %d died", current_time,
-					philo->id);
-			}
-			pthread_mutex_unlock(&data->d_lock);
-			break ;
-		}
+        //odd philos start by thinking, so even philos can start by eating
+        if (philo->next_to_eat == 1)
+            eat(philo);//eat and sleep
+		else if (philo->next_to_eat == 0)
+			think(philo);//queue for fork
+        // printf("\ninfinite loop test : philo id:%d, deathflag status: %d\n\n", philo->id, data->death_flag);
+		if (data->death_flag == 1 || data->eat_max_flag == 1)
+            return ;
 	}
 }
 
@@ -49,11 +35,12 @@ void	think(t_philo *philo)
 	t_data	*data;
 
 	data = philo->data;
-	ft_printf("%lf | Philosopher %d is thinking", gettime_ms(gettime_ms()),
+    philo->next_to_eat = 1;
+    pthread_mutex_lock(data->print_lock);
+	printf("%lld | Philosopher %d is thinking\n", gettime_ms(),
 		philo->id);
-	// print Thinking when philosopher is queuing for a fork ?
-	usleep(data->eatingtime);
-	// Find a way for the philosophers to know when forks are available
+    pthread_mutex_unlock(data->print_lock);
+	//usleep(100);//wait 1ms so the other threads have time to lock their forks
 }
 
 void	philo_sleep(t_philo *philo)
@@ -61,6 +48,10 @@ void	philo_sleep(t_philo *philo)
 	t_data	*data;
 
 	data = philo->data;
-	ft_printf("%lf | Philosopher %d is sleeping", gettime_ms(), philo->id);
+    philo->data->sleepflag = 1;
+    pthread_mutex_lock(data->print_lock);
+	printf("%lld | Philosopher %d is sleeping\n", gettime_ms(), philo->id);
+    pthread_mutex_unlock(data->print_lock);
 	usleep(data->sleeptime);
+    return ;
 }

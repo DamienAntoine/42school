@@ -4,19 +4,24 @@ void	threads_create(t_data *data, t_philo *philo)
 {
 	int	i;
 
-	i = 0;
+	i = 1;
 	while (i < data->philo_nb)
 	{
-		philo[i].id = i + 1;
+		philo[i].id = i;
 		philo[i].data = data;
 		philo[i].eat_counter = 0;
-		philo[i].data->death_flag = 0;
+		//philo[i].data->death_flag = 0;
 		philo[i].last_meal = gettime_ms();
-		if (pthread_create(&data->th[i], NULL, philo_actions,
+        if (i % 2 == 0)
+            philo[i].next_to_eat = 1;
+        else
+            philo[i].next_to_eat = 0;
+		if (pthread_create(&data->th[i], NULL, (void *)philo_actions,
 				(void *)&philo[i]) != 0)
 		{
 			perror("Failed to create thread");
 			free(philo);
+            free_data(data);
 			exit(1);
 		}
 		i++;
