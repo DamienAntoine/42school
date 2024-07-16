@@ -5,7 +5,7 @@ void	take_fork(t_philo *philo)
 	t_data	*data;
 
 	data = philo->data;
-	if (philo->id == data->philo_nb) // if last philo, take fork from first philo
+	if (philo->id == data->philo_nb - 1) // if last philo, take fork from first philo
 	{
 		pthread_mutex_lock(&data->forks[philo->id]);
 		pthread_mutex_lock(&data->forks[0]);
@@ -25,7 +25,7 @@ void	drop_fork(t_philo *philo)
 	t_data	*data;
 
 	data = philo->data;
-	if (philo->id == data->philo_nb) // if last philo, drop fork from first philo
+	if (philo->id == data->philo_nb - 1) // if last philo, drop fork from first philo
 	{
 		pthread_mutex_unlock(&data->forks[0]);
 		pthread_mutex_unlock(&data->forks[philo->id]);
@@ -48,17 +48,16 @@ void	eat(t_philo *philo)
 	printf("%lld | Philosopher %d is eating\n", gettime_ms(), philo->id);
     pthread_mutex_unlock(data->print_lock);
 	usleep(data->eatingtime);
-    philo->eat_counter++;
 	drop_fork(philo); // drops the 2 forks
     philo->next_to_eat = 0;
-	philo_sleep(philo);
+	philo->eat_counter++;
 	if (philo->eat_counter == data->eat_max)
 	{
         data->eat_max_flag = 1;
         pthread_mutex_lock(data->print_lock);
 		printf("%lld | Target reached, end of simulation.\n", gettime_ms());
         pthread_mutex_unlock(data->print_lock);
-        return ;
+		return ;
 	}
-    return ;
+	philo_sleep(philo);
 }

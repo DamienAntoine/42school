@@ -10,9 +10,11 @@ void	monitor_routine(void *arg)
 	long long current_time;
 
 	i = 0;
+	printf("eatingtime %d\n", data->eatingtime);
+	printf("deathtimer %d\n", data->deathtimer);
 	while (1)
 	{
-		usleep(10);
+		usleep(100);
 		current_time = gettime_ms();
 		while (i < data->philo_nb)
 		{
@@ -23,7 +25,7 @@ void	monitor_routine(void *arg)
 				pthread_mutex_unlock(data->d_lock);
                 pthread_mutex_lock(data->print_lock);
 				printf("%lld | Philosopher %d died\n", current_time, data->philos[i].id);
-                pthread_mutex_unlock(data->print_lock);
+				pthread_mutex_unlock(data->print_lock);
                 break ;
 			}
 			pthread_mutex_unlock(data->d_lock);
@@ -35,3 +37,4 @@ void	monitor_routine(void *arg)
 	}
     printf("\nExiting monitor\n");
 }
+

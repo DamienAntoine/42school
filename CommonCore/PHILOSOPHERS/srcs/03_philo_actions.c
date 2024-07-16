@@ -32,15 +32,15 @@ void	philo_actions(t_philo *philo)
 
 void	think(t_philo *philo)
 {
-	t_data	*data;
+	//t_data	*data;
 
-	data = philo->data;
+	//data = philo->data;
     philo->next_to_eat = 1;
     pthread_mutex_lock(data->print_lock);
 	printf("%lld | Philosopher %d is thinking\n", gettime_ms(),
 		philo->id);
     pthread_mutex_unlock(data->print_lock);
-	//usleep(100);//wait 1ms so the other threads have time to lock their forks
+	usleep(100);//wait 1ms so the other threads have time to lock their forks
 }
 
 void	philo_sleep(t_philo *philo)

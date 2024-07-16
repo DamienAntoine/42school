@@ -15,10 +15,15 @@ int	main(int argc, char **argv)
 	if (argc < 5 || argc > 6) //add isdigit check
     {
         ft_printf("Usage: number_of_philosophers, time_to_die, \
-        time_to_eat, time_to_sleep, [number_of_times_each_philosopher_must_eat]\n");
+time_to_eat, time_to_sleep, [number_of_times_each_philosopher_must_eat]\n");
 		return (1);
     }
 	data = (t_data *)malloc(sizeof(t_data));
+	if (!data)
+    {
+        perror("Failed to allocate memory for data");
+        return (1);
+    }
 	struct_init(data, argv, argc);
 	if (monitor_init(data) != 0)
 	{

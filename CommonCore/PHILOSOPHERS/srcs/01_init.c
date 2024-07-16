@@ -32,11 +32,15 @@ void	struct_init(t_data *data, char **argv, int argc)
     data->d_lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
 	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
 			* data->philo_nb);
-	if (data->forks == NULL)
+	if (data->forks == NULL || data->print_lock == NULL || data->d_lock == NULL)
 	{
-		perror("Failed to allocate memory for forks");
-		free(data);
-		return ;
+		perror("Failed to allocate memory for mutexes");
+        free(data->th);
+        free(data->forks);
+        free(data->print_lock);
+        free(data->d_lock);
+        free(data);
+        return;
 	}
 }
 
@@ -68,7 +72,6 @@ void	mutexes_init(t_data *data)
 	}
 	pthread_mutex_init(data->d_lock, NULL);
 	pthread_mutex_init(data->print_lock, NULL);
-	//pthread_mutex_init(data->meal_lock, NULL);
 }
 
 int	monitor_init(t_data *data)
@@ -96,5 +99,4 @@ void	mutexes_destroy(t_data *data)
 	}
 	pthread_mutex_destroy(data->d_lock);
 	pthread_mutex_destroy(data->print_lock);
-	//pthread_mutex_destroy(data->meal_lock);
 }
