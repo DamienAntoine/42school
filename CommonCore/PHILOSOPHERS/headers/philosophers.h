@@ -7,16 +7,23 @@
 # include <sys/time.h>
 # include <unistd.h>
 
+# define EAT 1
+# define SLEEP 2
+# define THINK 3
+# define END 4
+# define DEAD 5
+# define FORKS 6
+
 typedef struct s_data
 {
 	pthread_t		*th;
 	int				death_flag;
 	int				philo_nb;
 	int				fork_nb;
-	int				deathtimer;
-	int				eatingtime;
+	long long int				deathtimer;
+	long long int				eatingtime;
 	int				sleepflag;
-	int				sleeptime;
+	long long int				sleeptime;
 	int				eat_max;
 	int				eat_max_flag;
 	pthread_mutex_t	*forks;
@@ -31,7 +38,7 @@ typedef struct s_philo
 	int				id;
 	int				next_to_eat;
 	int				eat_counter;
-	int				last_meal;
+	long long int				last_meal;
 	t_data			*data;
 }					t_philo;
 
@@ -43,6 +50,7 @@ int					monitor_init(t_data *data);
 void				mutexes_destroy(t_data *data);
 void				threads_create(t_data *data, t_philo *philo);
 void				threads_join(t_data *data);
+void                print_actions(t_philo *philo, int action);
 void				philo_actions(t_philo *philo);
 void				think(t_philo *philo);
 void				philo_sleep(t_philo *philo);

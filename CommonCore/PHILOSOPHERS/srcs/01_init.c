@@ -9,9 +9,10 @@ void	struct_init(t_data *data, char **argv, int argc)
     data->sleepflag = 0;
 	data->philo_nb = ft_atoi(argv[1]);
 	data->fork_nb = ft_atoi(argv[1]);
-	data->deathtimer = ft_atoi(argv[2]);
-	data->eatingtime = ft_atoi(argv[3]);
-	data->sleeptime = ft_atoi(argv[4]);
+    //create ft_atoll (ascii to long long) for time variables
+	data->deathtimer = atoll(argv[2]);
+	data->eatingtime = atoll(argv[3]);
+	data->sleeptime = atoll(argv[4]);
 	if (argc == 6)
 		data->eat_max = ft_atoi(argv[5]);
 	else
@@ -46,17 +47,19 @@ void	struct_init(t_data *data, char **argv, int argc)
 
 int	threads_init(t_data *data)
 {
-	t_philo	*philo;
-
-	philo = (t_philo *)malloc(sizeof(t_philo) * data->philo_nb);
-	if (philo == NULL)
+	data->philos = (t_philo *)malloc(sizeof(t_philo) * data->philo_nb);
+	if (data->philos == NULL)
 	{
 		perror("Failed to allocate memory for philosophers");
 		return (1);
 	}
-    data->philos = philo;
 	mutexes_init(data);
-	threads_create(data, philo);
+    if (monitor_init(data) != 0)
+	{
+		free_data(data);
+		return (1);
+	}
+	threads_create(data, data->philos);
 	return (0);
 }
 
