@@ -11,7 +11,7 @@ void	threads_create(t_data *data, t_philo *philo)
 		philo[i].data = data;
 		philo[i].eat_counter = 0;
 		//philo[i].data->death_flag = 0;
-		philo[i].last_meal = gettime_ms();
+		philo[i].last_meal = gettime_ms(data);
         if (i % 2 == 0)
             philo[i].next_to_eat = 0;
         else

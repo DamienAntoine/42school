@@ -7,6 +7,7 @@ void	struct_init(t_data *data, char **argv, int argc)
     i = 0;
     data->death_flag = 0;
     data->sleepflag = 0;
+	gettimeofday(&data->start, NULL);
 	data->philo_nb = ft_atoi(argv[1]);
 	data->fork_nb = ft_atoi(argv[1]);
     //create ft_atoll (ascii to long long) for time variables
@@ -31,6 +32,7 @@ void	struct_init(t_data *data, char **argv, int argc)
     }
     data->print_lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
     data->d_lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
+	data->w_lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
 	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
 			* data->philo_nb);
 	if (data->forks == NULL || data->print_lock == NULL || data->d_lock == NULL)
@@ -74,6 +76,7 @@ void	mutexes_init(t_data *data)
 		i++;
 	}
 	pthread_mutex_init(data->d_lock, NULL);
+	pthread_mutex_init(data->w_lock, NULL);
 	pthread_mutex_init(data->print_lock, NULL);
 }
 
@@ -101,5 +104,6 @@ void	mutexes_destroy(t_data *data)
 		i++;
 	}
 	pthread_mutex_destroy(data->d_lock);
+	pthread_mutex_destroy(data->w_lock);
 	pthread_mutex_destroy(data->print_lock);
 }

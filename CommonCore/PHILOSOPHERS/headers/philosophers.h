@@ -14,6 +14,11 @@
 # define DEAD 5
 # define FORKS 6
 
+typedef struct timer
+{
+	struct timeval	start;
+}					t_timer;
+
 typedef struct s_data
 {
 	pthread_t		*th;
@@ -30,6 +35,7 @@ typedef struct s_data
 	pthread_mutex_t	*w_lock;
 	pthread_mutex_t	*d_lock;
 	pthread_mutex_t	*print_lock;
+	struct timeval	start;
 	struct s_philo	*philos;
 }					t_data;
 
@@ -50,7 +56,7 @@ int					monitor_init(t_data *data);
 void				mutexes_destroy(t_data *data);
 void				threads_create(t_data *data, t_philo *philo);
 void				threads_join(t_data *data);
-void                print_actions(t_philo *philo, int action);
+void				print_actions(t_philo *philo, int action);
 void				philo_actions(t_philo *philo);
 void				think(t_philo *philo);
 void				philo_sleep(t_philo *philo);
@@ -61,6 +67,7 @@ void				monitor_routine(void *arg);
 int					ft_atoi(const char *str);
 void				free_data(t_data *data);
 void				free_philo(t_philo *philo);
-long long			gettime_ms(void);
+void				start_timer(t_data *timer);
+long long			gettime_ms(t_data *timer);
 
 #endif

@@ -1,11 +1,20 @@
 #include "../headers/philosophers.h"
 
-long long	gettime_ms(void)
+void	start_timer(t_data *timer)
 {
-	struct timeval	time;
+	gettimeofday(&timer->start, NULL);
+}
 
-	gettimeofday(&time, NULL);
-	return ((time.tv_sec * 1000LL) + (double)time.tv_usec / 1000);
+long long	gettime_ms(t_data *timer)
+{
+	struct timeval	currenttime;
+	long long		sec;
+	long long		usec;
+
+	gettimeofday(&currenttime, NULL);
+	sec = currenttime.tv_sec - timer->start.tv_sec;
+	usec = currenttime.tv_usec - timer->start.tv_usec;
+	return (sec * 1000LL + usec / 1000);
 }
 
 int	ft_atoi(const char *str)

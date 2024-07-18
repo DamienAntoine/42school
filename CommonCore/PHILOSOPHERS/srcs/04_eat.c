@@ -8,16 +8,12 @@ void	take_fork(t_philo *philo)
 	if (philo->id == data->philo_nb) // if last philo, take fork from first philo
 	{
 		pthread_mutex_lock(&data->forks[philo->id - 1]);
-        printf("philo %d (last) took fork 1\n", philo->id);
-		pthread_mutex_lock(&data->forks[1]);
-        printf("philo %d (last) took fork 2\n", philo->id);
+		pthread_mutex_lock(&data->forks[0]);
 	}
 	else
 	{
 		pthread_mutex_lock(&data->forks[philo->id - 1]);
-        printf("philo %d took fork 1\n", philo->id);
 		pthread_mutex_lock(&data->forks[(philo->id)]); // locks philo's fork + neighbour's fork
-        printf("philo %d took fork 2\n", philo->id);
 	}
     print_actions(philo, FORKS);
 }
@@ -29,18 +25,13 @@ void	drop_fork(t_philo *philo)
 	data = philo->data;
 	if (philo->id == data->philo_nb) // if last philo, drop fork from first philo
 	{
-        printf("philo %d trying to drop fork\n", philo->id);
 		pthread_mutex_unlock(&data->forks[0]);
-        printf("philo %d dropped fork 1\n", philo->id);
-		pthread_mutex_unlock(&data->forks[philo->id]);
-        printf("philo %d dropped fork 2\n", philo->id);
+		pthread_mutex_unlock(&data->forks[philo->id - 1]);
 	}
 	else
 	{
 		pthread_mutex_unlock(&data->forks[philo->id]);
-        printf("philo %d dropped fork 1\n", philo->id);
 		pthread_mutex_unlock(&data->forks[philo->id - 1]); // unlocks philo's fork + neighbour's fork
-        printf("philo %d dropped fork 2\n", philo->id);
 	}
 }
 
@@ -49,8 +40,11 @@ void	eat(t_philo *philo)
 	t_data	*data;
 
     data = philo->data;
+	//pthread_mutex_lock(data->d_lock);
 	take_fork(philo); // lock 2 forks for current philo
-    philo->last_meal = gettime_ms();
+	//printf("last meal: %lld\n\n", philo->last_meal);
+    philo->last_meal = gettime_ms(data);
+	//printf("new last meal: %lld\n\n", philo->last_meal);
 	print_actions(philo, EAT);
 	usleep(data->eatingtime * 1000);
 	drop_fork(philo); // drops the 2 forks
@@ -62,5 +56,7 @@ void	eat(t_philo *philo)
         print_actions(philo, END);
 		return ;
 	}
+	//pthread_mutex_unlock(data->d_lock);
 	philo_sleep(philo);
+
 }
