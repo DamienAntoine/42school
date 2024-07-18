@@ -25,10 +25,10 @@ typedef struct s_data
 	int				death_flag;
 	int				philo_nb;
 	int				fork_nb;
-	long long int				deathtimer;
-	long long int				eatingtime;
+	long long int	deathtimer;
+	long long int	eatingtime;
 	int				sleepflag;
-	long long int				sleeptime;
+	long long int	sleeptime;
 	int				eat_max;
 	int				eat_max_flag;
 	pthread_mutex_t	*forks;
@@ -44,7 +44,7 @@ typedef struct s_philo
 	int				id;
 	int				next_to_eat;
 	int				eat_counter;
-	long long int				last_meal;
+	long long int	last_meal;
 	t_data			*data;
 }					t_philo;
 

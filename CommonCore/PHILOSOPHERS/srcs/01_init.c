@@ -2,15 +2,15 @@
 
 void	struct_init(t_data *data, char **argv, int argc)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    data->death_flag = 0;
-    data->sleepflag = 0;
+	i = 0;
+	data->death_flag = 0;
+	data->sleepflag = 0;
 	gettimeofday(&data->start, NULL);
 	data->philo_nb = ft_atoi(argv[1]);
 	data->fork_nb = ft_atoi(argv[1]);
-    //create ft_atoll (ascii to long long) for time variables
+	// create ft_atoll (ascii to long long) for time variables
 	data->deathtimer = atoll(argv[2]);
 	data->eatingtime = atoll(argv[3]);
 	data->sleeptime = atoll(argv[4]);
@@ -25,25 +25,25 @@ void	struct_init(t_data *data, char **argv, int argc)
 		free(data);
 		return ;
 	}
-    while (i < data->philo_nb)
-    {
-        data->th[i] = 0;
-        i++;
-    }
-    data->print_lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
-    data->d_lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
+	while (i < data->philo_nb)
+	{
+		data->th[i] = 0;
+		i++;
+	}
+	data->print_lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
+	data->d_lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
 	data->w_lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
 	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
 			* data->philo_nb);
 	if (data->forks == NULL || data->print_lock == NULL || data->d_lock == NULL)
 	{
 		perror("Failed to allocate memory for mutexes");
-        free(data->th);
-        free(data->forks);
-        free(data->print_lock);
-        free(data->d_lock);
-        free(data);
-        return;
+		free(data->th);
+		free(data->forks);
+		free(data->print_lock);
+		free(data->d_lock);
+		free(data);
+		return ;
 	}
 }
 
@@ -56,7 +56,7 @@ int	threads_init(t_data *data)
 		return (1);
 	}
 	mutexes_init(data);
-    if (monitor_init(data) != 0)
+	if (monitor_init(data) != 0)
 	{
 		free_data(data);
 		return (1);
@@ -82,9 +82,10 @@ void	mutexes_init(t_data *data)
 
 int	monitor_init(t_data *data)
 {
-	pthread_t monitor;
+	pthread_t	monitor;
 
-	if (pthread_create(&monitor, NULL, (void *)monitor_routine, (void *)data) != 0)
+	if (pthread_create(&monitor, NULL, (void *)monitor_routine,
+			(void *)data) != 0)
 	{
 		perror("Failed to create monitor thread");
 		return (1);
