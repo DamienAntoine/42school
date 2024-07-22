@@ -35,7 +35,7 @@ void	threads_join(t_data *data)
 	while (i < data->philo_nb)
 	{
 		if (pthread_join(data->th[i], NULL) != 0)
-			exit(2);
+			exit(EXIT_FAILURE);
 		i++;
 	}
 }

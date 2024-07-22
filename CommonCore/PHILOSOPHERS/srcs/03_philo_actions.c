@@ -33,28 +33,48 @@ void	print_actions(t_philo *philo, int action)
 void	philo_actions(t_philo *philo)
 {
 	t_data	*data;
-	int		flag;
 
-	flag = 0;
 	data = philo->data;
 	while (1)
 	{
-		if (flag == 1)
-			return ;
+		printf("%lld, philo n%d in loop\n", gettime_ms(data), philo->id);
+		pthread_mutex_lock(data->w_lock);
+		if (data->death_flag == 1 || data->eat_max_flag == 1)
+		{
+			pthread_mutex_unlock(data->w_lock);
+			break ;
+		}
+		pthread_mutex_unlock(data->w_lock);
 		if (philo->next_to_eat == 1)
 			eat(philo); // eat and sleep
 		else if (philo->next_to_eat == 0)
 			think(philo); // queue for fork
+		pthread_mutex_lock(data->w_lock);
 		if (data->death_flag == 1 || data->eat_max_flag == 1)
-			flag = 1;
+		{
+			pthread_mutex_unlock(data->w_lock);
+			break ;
+		}
+		pthread_mutex_unlock(data->w_lock);
 	}
+	printf("%lld, philo n%d\n", gettime_ms(data), philo->id);
 }
 
 void	think(t_philo *philo)
 {
+	t_data	*data;
+
+	data = philo->data;
+	pthread_mutex_lock(data->w_lock);
+		if (data->death_flag == 1)
+		{
+			pthread_mutex_unlock(data->w_lock);
+			return ;
+		}
+	pthread_mutex_unlock(data->w_lock);
 	philo->next_to_eat = 1;
 	print_actions(philo, THINK);
-	usleep(1000); // wait 1ms so the other threads have time to lock their forks
+	usleep(100); // wait 1ms so the other threads have time to lock their forks
 }
 
 void	philo_sleep(t_philo *philo)
@@ -62,8 +82,15 @@ void	philo_sleep(t_philo *philo)
 	t_data	*data;
 
 	data = philo->data;
+	pthread_mutex_lock(data->w_lock);
+		if (data->death_flag == 1)
+		{
+			pthread_mutex_unlock(data->w_lock);
+			return ;
+		}
+	pthread_mutex_unlock(data->w_lock);
 	philo->data->sleepflag = 1;
 	print_actions(philo, SLEEP);
-	usleep(data->sleeptime * 1000);
-	return ;
+	better_usleep(data->sleeptime, data);
+	//usleep(data->sleeptime * 1000);
 }

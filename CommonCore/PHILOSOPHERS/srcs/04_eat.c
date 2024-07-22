@@ -5,6 +5,8 @@ void	take_fork(t_philo *philo)
 	t_data	*data;
 
 	data = philo->data;
+	if (data->death_flag)
+		return ;
 	if (philo->id == data->philo_nb) // if last philo, take fork from first philo
 	{
 		pthread_mutex_lock(&data->forks[philo->id - 1]);
@@ -23,6 +25,8 @@ void	drop_fork(t_philo *philo)
 	t_data	*data;
 
 	data = philo->data;
+	if (data->death_flag)
+		return ;
 	if (philo->id == data->philo_nb) // if last philo, drop fork from first philo
 	{
 		pthread_mutex_unlock(&data->forks[0]);
@@ -40,13 +44,28 @@ void	eat(t_philo *philo)
 	t_data	*data;
 
 	data = philo->data;
-	//pthread_mutex_lock(data->d_lock);
+	if (data->philo_nb < 2 || data->death_flag)
+		return ;
 	take_fork(philo); // lock 2 forks for current philo
-	//printf("last meal: %lld\n\n", philo->last_meal);
+	pthread_mutex_lock(data->w_lock);
+	/*if (data->death_flag == 1)
+	{
+		pthread_mutex_unlock(data->w_lock);
+		drop_fork(philo);
+		return ;
+	}*/
+	pthread_mutex_unlock(data->w_lock);
 	philo->last_meal = gettime_ms(data);
-	//printf("new last meal: %lld\n\n", philo->last_meal);
 	print_actions(philo, EAT);
-	usleep(data->eatingtime * 1000);
+	better_usleep(data->eatingtime, data);
+	pthread_mutex_lock(data->w_lock);
+	/*if (data->death_flag == 1)
+	{
+		pthread_mutex_unlock(data->w_lock);
+		drop_fork(philo);
+		return ;
+	}*/
+	pthread_mutex_unlock(data->w_lock);
 	drop_fork(philo); // drops the 2 forks
 	philo->next_to_eat = 0;
 	philo->eat_counter++;
@@ -56,7 +75,5 @@ void	eat(t_philo *philo)
 		print_actions(philo, END);
 		return ;
 	}
-	//pthread_mutex_unlock(data->d_lock);
 	philo_sleep(philo);
-
 }

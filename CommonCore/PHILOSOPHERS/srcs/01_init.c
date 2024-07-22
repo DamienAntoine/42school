@@ -7,6 +7,7 @@ void	struct_init(t_data *data, char **argv, int argc)
 	i = 0;
 	data->death_flag = 0;
 	data->sleepflag = 0;
+	data->eat_max_flag = 0;
 	gettimeofday(&data->start, NULL);
 	data->philo_nb = ft_atoi(argv[1]);
 	data->fork_nb = ft_atoi(argv[1]);

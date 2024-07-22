@@ -17,6 +17,19 @@ long long	gettime_ms(t_data *timer)
 	return (sec * 1000LL + usec / 1000);
 }
 
+void better_usleep(long long time, t_data *data)
+{
+    long long start_time = gettime_ms(data);
+
+    while ((gettime_ms(data) - start_time) < time)
+    {
+        if (data->death_flag)
+            return;
+        usleep(100);
+    }
+}
+
+
 int	ft_atoi(const char *str)
 {
 	int	sign;

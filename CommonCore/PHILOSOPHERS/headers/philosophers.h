@@ -69,5 +69,6 @@ void				free_data(t_data *data);
 void				free_philo(t_philo *philo);
 void				start_timer(t_data *timer);
 long long			gettime_ms(t_data *timer);
+void better_usleep(long long time, t_data *data);
 
 #endif

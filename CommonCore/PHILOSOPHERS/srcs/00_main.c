@@ -3,8 +3,6 @@
 // to do:
 // -check if all threads come back to threads_join function in every possible end
 //  -norm
-//  -add &lld support to ft_printf
-//  -replace every printf with ft_printf
 // -change makefile so libftprintf.a gets cleaned without removing the whole folder
 //  -init.c : ft_atoll function
 //  close program if negative arguments
