@@ -25,6 +25,7 @@ typedef struct s_data
 	int				death_flag;
 	int				philo_nb;
 	int				fork_nb;
+    int             isprinted;
 	long long int	deathtimer;
 	long long int	eatingtime;
 	int				sleepflag;
@@ -44,11 +45,11 @@ typedef struct s_philo
 	int				id;
 	int				next_to_eat;
 	int				eat_counter;
+    int             is_holding_forks;
 	long long int	last_meal;
 	t_data			*data;
 }					t_philo;
 
-int					ft_printf(const char *format, ...);
 void				struct_init(t_data *data, char **argv, int argc);
 int					threads_init(t_data *data);
 void				mutexes_init(t_data *data);
@@ -67,8 +68,9 @@ void				monitor_routine(void *arg);
 int					ft_atoi(const char *str);
 void				free_data(t_data *data);
 void				free_philo(t_philo *philo);
+int                 is_end(t_philo *philo);
 void				start_timer(t_data *timer);
 long long			gettime_ms(t_data *timer);
-void better_usleep(long long time, t_data *data);
+void                better_usleep(long long time, t_data *data);
 
 #endif

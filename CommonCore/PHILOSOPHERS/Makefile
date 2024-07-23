@@ -1,7 +1,6 @@
 NAME = philo
 CFLAGS = -g -Wextra -Wall -Werror
 SRCS_DIR = srcs
-PRINTF_DIR = includes/PRINTF
 OBJS_DIR = objs
 SRCS = 	./srcs/00_main.c \
 		./srcs/01_init.c \
@@ -34,14 +33,9 @@ $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
 $(OBJS_DIR):
 	mkdir -p $(OBJS_DIR)
 
-$(PRINTF_DIR)/libftprintf.a: | $(PRINTF_DIR)
-	@echo "$(YELLOW)Compiling ft_printf $(DEF_COLOR)"
-	@cd $(PRINTF_DIR); make
-	@echo "$(GREEN)ft_printf Compiled Successfully $(DEF_COLOR)"
-
-$(NAME): $(OBJS) $(PRINTF_DIR)/libftprintf.a
+$(NAME): $(OBJS)
 	@echo "$(YELLOW)Compiling Philo Project $(DEF_COLOR)"
-	@$(CC) $(CFLAGS) $(OBJS) -L$(PRINTF_DIR) -lftprintf -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 	@echo "$(GREEN)Philo Project Compiled Successfully $(DEF_COLOR)"
 
 clean:

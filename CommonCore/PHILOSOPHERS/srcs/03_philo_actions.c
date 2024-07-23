@@ -1,12 +1,5 @@
 #include "../headers/philosophers.h"
 
-// &data->forks[philo->id] = fourchette correspondant au philo
-// data->philo_nb = last philo
-// philo with even IDs eat first
-// start by sending philos to eat, others think
-// philos done eating go sleep, philos thinking go eat
-// repeat
-// find a way to tell the program a philosopher is done eating so the others can start
 void	print_actions(t_philo *philo, int action)
 {
 	t_data			*data;
@@ -21,8 +14,6 @@ void	print_actions(t_philo *philo, int action)
 		printf("%lld | Philosopher %d is sleeping\n", cur_time, philo->id);
 	if (action == THINK)
 		printf("%lld | Philosopher %d is thinking\n", cur_time, philo->id);
-	if (action == END)
-		printf("%lld | Target reached, ending program\n", cur_time);
 	if (action == DEAD)
 		printf("%lld | Philosopher %d is dead\n", cur_time, philo->id);
 	if (action == FORKS)
@@ -37,27 +28,25 @@ void	philo_actions(t_philo *philo)
 	data = philo->data;
 	while (1)
 	{
-		printf("%lld, philo n%d in loop\n", gettime_ms(data), philo->id);
 		pthread_mutex_lock(data->w_lock);
-		if (data->death_flag == 1 || data->eat_max_flag == 1)
+		if (data->death_flag || data->eat_max_flag)
 		{
 			pthread_mutex_unlock(data->w_lock);
 			break ;
 		}
 		pthread_mutex_unlock(data->w_lock);
 		if (philo->next_to_eat == 1)
-			eat(philo); // eat and sleep
+			eat(philo);
 		else if (philo->next_to_eat == 0)
-			think(philo); // queue for fork
+			think(philo);
 		pthread_mutex_lock(data->w_lock);
-		if (data->death_flag == 1 || data->eat_max_flag == 1)
+		if (data->death_flag || data->eat_max_flag)
 		{
 			pthread_mutex_unlock(data->w_lock);
 			break ;
 		}
 		pthread_mutex_unlock(data->w_lock);
 	}
-	printf("%lld, philo n%d\n", gettime_ms(data), philo->id);
 }
 
 void	think(t_philo *philo)
@@ -66,15 +55,22 @@ void	think(t_philo *philo)
 
 	data = philo->data;
 	pthread_mutex_lock(data->w_lock);
-		if (data->death_flag == 1)
-		{
-			pthread_mutex_unlock(data->w_lock);
-			return ;
-		}
+	if (data->death_flag || data->eat_max_flag)
+	{
+        if (philo->is_holding_forks == 1)
+            drop_fork(philo);
+		pthread_mutex_unlock(data->w_lock);
+		return ;
+	}
 	pthread_mutex_unlock(data->w_lock);
 	philo->next_to_eat = 1;
+    if (data->death_flag || data->eat_max_flag)
+	{
+		pthread_mutex_unlock(data->w_lock);
+		return ;
+	}
 	print_actions(philo, THINK);
-	usleep(100); // wait 1ms so the other threads have time to lock their forks
+	usleep(100);
 }
 
 void	philo_sleep(t_philo *philo)
@@ -83,14 +79,22 @@ void	philo_sleep(t_philo *philo)
 
 	data = philo->data;
 	pthread_mutex_lock(data->w_lock);
-		if (data->death_flag == 1)
-		{
-			pthread_mutex_unlock(data->w_lock);
-			return ;
-		}
+	if (data->death_flag || data->eat_max_flag)
+	{
+        if (philo->is_holding_forks == 1)
+            drop_fork(philo);
+		pthread_mutex_unlock(data->w_lock);
+		return ;
+	}
 	pthread_mutex_unlock(data->w_lock);
 	philo->data->sleepflag = 1;
+    if (data->death_flag || data->eat_max_flag)
+	{
+        if (philo->is_holding_forks == 1)
+            drop_fork(philo);
+		pthread_mutex_unlock(data->w_lock);
+		return ;
+	}
 	print_actions(philo, SLEEP);
 	better_usleep(data->sleeptime, data);
-	//usleep(data->sleeptime * 1000);
 }

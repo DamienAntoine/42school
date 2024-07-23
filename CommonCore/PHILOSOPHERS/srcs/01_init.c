@@ -1,32 +1,11 @@
 #include "../headers/philosophers.h"
 
-void	struct_init(t_data *data, char **argv, int argc)
+static void    struct_init_helper(t_data *data)
 {
-	int	i;
+    int i;
 
-	i = 0;
-	data->death_flag = 0;
-	data->sleepflag = 0;
-	data->eat_max_flag = 0;
-	gettimeofday(&data->start, NULL);
-	data->philo_nb = ft_atoi(argv[1]);
-	data->fork_nb = ft_atoi(argv[1]);
-	// create ft_atoll (ascii to long long) for time variables
-	data->deathtimer = atoll(argv[2]);
-	data->eatingtime = atoll(argv[3]);
-	data->sleeptime = atoll(argv[4]);
-	if (argc == 6)
-		data->eat_max = ft_atoi(argv[5]);
-	else
-		data->eat_max = -1; // -1 if no limit
-	data->th = (pthread_t *)malloc(sizeof(pthread_t) * data->philo_nb);
-	if (data->th == NULL)
-	{
-		perror("Failed to allocate memory for thread IDs");
-		free(data);
-		return ;
-	}
-	while (i < data->philo_nb)
+    i = 0;
+    while (i < data->philo_nb)
 	{
 		data->th[i] = 0;
 		i++;
@@ -46,6 +25,32 @@ void	struct_init(t_data *data, char **argv, int argc)
 		free(data);
 		return ;
 	}
+}
+
+void	struct_init(t_data *data, char **argv, int argc)
+{
+	data->death_flag = 0;
+	data->sleepflag = 0;
+	data->eat_max_flag = 0;
+    data->isprinted = 0;
+	gettimeofday(&data->start, NULL);
+	data->philo_nb = ft_atoi(argv[1]);
+	data->fork_nb = ft_atoi(argv[1]);
+	data->deathtimer = atoll(argv[2]);
+	data->eatingtime = atoll(argv[3]);
+	data->sleeptime = atoll(argv[4]);
+	if (argc == 6)
+		data->eat_max = ft_atoi(argv[5]);
+	else
+		data->eat_max = -1;
+	data->th = (pthread_t *)malloc(sizeof(pthread_t) * data->philo_nb);
+	if (data->th == NULL)
+	{
+		perror("Failed to allocate memory for thread IDs");
+		free(data);
+		return ;
+	}
+	struct_init_helper(data);
 }
 
 int	threads_init(t_data *data)

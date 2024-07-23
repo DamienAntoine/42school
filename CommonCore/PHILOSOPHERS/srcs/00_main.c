@@ -1,18 +1,11 @@
 #include "../headers/philosophers.h"
 
-// to do:
-// -check if all threads come back to threads_join function in every possible end
-//  -norm
-// -change makefile so libftprintf.a gets cleaned without removing the whole folder
-//  -init.c : ft_atoll function
-//  close program if negative arguments
-//  function to print actions instead of printing them directly
 int	main(int argc, char **argv)
 {
 	t_data	*data;
-	if (argc < 5 || argc > 6) // add isdigit check
+	if (argc < 5 || argc > 6)
 	{
-		ft_printf("Usage: number_of_philosophers, time_to_die, \
+		printf("Usage: number_of_philosophers, time_to_die, \
 time_to_eat, time_to_sleep, [number_of_times_each_philosopher_must_eat]\n");
 		return (1);
 	}

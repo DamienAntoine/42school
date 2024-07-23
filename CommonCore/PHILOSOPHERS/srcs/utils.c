@@ -20,11 +20,17 @@ long long	gettime_ms(t_data *timer)
 void better_usleep(long long time, t_data *data)
 {
     long long start_time = gettime_ms(data);
+    t_philo *philo;
 
+    philo = data->philos;
     while ((gettime_ms(data) - start_time) < time)
     {
         if (data->death_flag)
+        {
+            if (philo->is_holding_forks == 1)
+                drop_fork(philo);
             return;
+        }
         usleep(100);
     }
 }
