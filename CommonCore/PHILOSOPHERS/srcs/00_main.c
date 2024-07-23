@@ -1,5 +1,14 @@
 #include "../headers/philosophers.h"
 
+//add isdigit check
+//add ft_atoll
+long long ft_atoll(char *str)
+{
+    long long int   res;
+
+    
+}
+
 int	main(int argc, char **argv)
 {
 	t_data	*data;

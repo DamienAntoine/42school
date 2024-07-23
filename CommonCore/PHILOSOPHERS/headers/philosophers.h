@@ -25,7 +25,6 @@ typedef struct s_data
 	int				death_flag;
 	int				philo_nb;
 	int				fork_nb;
-    int             isprinted;
 	long long int	deathtimer;
 	long long int	eatingtime;
 	int				sleepflag;

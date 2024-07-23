@@ -32,7 +32,6 @@ void	struct_init(t_data *data, char **argv, int argc)
 	data->death_flag = 0;
 	data->sleepflag = 0;
 	data->eat_max_flag = 0;
-    data->isprinted = 0;
 	gettimeofday(&data->start, NULL);
 	data->philo_nb = ft_atoi(argv[1]);
 	data->fork_nb = ft_atoi(argv[1]);
@@ -98,19 +97,4 @@ int	monitor_init(t_data *data)
 	}
 	pthread_detach(monitor);
 	return (0);
-}
-
-void	mutexes_destroy(t_data *data)
-{
-	int	i;
-
-	i = 0;
-	while (i < data->philo_nb)
-	{
-		pthread_mutex_destroy(&data->forks[i]);
-		i++;
-	}
-	pthread_mutex_destroy(data->d_lock);
-	pthread_mutex_destroy(data->w_lock);
-	pthread_mutex_destroy(data->print_lock);
 }
