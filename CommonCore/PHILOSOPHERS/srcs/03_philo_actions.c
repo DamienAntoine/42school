@@ -57,14 +57,14 @@ void	think(t_philo *philo)
 	pthread_mutex_lock(data->w_lock);
 	if (data->death_flag || data->eat_max_flag)
 	{
-        if (philo->is_holding_forks == 1)
-            drop_fork(philo);
+		if (philo->is_holding_forks == 1)
+			drop_fork(philo);
 		pthread_mutex_unlock(data->w_lock);
 		return ;
 	}
 	pthread_mutex_unlock(data->w_lock);
 	philo->next_to_eat = 1;
-    if (data->death_flag || data->eat_max_flag)
+	if (data->death_flag || data->eat_max_flag)
 	{
 		pthread_mutex_unlock(data->w_lock);
 		return ;
@@ -81,17 +81,17 @@ void	philo_sleep(t_philo *philo)
 	pthread_mutex_lock(data->w_lock);
 	if (data->death_flag || data->eat_max_flag)
 	{
-        if (philo->is_holding_forks == 1)
-            drop_fork(philo);
+		if (philo->is_holding_forks == 1)
+			drop_fork(philo);
 		pthread_mutex_unlock(data->w_lock);
 		return ;
 	}
 	pthread_mutex_unlock(data->w_lock);
 	philo->data->sleepflag = 1;
-    if (data->death_flag || data->eat_max_flag)
+	if (data->death_flag || data->eat_max_flag)
 	{
-        if (philo->is_holding_forks == 1)
-            drop_fork(philo);
+		if (philo->is_holding_forks == 1)
+			drop_fork(philo);
 		pthread_mutex_unlock(data->w_lock);
 		return ;
 	}

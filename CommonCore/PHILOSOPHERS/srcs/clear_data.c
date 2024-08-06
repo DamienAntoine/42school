@@ -6,7 +6,7 @@ void	free_data(t_data *data)
 	free(data->forks);
 	free(data->print_lock);
 	free(data->d_lock);
-    free(data->w_lock);
+	free(data->w_lock);
 	free(data->philos);
 	free(data);
 }

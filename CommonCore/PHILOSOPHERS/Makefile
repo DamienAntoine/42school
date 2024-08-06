@@ -9,7 +9,8 @@ SRCS = 	./srcs/00_main.c \
 		./srcs/04_eat.c \
 		./srcs/05_monitoring.c \
 		./srcs/clear_data.c \
-		./srcs/utils.c
+		./srcs/utils.c \
+		./srcs/utils_helper.c
 OBJS = $(patsubst $(SRCS_DIR)/%.c,$(OBJS_DIR)/%.o,$(SRCS))
 
 # Colors

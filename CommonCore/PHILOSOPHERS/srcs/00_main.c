@@ -1,18 +1,13 @@
 #include "../headers/philosophers.h"
 
-//add isdigit check
-//add ft_atoll
-long long ft_atoll(char *str)
-{
-    long long int   res;
-
-    
-}
+// add isdigit check
+// add ft_atoll
 
 int	main(int argc, char **argv)
 {
 	t_data	*data;
-	if (argc < 5 || argc > 6)
+
+	if (argc < 5 || argc > 6 || !checkinputs(argv))
 	{
 		printf("Usage: number_of_philosophers, time_to_die, \
 time_to_eat, time_to_sleep, [number_of_times_each_philosopher_must_eat]\n");

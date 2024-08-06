@@ -1,10 +1,5 @@
 #include "../headers/philosophers.h"
 
-void	start_timer(t_data *timer)
-{
-	gettimeofday(&timer->start, NULL);
-}
-
 long long	gettime_ms(t_data *timer)
 {
 	struct timeval	currenttime;
@@ -17,24 +12,44 @@ long long	gettime_ms(t_data *timer)
 	return (sec * 1000LL + usec / 1000);
 }
 
-void better_usleep(long long time, t_data *data)
+void	better_usleep(long long time, t_data *data)
 {
-    long long start_time = gettime_ms(data);
-    t_philo *philo;
+	long long	start_time;
+	t_philo		*philo;
 
-    philo = data->philos;
-    while ((gettime_ms(data) - start_time) < time)
-    {
-        if (data->death_flag)
-        {
-            if (philo->is_holding_forks == 1)
-                drop_fork(philo);
-            return;
-        }
-        usleep(100);
-    }
+	start_time = gettime_ms(data);
+	philo = data->philos;
+	while ((gettime_ms(data) - start_time) < time)
+	{
+		if (data->death_flag)
+		{
+			if (philo->is_holding_forks == 1)
+				drop_fork(philo);
+			return ;
+		}
+		usleep(100);
+	}
 }
 
+int	checkinputs(char **argv)
+{
+	int	i;
+	int	j;
+
+	i = 1;
+	while (argv[i])
+	{
+		j = 0;
+		while (argv[i][j])
+		{
+			if (ft_isdigit(argv[i][j]) != 1)
+				return (0);
+			j++;
+		}
+		i++;
+	}
+	return (1);
+}
 
 int	ft_atoi(const char *str)
 {
@@ -61,6 +76,31 @@ int	ft_atoi(const char *str)
 	{
 		result = result * 10 + (str[i] - '0');
 		i++;
+	}
+	return (sign * result);
+}
+
+long long	ft_atoll(const char *str)
+{
+	long long	result;
+	int			sign;
+
+	result = 0;
+	sign = 1;
+	while (*str <= 32)
+	{
+		str++;
+	}
+	if (*str == '-' || *str == '+')
+	{
+		if (*str == '-')
+			sign = -1;
+		str++;
+	}
+	while (ft_isdigit(*str))
+	{
+		result = result * 10 + (*str - '0');
+		str++;
 	}
 	return (sign * result);
 }

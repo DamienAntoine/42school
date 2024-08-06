@@ -21,8 +21,8 @@ void	monitor_routine(void *arg)
 				print_actions(&data->philos[i], DEAD);
 				return ;
 			}
-            if (data->eat_max_flag)
-                return ;
+			if (data->eat_max_flag)
+				return ;
 			i++;
 		}
 		usleep(1000);

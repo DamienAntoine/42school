@@ -1,11 +1,11 @@
 #include "../headers/philosophers.h"
 
-static void    struct_init_helper(t_data *data)
+static void	struct_init_helper(t_data *data)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (i < data->philo_nb)
+	i = 0;
+	while (i < data->philo_nb)
 	{
 		data->th[i] = 0;
 		i++;
@@ -35,9 +35,9 @@ void	struct_init(t_data *data, char **argv, int argc)
 	gettimeofday(&data->start, NULL);
 	data->philo_nb = ft_atoi(argv[1]);
 	data->fork_nb = ft_atoi(argv[1]);
-	data->deathtimer = atoll(argv[2]);
-	data->eatingtime = atoll(argv[3]);
-	data->sleeptime = atoll(argv[4]);
+	data->deathtimer = ft_atoll(argv[2]);
+	data->eatingtime = ft_atoll(argv[3]);
+	data->sleeptime = ft_atoll(argv[4]);
 	if (argc == 6)
 		data->eat_max = ft_atoi(argv[5]);
 	else

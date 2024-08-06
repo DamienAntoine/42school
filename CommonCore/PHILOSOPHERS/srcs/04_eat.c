@@ -17,12 +17,12 @@ void	take_fork(t_philo *philo)
 		pthread_mutex_lock(&data->forks[philo->id - 1]);
 		pthread_mutex_lock(&data->forks[(philo->id)]);
 	}
-    philo->is_holding_forks = 1;
-    if (data->death_flag || data->eat_max_flag)
-    {
-        drop_fork(philo);
+	philo->is_holding_forks = 1;
+	if (data->death_flag || data->eat_max_flag)
+	{
+		drop_fork(philo);
 		return ;
-    }
+	}
 	print_actions(philo, FORKS);
 }
 
@@ -41,7 +41,7 @@ void	drop_fork(t_philo *philo)
 		pthread_mutex_unlock(&data->forks[philo->id]);
 		pthread_mutex_unlock(&data->forks[philo->id - 1]);
 	}
-    philo->is_holding_forks = 0;
+	philo->is_holding_forks = 0;
 }
 
 void	eat(t_philo *philo)
@@ -53,14 +53,19 @@ void	eat(t_philo *philo)
 		return ;
 	take_fork(philo);
 	pthread_mutex_lock(data->w_lock);
-    if (data->death_flag || data->eat_max_flag)
-    {
+	if (data->death_flag || data->eat_max_flag)
+	{
 		pthread_mutex_unlock(data->w_lock);
 		if (philo->is_holding_forks == 1)
-                drop_fork(philo);
+			drop_fork(philo);
 		return ;
 	}
 	pthread_mutex_unlock(data->w_lock);
+	eat_helper(philo, data);
+}
+
+void	eat_helper(t_philo *philo, t_data *data)
+{
 	philo->last_meal = gettime_ms(data);
 	print_actions(philo, EAT);
 	better_usleep(data->eatingtime, data);
@@ -69,7 +74,7 @@ void	eat(t_philo *philo)
 	{
 		pthread_mutex_unlock(data->w_lock);
 		if (philo->is_holding_forks == 1)
-                drop_fork(philo);
+			drop_fork(philo);
 		return ;
 	}
 	pthread_mutex_unlock(data->w_lock);
