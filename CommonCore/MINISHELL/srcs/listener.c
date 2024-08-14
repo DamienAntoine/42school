@@ -14,17 +14,27 @@ typedef struct s_commands
 }				t_commands;
 
 //infinite loop to listen for commands
-//sends each command line to a function that separates each command into tokens
+//sends each command line to a function thatchecks the grammar and syntax
+//separates each command into tokens
+
 //each token are treated by a function that calls the operation related to the token
 
 int	main(void)
 {
 	t_commands *commands;
+    int loop;
 
+    loop = 1;
 	commands = NULL;
-	while (1)
+	while (loop)
 	{
+        loop = 0;
 		printf("$>");
 		commands->cmds = get_next_line();
+        if ()
+        {
+            loop = 1;
+            
+        }
 	}
 }
