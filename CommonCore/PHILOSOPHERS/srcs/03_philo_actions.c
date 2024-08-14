@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   03_philo_actions.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/06 12:34:34 by dantoine          #+#    #+#             */
+/*   Updated: 2024/08/06 12:34:35 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../headers/philosophers.h"
 
 void	print_actions(t_philo *philo, int action)
@@ -9,15 +21,15 @@ void	print_actions(t_philo *philo, int action)
 	cur_time = gettime_ms(data);
 	pthread_mutex_lock(data->print_lock);
 	if (action == EAT)
-		printf("%lld | Philosopher %d is eating\n", cur_time, philo->id);
+		printf("%lld Philosopher %d is eating\n", cur_time, philo->id);
 	if (action == SLEEP)
-		printf("%lld | Philosopher %d is sleeping\n", cur_time, philo->id);
+		printf("%lld Philosopher %d is sleeping\n", cur_time, philo->id);
 	if (action == THINK)
-		printf("%lld | Philosopher %d is thinking\n", cur_time, philo->id);
+		printf("%lld Philosopher %d is thinking\n", cur_time, philo->id);
 	if (action == DEAD)
-		printf("%lld | Philosopher %d is dead\n", cur_time, philo->id);
+		printf("%lld Philosopher %d is dead\n", cur_time, philo->id);
 	if (action == FORKS)
-		printf("%lld | Philosopher %d picked two forks\n", cur_time, philo->id);
+		printf("%lld Philosopher %d picked two forks\n", cur_time, philo->id);
 	pthread_mutex_unlock(data->print_lock);
 }
 

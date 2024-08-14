@@ -13,6 +13,10 @@ typedef struct s_commands
 	char		**cmds;
 }				t_commands;
 
+//infinite loop to listen for commands
+//sends each command line to a function that separates each command into tokens
+//each token are treated by a function that calls the operation related to the token
+
 int	main(void)
 {
 	t_commands *commands;

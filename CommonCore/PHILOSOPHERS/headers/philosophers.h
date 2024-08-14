@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philosophers.h                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/06 12:34:12 by dantoine          #+#    #+#             */
+/*   Updated: 2024/08/06 13:14:35 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
@@ -30,6 +42,7 @@ typedef struct s_data
 	int				sleepflag;
 	long long int	sleeptime;
 	int				eat_max;
+	int				eat_max_nb;
 	int				eat_max_flag;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	*w_lock;

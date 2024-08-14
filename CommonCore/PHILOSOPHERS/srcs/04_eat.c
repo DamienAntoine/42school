@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   04_eat.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/06 12:34:38 by dantoine          #+#    #+#             */
+/*   Updated: 2024/08/06 13:14:08 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../headers/philosophers.h"
 
 void	take_fork(t_philo *philo)
@@ -83,8 +95,12 @@ void	eat_helper(t_philo *philo, t_data *data)
 	philo->eat_counter++;
 	if (philo->eat_counter == data->eat_max)
 	{
-		data->eat_max_flag = 1;
-		return ;
+		data->eat_max_nb++;
+		if (data->eat_max_nb == data->philo_nb)
+		{
+			data->eat_max_flag = 1;
+			return ;
+		}
 	}
 	philo_sleep(philo);
 }

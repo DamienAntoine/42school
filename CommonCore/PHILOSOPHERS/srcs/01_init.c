@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   01_init.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dantoine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/06 12:34:23 by dantoine          #+#    #+#             */
+/*   Updated: 2024/08/06 13:13:17 by dantoine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../headers/philosophers.h"
 
 static void	struct_init_helper(t_data *data)
@@ -31,6 +43,7 @@ void	struct_init(t_data *data, char **argv, int argc)
 {
 	data->death_flag = 0;
 	data->sleepflag = 0;
+	data->eat_max_nb = 0;
 	data->eat_max_flag = 0;
 	gettimeofday(&data->start, NULL);
 	data->philo_nb = ft_atoi(argv[1]);
