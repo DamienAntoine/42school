@@ -53,6 +53,8 @@ char	*get_next_line(int fd)
 	return (ft_strdup(buf));
 }
 
+//for now it only prints the prompt (MSL$>) and asks for an input, then prints the input back.
+//need to store the input in a struct, check if its a correct input and cut it into tokens
 int	main(int argc, char **argv)
 {
 	char *input;
@@ -70,7 +72,6 @@ int	main(int argc, char **argv)
 			printf("End of file reached\n");
 			exit(0);
 		}
-
 		printf("Command: %s", input);
 		free(input);
 	}

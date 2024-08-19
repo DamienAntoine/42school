@@ -4,14 +4,15 @@
 
 #define BUFFER_SIZE 1024
 
-char *ft_strdup(char *str)
+char	*ft_strdup(const char *str)
 {
-	int	i = 0;
-	char *dup;
+	int		i;
+	char	*dup;
 
+	i = 0;
 	while (str[i])
 		i++;
-	dup = malloc(sizeof(char) * i + 1);
+	dup = malloc(sizeof(char) * (i + 1));
 	if (!dup)
 		return (NULL);
 	i = 0;
@@ -24,28 +25,30 @@ char *ft_strdup(char *str)
 	return (dup);
 }
 
-char *get_next_line(int fd)
+char	*get_next_line(int fd)
 {
-	int	i = 0;
-	int	bytesread;
+	int		i;
+	int		bytesread;
 	char	c;
-	char buf[1000000];
+	char	buf[BUFFER_SIZE + 1];
 
+	i = 0;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
+
 	while ((bytesread = read(fd, &c, 1)) > 0)
 	{
-		buf[i++] = c;
 		if (c == '\n')
-			break;
+		{
+			buf[i++] = c;
+			break ;
+		}
+		if (i >= BUFFER_SIZE - 1)
+			break ;
+		buf[i++] = c;
 	}
-	buf[i] = '\0';
 	if (bytesread <= 0 && i == 0)
 		return (NULL);
+	buf[i] = '\0';
 	return (ft_strdup(buf));
-}
-
-int	main()
-{
-	printf("%s\n", get_next_line(0));
 }
