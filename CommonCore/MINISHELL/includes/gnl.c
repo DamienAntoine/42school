@@ -31,11 +31,12 @@ char	*get_next_line(int fd)
 	int		bytesread;
 	char	c;
 	char	buf[BUFFER_SIZE + 1];
+	char	*start;
+	char	*end;
 
 	i = 0;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-
 	while ((bytesread = read(fd, &c, 1)) > 0)
 	{
 		if (c == '\n')
