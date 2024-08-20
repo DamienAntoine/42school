@@ -55,8 +55,13 @@ char	*get_next_line(int fd)
 }
 
 
-
-
+//only here for testing
+//maybe add a variable that counts the number of tokens in the input
+//and somehow separate the command from the flags and store the flags in another variable
+typedef struct s_command
+{
+	char **args;
+}	t_command;
 
 size_t ft_toklen(const char *str, const char *delim)
 {
@@ -79,10 +84,10 @@ size_t ft_toklen(const char *str, const char *delim)
 	return (len);
 }
 
-// strtok is like ft_split but it replaces delimiter characters with null characters,making every word of the string a token. It returns the next token everytime its called.
+// strtok is like ft_split but it replaces delimiter characters with null characters,making every word of the string a token. It returns the next token everytime its called
 char	*ft_strtok(char *str, const char *delimiter)
 {
-	static char *last = NULL; // keeps track of next token
+	static char *last; // keeps track of next token
 	char	*start;
 	char	*end;
 
@@ -102,12 +107,31 @@ char	*ft_strtok(char *str, const char *delimiter)
 	return (start);
 }
 
+#define MAX_ARGS 100
+
+char **ft_tokenize(char *input)
+{
+    char **args = malloc(MAX_ARGS * sizeof(char *));
+    int i = 0;
+    char *token = ft_strtok(input, " ");
+    while (token != NULL && i < MAX_ARGS - 1)
+    {
+        args[i++] = token;
+        token = ft_strtok(NULL, " ");
+    }
+    args[i] = '\0';
+    return args;
+}
+
 // for now it only prints the prompt (MSL$>) and asks for an input, then prints the input back.
 // need to store the input in a struct, check if its a correct input and cut it into tokens (separate the command and the arguments)
 
 int	main(int argc, char **argv)
 {
-	char	*input;
+	char		*input;
+	char		*token;
+	t_command	cmds;
+	int			i;
 
 	if (argc > 1)
 		exit(0);
@@ -120,8 +144,18 @@ int	main(int argc, char **argv)
 			printf("End of file reached\n");
 			exit(0);
 		}
-		printf("Command: %s", ft_strtok(input, " ")); // replace this with whatever it needs to process the commands
+		cmds.args = ft_tokenize(input); // store tokens in the structure
+
+		//prints back the struct (just for testing)
+		//we replace this part with whatever we want
+		i = 0;
+		while (cmds.args[i])
+		{
+			printf("Command: %s\n", cmds.args[i]);
+			i++;
+		}
 		free(input);
+		free(cmds.args);
 	}
 	return (0);
 }
