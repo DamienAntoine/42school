@@ -152,6 +152,8 @@ int	main(int argc, char **argv)
 		cmds.args = ft_tokenize(input); // splits inputs and stores tokens in the structure (lexer)
 		// checks tokens syntax, creates hierarchy and redirects them to corresponding functions (parser to executor)
 		// executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
+		//example of how lexer->parser->executor thing works: https://imgur.com/a/PTod73J
+
 
 		//prints back the struct (just for testing)
 		//we replace this part with whatever we want
