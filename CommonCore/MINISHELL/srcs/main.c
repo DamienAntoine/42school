@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-
-#define BUFFER_SIZE 1024
+#include "../headers/minishell.h"
 
 char	*ft_strdup(const char *str)
 {
@@ -63,6 +59,9 @@ typedef struct s_command
 	char **args;
 }	t_command;
 
+
+
+
 size_t ft_toklen(const char *str, const char *delim)
 {
 	size_t len = 0;
@@ -107,25 +106,30 @@ char	*ft_strtok(char *str, const char *delimiter)
 	return (start);
 }
 
-#define MAX_ARGS 100
-
 char **ft_tokenize(char *input)
 {
-    char **args = malloc(MAX_ARGS * sizeof(char *));
-    int i = 0;
-    char *token = ft_strtok(input, " ");
-    while (token != NULL && i < MAX_ARGS - 1)
-    {
-        args[i++] = token;
-        token = ft_strtok(NULL, " ");
-    }
-    args[i] = '\0';
-    return args;
+	char **args = malloc(MAX_ARGS * sizeof(char *));
+	int i = 0;
+	char *token = ft_strtok(input, " ");
+	while (token != NULL && i < MAX_ARGS - 1)
+	{
+		args[i++] = token;
+	token = ft_strtok(NULL, " ");
+	}
+	args[i] = '\0';
+	return (args);
+}
+
+
+void	handle_sigint(int sig)
+{
+	(void)sig;
+	write(1, "\nMSL$> ", 8);
 }
 
 // for now it only prints the prompt (MSL$>) and asks for an input, then prints the input back.
 // need to store the input in a struct, check if its a correct input and cut it into tokens (separate the command and the arguments)
-
+#include <string.h>
 int	main(int argc, char **argv)
 {
 	char		*input;
@@ -135,16 +139,19 @@ int	main(int argc, char **argv)
 
 	if (argc > 1)
 		exit(0);
+	signal(SIGINT, handle_sigint); //handle ctrl+c
 	while (1)
 	{
 		write(1, "MSL$> ", 6);
 		input = get_next_line(STDIN_FILENO); // alias for '1' in unistd.h
-		if (input == NULL)
+		if (input == NULL) //ctrl + d
 		{
 			printf("End of file reached\n");
 			exit(0);
 		}
-		cmds.args = ft_tokenize(input); // store tokens in the structure
+		cmds.args = ft_tokenize(input); // splits inputs and stores tokens in the structure (lexer)
+		// checks tokens syntax, creates hierarchy and redirects them to corresponding functions (parser to executor)
+		// executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
 
 		//prints back the struct (just for testing)
 		//we replace this part with whatever we want
