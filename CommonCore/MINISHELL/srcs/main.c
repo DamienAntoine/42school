@@ -27,8 +27,6 @@ char	*get_next_line(int fd)
 	int		bytesread;
 	char	c;
 	char	buf[BUFFER_SIZE + 1];
-	char	*start;
-	char	*end;
 
 	i = 0;
 	if (fd < 0 || BUFFER_SIZE <= 0)
@@ -48,20 +46,12 @@ char	*get_next_line(int fd)
 		return (NULL);
 	buf[i] = '\0';
 	return (ft_strdup(buf));
-}
-
-
-//only here for testing
-//maybe add a variable that counts the number of tokens in the input
-//and somehow separate the command from the flags and store the flags in another variable
-typedef struct s_command
-{
-	char **args;
-}	t_command;
+}//gnl is only here for testing (delete and use one from /includes/gnl later)
 
 
 
 
+//lexer start
 size_t ft_toklen(const char *str, const char *delim)
 {
 	size_t len = 0;
@@ -106,36 +96,54 @@ char	*ft_strtok(char *str, const char *delimiter)
 	return (start);
 }
 
-char **ft_tokenize(char *input)
+//lexer takes the whole command line and splits every word into a token to store them into token_list->tokens.
+//example : ls -l = token 1 is "ls", token 2 is "-l"
+char	**ft_tokenize(char *input)
 {
-	char **args = malloc(MAX_ARGS * sizeof(char *));
-	int i = 0;
-	char *token = ft_strtok(input, " ");
+	char	**args;
+	int		i;
+	char	*token;
+
+	args = malloc(MAX_ARGS * sizeof(char *));
+	i = 0;
+	token = ft_strtok(input, " \t\n|<>");
 	while (token != NULL && i < MAX_ARGS - 1)
 	{
 		args[i++] = token;
-	token = ft_strtok(NULL, " ");
+		token = ft_strtok(NULL, " \t\n|<>");
 	}
-	args[i] = '\0';
+	args[i] = NULL;
 	return (args);
 }
+//lexer end
 
 
+
+//parser start
+
+	//the parser takes the tokens from token_list struct and sorts them in corresponding variable of t_commands struct
+
+//parser end
+
+
+
+//sighandle start
 void	handle_sigint(int sig)
 {
 	(void)sig;
 	write(1, "\nMSL$> ", 8);
 }
+//sighandle end
 
 // for now it only prints the prompt (MSL$>) and asks for an input, then prints the input back.
 // need to store the input in a struct, check if its a correct input and cut it into tokens (separate the command and the arguments)
 #include <string.h>
 int	main(int argc, char **argv)
 {
-	char		*input;
-	char		*token;
-	t_command	cmds;
-	int			i;
+	char			*input;
+	t_token_list	toklist;
+	t_command		*cmds;
+	int				i;
 
 	if (argc > 1)
 		exit(0);
@@ -149,8 +157,8 @@ int	main(int argc, char **argv)
 			printf("End of file reached\n");
 			exit(0);
 		}
-		cmds.args = ft_tokenize(input); // splits inputs and stores tokens in the structure (lexer)
-		// checks tokens syntax, creates hierarchy and redirects them to corresponding functions (parser to executor)
+		toklist.tokens = ft_tokenize(input); // splits inputs and stores tokens in the structure (lexer)
+		cmds = ft_parse(toklist); // checks tokens syntax, creates hierarchy and redirects them to corresponding functions (parser to executor)
 		// executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
 		//example of how lexer->parser->executor thing works: https://imgur.com/a/PTod73J
 
@@ -158,13 +166,13 @@ int	main(int argc, char **argv)
 		//prints back the struct (just for testing)
 		//we replace this part with whatever we want
 		i = 0;
-		while (cmds.args[i])
+		while (toklist.tokens[i])
 		{
-			printf("Command: %s\n", cmds.args[i]);
+			printf("Command: %s\n", toklist.tokens[i]);
 			i++;
 		}
 		free(input);
-		free(cmds.args);
+		free(toklist.tokens);
 	}
 	return (0);
 }

@@ -1,6 +1,6 @@
 #include "../../headers/minishell.h"
 
-ft_toklen(const char *str, const char *delim)
+size_t ft_toklen(const char *str, const char *delim)
 {
 	size_t len = 0;
 	int i;
@@ -44,16 +44,22 @@ char	*ft_strtok(char *str, const char *delimiter)
 	return (start);
 }
 
-char **ft_tokenize(char *input)
+//lexer takes the whole command line and splits every word into a token to store them into token_list->tokens.
+//example : ls -l = token 1 is "ls", token 2 is "-l"
+char	**ft_tokenize(char *input)
 {
-	char **args = malloc(MAX_ARGS * sizeof(char *));
-	int i = 0;
-	char *token = ft_strtok(input, " ");
+	char	**args;
+	int		i;
+	char	*token;
+
+	args = malloc(MAX_ARGS * sizeof(char *));
+	i = 0;
+	token = ft_strtok(input, " \t\n|<>");
 	while (token != NULL && i < MAX_ARGS - 1)
 	{
 		args[i++] = token;
-	token = ft_strtok(NULL, " ");
+		token = ft_strtok(NULL, " \t\n|<>");
 	}
-	args[i] = '\0';
+	args[i] = NULL;
 	return (args);
 }
