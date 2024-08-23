@@ -154,12 +154,17 @@ int	main(int argc, char **argv)
 		input = get_next_line(STDIN_FILENO); // alias for '1' in unistd.h
 		if (input == NULL) //ctrl + d
 		{
-			printf("End of file reached\n");
+			printf("Minishell Terminated (ctrl+d)\n");
 			exit(0);
 		}
 		toklist.tokens = ft_tokenize(input); // splits inputs and stores tokens in the structure (lexer)
-		cmds = ft_parse(toklist); // checks tokens syntax, creates hierarchy and redirects them to corresponding functions (parser to executor)
-		// executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
+
+		if (synt_errors_check(toklist) == 0)
+			cmds = ft_parse(toklist); // checks tokens syntax, creates hierarchy and redirects them to corresponding functions (parser to executor)
+		else
+			handle_error(); //prints corresponding syntax error and returns the prompt
+
+		//executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
 		//example of how lexer->parser->executor thing works: https://imgur.com/a/PTod73J
 
 

@@ -1,7 +1,58 @@
 #include "../../headers/minishell.h"
 
-//we need a function to check syntax here (cant use two pipes in a row without a command between, ...)
+t_command	*ft_sortpipes(t_command *current)
+{
+	current->next = malloc(sizeof(t_command));	// if pipe, new command so alloc next struct node
+	if (!current->next)
+		return (NULL);
+	current = current->next;					// move to next node
+	memset(current, 0, sizeof(t_command));		// init new node
+	return (current);
+}
 
+t_command *ft_sortredirect(t_token_list *toklist, t_command *current, int *i)
+{
+	if (ft_strcmp(toklist->tokens[*i], "<") == 0)
+	{
+		if (++(*i) < toklist->token_count)	// check if theres a token after operator
+			ft_add_redirection(current, toklist->tokens[*i], 0); // 0 for input
+	}
+	else if (ft_strcmp(toklist->tokens[*i], ">") == 0)
+	{
+		if (++(*i) < toklist->token_count)	// check if theres a token after operator
+			ft_add_redirection(current, toklist->tokens[*i], 1); // 1 for output
+	}
+	else if (ft_strcmp(toklist->tokens[*i], ">>") == 0)
+	{
+		if (++(*i) < toklist->token_count)	// check if theres a token after operator
+			ft_add_redirection(current, toklist->tokens[*i], 2); // 2 for append
+	}
+	return (current);
+}
+
+void	ft_sortloop(t_token_list *toklist, t_command *current, int i, int j)
+{
+	current->args = malloc(sizeof(char *) * (toklist->token_count + 1)); // +1 for NULL termination
+	if (!current->args)
+		return;
+	while (i < toklist->token_count)
+	{
+		if (ft_strcmp(toklist->tokens[i], "|") == 0)
+			current = ft_sortpipes(current);
+		else if (ft_strcmp(toklist->tokens[i], "<") == 0 || ft_strcmp(toklist->tokens[i], ">") == 0 || ft_strcmp(toklist->tokens[i], ">>") == 0)
+			current = ft_sortredirect(toklist, current, &i);
+		else
+		{
+			if (current->cmds == NULL)
+				current->cmds = ft_strdup(toklist->tokens[i]);
+			else
+				current->args[j++] = ft_strdup(toklist->tokens[i]);
+		}
+		i++;
+	}
+	current->args[j] = NULL;
+}
+//every strdup will need a free at some point
 t_command	*ft_sort_tokens(t_token_list *toklist)
 {
 	int	i;
@@ -9,52 +60,14 @@ t_command	*ft_sort_tokens(t_token_list *toklist)
 	t_command *table;
 	t_command *current;
 
-	table = malloc(sizeof(t_command));
-	current = table;
 	i = 0;
 	j = 0;
-
+	table = malloc(sizeof(t_command));
 	if (!table)
 		return (NULL);
 	memset(table, 0, sizeof(t_command));				// init first struct node
-	while (i < toklist->token_count)
-	{
-		if (ft_strcmp(toklist->tokens[i], "|") == 0)
-		{
-			current->next = malloc(sizeof(t_command));	// if pipe, new command so alloc next struct node
-			if (!current->next)
-				return (NULL);
-			current = current->next;					// move to next node
-			memset(current, 0, sizeof(t_command));		// init new node
-			j = 0;
-		}
-		else if (ft_strcmp(toklist->tokens[i], "<") == 0)
-		{
-			if (++i < toklist->token_count)				// check if theres a token after <
-				current->input_redirect = ft_strdup(toklist->tokens[i]);
-		}
-		else if (ft_strcmp(toklist->tokens[i], ">") == 0)
-		{
-			if (++i < toklist->token_count)				// check if theres a token after >
-				current->output_redirect = ft_strdup(toklist->tokens[i]);
-		}
-		else if (ft_strcmp(toklist->tokens[i], ">>") == 0)
-		{
-			current->append = 1;
-			if (++i < toklist->token_count)				// check if theres a token after >>
-				current->output_redirect = ft_strdup(toklist->tokens[i]);
-		}
-		else
-		{
-			if (current->cmds == NULL)
-				current->cmds = ft_strdup(toklist->tokens[i]);		// first token that is not a >, |, <, ... is the command
-			else
-				current->args[j++] = ft_strdup(toklist->tokens[i]);	// all other similar tokens are arguments (need to double check this part but should work for now)
-		}
-		i++;
-	}
-	current->args[j] = NULL;
+	current = table;
+	ft_sortloop(toklist, current, i, j);
 	return (table);
 }
 //FUNCTION NEEDS TO BE TESTED
-//we need to shorten this function somehow
