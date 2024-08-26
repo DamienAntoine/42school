@@ -10,7 +10,7 @@ void    echo(t_command *current)
     i = 0;
     if (!ft_strcmp(current->args[i], "-n"))
     {
-        n_flag = 1;
+        n_flag = 1
         i++;
     }
     while (current->args[i])
