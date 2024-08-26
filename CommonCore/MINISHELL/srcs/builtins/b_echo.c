@@ -8,6 +8,9 @@ void    echo(t_command *current)
     int i;
     n_flag = 0;
     i = 0;
+
+random line;
+
     if (!ft_strcmp(current->args[i], "-n"))
     {
         n_flag = 1;
