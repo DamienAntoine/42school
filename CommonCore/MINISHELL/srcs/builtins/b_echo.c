@@ -13,7 +13,7 @@ random line;
 
     if (!ft_strcmp(current->args[i], "-n"))
     {
-        n_flag = 1;
+        n_flag = 1
         i++;
     }
     while (current->args[i])

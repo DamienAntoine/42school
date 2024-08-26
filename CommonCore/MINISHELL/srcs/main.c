@@ -135,14 +135,14 @@ void	handle_sigint(int sig)
 }
 //sighandle end
 
-// for now it only prints the prompt (MSL$>) and asks for an input, then prints the input back.
-// need to store the input in a struct, check if its a correct input and cut it into tokens (separate the command and the arguments)
+// need to store the input in a struct, cut it into tokens and check if its a correct input
 #include <string.h>
 int	main(int argc, char **argv)
 {
 	char			*input;
 	t_token_list	toklist;
 	t_command		*cmds;
+    int             error_nb;
 	int				i;
 
 	if (argc > 1)
@@ -160,22 +160,13 @@ int	main(int argc, char **argv)
 		toklist.tokens = ft_tokenize(input); // splits inputs and stores tokens in the structure (lexer)
 
 		if (synt_errors_check(toklist) == 0)
-			cmds = ft_parse(toklist); // checks tokens syntax, creates hierarchy and redirects them to corresponding functions (parser to executor)
+			cmds = ft_sort_tokens(toklist, cmds); // checks tokens syntax, creates hierarchy and redirects them to corresponding functions (parser to executor)
 		else
-			handle_error(); //prints corresponding syntax error and returns the prompt
+			handle_error(error_nb); //prints corresponding syntax error and returns the prompt
 
 		//executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
 		//example of how lexer->parser->executor thing works: https://imgur.com/a/PTod73J
 
-
-		//prints back the struct (just for testing)
-		//we replace this part with whatever we want
-		i = 0;
-		while (toklist.tokens[i])
-		{
-			printf("Command: %s\n", toklist.tokens[i]);
-			i++;
-		}
 		free(input);
 		free(toklist.tokens);
 	}
