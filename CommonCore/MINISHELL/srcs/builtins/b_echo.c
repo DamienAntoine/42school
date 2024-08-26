@@ -9,8 +9,6 @@ void    echo(t_command *current)
     n_flag = 0;
     i = 0;
 
-    blabla:
-
     if (!ft_strcmp(current->args[i], "-n"))
     {
         n_flag = 1;
