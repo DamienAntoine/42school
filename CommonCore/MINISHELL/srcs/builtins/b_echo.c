@@ -14,7 +14,7 @@ void    echo(t_command *current)
     if (!ft_strcmp(current->args[i], "-n"))
     {
         n_flag = 1;
-        i++;testsetsetsezuzuzuzuzu;
+        i++;
     }
     while (current->args[i])
         printf("%s",current->args[i++]);
