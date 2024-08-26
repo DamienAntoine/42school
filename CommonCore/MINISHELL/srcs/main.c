@@ -137,16 +137,17 @@ void	handle_sigint(int sig)
 
 // need to store the input in a struct, cut it into tokens and check if its a correct input
 #include <string.h>
-int	main(int argc, char **argv)
+int	main(int argc, char **argv, char **env)
 {
 	char			*input;
 	t_token_list	toklist;
+    t_env           *cur_env;
 	t_command		*cmds;
-    int             error_nb;
-	int				i;
 
 	if (argc > 1)
 		exit(0);
+
+    init_env(env, cur_env);
 	signal(SIGINT, handle_sigint); //handle ctrl+c
 	while (1)
 	{
@@ -159,10 +160,9 @@ int	main(int argc, char **argv)
 		}
 		toklist.tokens = ft_tokenize(input); // splits inputs and stores tokens in the structure (lexer)
 
-		if (synt_errors_check(toklist) == 0)
-			cmds = ft_sort_tokens(toklist, cmds); // checks tokens syntax, creates hierarchy and redirects them to corresponding functions (parser to executor)
-		else
-			handle_error(error_nb); //prints corresponding syntax error and returns the prompt
+		if (synt_errors_check(toklist) == 0)    // checks tokens syntax and prints syntax errors
+			cmds = ft_sort_tokens(toklist, cmds); // creates hierarchy and redirects them to corresponding functions (parser to executor)
+		
 
 		//executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
 		//example of how lexer->parser->executor thing works: https://imgur.com/a/PTod73J

@@ -20,8 +20,8 @@ int ft_check_syntax(t_token_list *toklist)
         if (ft_strcmp(toklist->tokens[i], "<") == 0 || ft_strcmp(toklist->tokens[i], ">") == 0 || \ 
         ft_strcmp(toklist->tokens[i], "<<") == 0 || ft_strcmp(toklist->tokens[i], ">>") == 0)
         {
-            if (i == 0 || i == toklist->token_count || redir_check(toklist, i) == 0)
-
+            if (i == 0 || i == toklist->token_count || redir_check(toklist, ++i) == 0)
+                return (-2);
         }
 
 		// more syntax checks here (redirection checks would check if there is a file after a '>' for example, and not someting like "cmd < > file" or "cmd > < file")
@@ -32,8 +32,8 @@ int ft_check_syntax(t_token_list *toklist)
 
 int    redir_check(t_token_list *toklist, int i)
 {
-    if (ft_strcmp(toklist->tokens[i], "<") || ft_strcmp(toklist->tokens[i], "<") || ft_strcmp(toklist->tokens[i], "<") || ft_strcmp(toklist->tokens[i], "<") ||)
-    return (0);
+    if (ft_strcmp(toklist->tokens[i], "<") == 0 || ft_strcmp(toklist->tokens[i], "<") == 0 || ft_strcmp(toklist->tokens[i], "<") == 0 || ft_strcmp(toklist->tokens[i], "<") == 0)
+        return (0);
 }
 
 int    synt_errors_check(t_token_list *toklist)

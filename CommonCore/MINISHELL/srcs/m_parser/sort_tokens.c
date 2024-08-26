@@ -30,38 +30,6 @@ t_command *ft_sortredirect(t_token_list *toklist, t_command *current, int *i)
 	return (current);
 }
 
-t_redirection *ft_create_redirection(char *file, int type) //delete later
-{
-	t_redirection *redir;
-
-	redir = malloc(sizeof(t_redirection));
-	if (!redir)
-		return (NULL);
-	redir->file = ft_strdup(file);
-	redir->type = type;
-	redir->next = NULL;
-	return (redir);
-}
-
-void ft_add_redirection(t_command *current, char *file, int type) //delete later
-{
-	t_redirection *redir;
-    t_redirection *tmp;
-
-	redir = ft_create_redirection(file, type);
-	if (!redir)
-		return;
-	if (current->redirections == NULL)
-		current->redirections = redir;
-	else
-	{
-		tmp = current->redirections;
-		while (tmp->next)
-			tmp = tmp->next;
-		tmp->next = redir;
-	}
-}
-
 void	ft_sortloop(t_token_list *toklist, t_command *current, int i, int j)
 {
 	current->args = malloc(sizeof(char *) * (toklist->token_count + 1)); // +1 for NULL termination
