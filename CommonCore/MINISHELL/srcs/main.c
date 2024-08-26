@@ -135,6 +135,22 @@ void	handle_sigint(int sig)
 }
 //sighandle end
 
+
+//env init
+void    init_env(char **env, t_env *cur_env)
+{
+    int     i;
+    char    **temp;
+
+    i = 0;
+    
+    while(env[i])
+    {
+        ft_split(*env, '=');
+        i++;
+    }
+}
+
 // need to store the input in a struct, cut it into tokens and check if its a correct input
 #include <string.h>
 int	main(int argc, char **argv, char **env)
