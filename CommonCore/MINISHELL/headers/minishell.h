@@ -10,12 +10,21 @@
 # define MAX_ARGS 100
 
 
+typedef struct s_env
+{
+	char	*type;
+	char	*value;
+	struct s_env	*next;
+}	t_env;
+
+
 //maybe add a variable that counts the number of tokens in the input
 //and somehow separate the command from the flags and store the flags in another variable
 typedef struct s_command
 {
 	char				*cmds;				//command (ls, env, cd, ...)
 	char				**args;				//arguments / flags (-l, "file.txt", ...)
+	t_env				*env;	//!!!!!!!!!!ADDED
 	t_redirection		*redirections;		//use this instead of the three variables above
 	struct s_command	*next;				//pointer to next command if pipe (|)
 }	t_command;
