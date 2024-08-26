@@ -1,4 +1,3 @@
-void    env(??)
-{
+#include "../../headers/minishell.h"
 
-}
+

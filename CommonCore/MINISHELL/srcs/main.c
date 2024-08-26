@@ -136,34 +136,19 @@ void	handle_sigint(int sig)
 //sighandle end
 
 
-//env init
-void    init_env(char **env, t_env *cur_env)
-{
-    int     i;
-    char    **temp;
-
-    i = 0;
-    
-    while(env[i])
-    {
-        ft_split(*env, '=');
-        i++;
-    }
-}
-
 // need to store the input in a struct, cut it into tokens and check if its a correct input
 #include <string.h>
 int	main(int argc, char **argv, char **env)
 {
 	char			*input;
 	t_token_list	toklist;
-    t_env           *cur_env;
+	t_env			*cur_env;
 	t_command		*cmds;
 
 	if (argc > 1)
 		exit(0);
 
-    init_env(env, cur_env);
+	init_env(env, cur_env);
 	signal(SIGINT, handle_sigint); //handle ctrl+c
 	while (1)
 	{
@@ -178,7 +163,7 @@ int	main(int argc, char **argv, char **env)
 
 		if (synt_errors_check(toklist) == 0)    // checks tokens syntax and prints syntax errors
 			cmds = ft_sort_tokens(toklist, cmds); // creates hierarchy and redirects them to corresponding functions (parser to executor)
-		
+
 
 		//executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
 		//example of how lexer->parser->executor thing works: https://imgur.com/a/PTod73J
