@@ -9,11 +9,9 @@ void    echo(t_command *current)
     n_flag = 0;
     i = 0;
 
-random line;
-
     if (!ft_strcmp(current->args[i], "-n"))
     {
-        n_flag = 1
+        n_flag = 1;
         i++;
     }
     while (current->args[i])
