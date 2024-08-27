@@ -2,12 +2,22 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 NAME = minishell
 
+# main and builtins
 SRCS = ./srcs/main.c ./srcs/builtins/cd.c ./srcs/builtins/echo.c ./srcs/builtins/env.c ./srcs/builtins/exit.c\
 		./srcs/builtins/export.c ./srcs/builtins/pwd.c ./srcs/builtins/unset.c ./srcs/builtins/utils.c\
-		./srcs/m_env/env_value.c  ./srcs/m_env/init_env.c\
-		./srcs/m_free/free_env.c\
-		./srcs/m_lexer/synt_checks.c ./srcs/m_lexer/tokenize.c\
-		./srcs/m_parser/create_redirects.c ./srcs/m_parser/sort_tokens.c
+
+# m_env
+SRCS += ./srcs/m_env/env_value.c  ./srcs/m_env/init_env.c\
+
+# m_free
+SRCS += ./srcs/m_free/free_env.c\
+
+# m_lexer
+SRCS += ./srcs/m_lexer/synt_checks.c ./srcs/m_lexer/tokenize.c\
+
+# m_parser
+SRCS += ./srcs/m_parser/create_redirects.c ./srcs/m_parser/sort_tokens.c
+
 
 
 OBJS = $(SRCS:.c=.o)
