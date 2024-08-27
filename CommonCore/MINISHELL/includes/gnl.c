@@ -4,7 +4,7 @@
 
 #define BUFFER_SIZE 1024
 
-char	*ft_strdup(const char *str)
+static char	*ft_strdup(const char *str)
 {
 	int		i;
 	char	*dup;

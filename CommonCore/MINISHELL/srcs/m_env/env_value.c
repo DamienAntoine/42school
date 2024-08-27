@@ -1,7 +1,8 @@
 #include "../headers/minishell.h"
 
 // Function to find the value of the HOME environment variable in the linked list
-char *find_env_value(t_env *env, const char *name) {
+char *find_env_value(t_env *env, const char *name) 
+{
     while (env != NULL) 
     {
         if (!ft_strcmp(env->type, name)) 
@@ -22,7 +23,7 @@ void update_env_value(t_env **env, const char *name, const char *new_value)
     prev = NULL;
     // Traverse the list to find the variable or the end of the list
     while (current != NULL) {
-        if (strcmp(current->type, name) == 0) {
+        if (ft_strcmp(current->type, name)) {
             free(current->value);  // Free the old value
             current->value = strdup(new_value);  // Assign the new value
             return;
@@ -34,8 +35,8 @@ void update_env_value(t_env **env, const char *name, const char *new_value)
     // Variable not found, so add a new one
     new_env = malloc(sizeof(t_env));
     if (!new_env) return;  // Handle memory allocation failure
-    new_env->type = strdup(name);
-    new_env->value = strdup(new_value);
+    new_env->type = ft_strdup(name);
+    new_env->value = ft_strdup(new_value);
     new_env->next = NULL;
 
     if (prev) {

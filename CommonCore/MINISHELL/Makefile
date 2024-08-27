@@ -21,7 +21,7 @@ SRCS += ./srcs/m_parser/create_redirects.c ./srcs/m_parser/sort_tokens.c
 
 
 OBJS = $(SRCS:.c=.o)
-LIBFT_DIR = ./libft
+LIBFT_DIR = ./includes/libft
 LIBFT_LIB = $(LIBFT_DIR)/libft.a
 RM = rm -rf
 
