@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
+#include <errno.h>	//sam: added for error msg for b_cd.c
 
 # define BUFFER_SIZE 1024
 # define MAX_ARGS 100
