@@ -1,4 +1,4 @@
-#include "../headers/minishell.h"
+#include "../../headers/minishell.h"
 
 //init (when starting minishell)
 //to print with the env cmd, just go through every node and print "NAME"+"="+"value"+newline
@@ -31,6 +31,8 @@ void init_env(char **env, t_env **cur_env)
 				last_node = last_node->next;
 			last_node->next = new_node;
 		}
+		free(temp[0]);
+		free(temp[1]);
 		free(temp);
 		i++;
 	}
