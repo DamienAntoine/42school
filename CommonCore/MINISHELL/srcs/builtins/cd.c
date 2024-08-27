@@ -5,6 +5,7 @@
 void    cd(t_command *current)
 {
     char    *home = 
+    if (current->args[1]    char    *home = 
     if (current->args[1])
     {
         printf("Too many args for cd command");
@@ -16,42 +17,66 @@ void    cd(t_command *current)
         // move one up
     else (current->args[0])
         // move to this path(current->args[i])
+})
+    {
+        printf("Too many args for cd command");
+        return ;
+    }
+    if (!current->args[0])
+        //move to home
+    else if (!ft_strcmp(current->args[0], ".."))
+        // move one up
+    else (current->args[0])
+        // move to this path(current->args[i])
 }
-
-// NOT DONE AT ALL YET+ 
-/*
-
     if (!current->args[0]) {  // No arguments, move to home directory
-        const char *home = getenv("HOME");
+        char *home = find_env_value(current->env, "HOME");
         if (!home) {
             printf("Home directory not set\n");
+            free(oldpwd);
             return;
         }
         if (chdir(home) != 0) {  // Moving to home directory
             perror("cd");
+            free(oldpwd);
+            return;
         }
     } else if (!strcmp(current->args[0], "..")) {  // Argument is "..", move one directory up
         if (chdir("..") != 0) {  // Moving one directory up
             perror("cd");
-        }
-    } else if (!strcmp(current->args[0], "-")) {  // Argument is "-", move to previous directory
-        const char *oldpwd = getenv("OLDPWD");
-        if (!oldpwd) {
-            printf("OLDPWD not set\n");
+            free(oldpwd);
             return;
         }
-        if (chdir(oldpwd) != 0) {  // Moving to previous directory
+    } else if (!strcmp(current->args[0], "-")) {  // Argument is "-", move to previous directory
+        char *oldpwd_env = find_env_value(current->env, "OLDPWD");
+        if (!oldpwd_env) {
+            printf("OLDPWD not set\n");
+            free(oldpwd);
+            return;
+        }
+        if (chdir(oldpwd_env) != 0) {  // Moving to previous directory
             perror("cd");
+            free(oldpwd);
+            return;
         } else {
-            printf("%s\n", oldpwd);  // Print the directory after changing to it
+            printf("%s\n", oldpwd_env);  // Print the directory after changing to it
         }
     } else {  // Move to the specified directory
         if (chdir(current->args[0]) != 0) {  // Moving to the specified directory
             perror("cd");
+            free(oldpwd);
+            return;
         }
     }
-}
-*/
+
+    // If we moved successfully, update OLDPWD and PWD
+    update_env_value(current->env, "OLDPWD", oldpwd);
+    char *newpwd = get_current_directory();  // Get the new current directory
+    update_env_value(current->env, "PWD", newpwd);
+
+    free(oldpwd);  // Free the old PWD
+    free(newpwd);  // Free the new PWD string allocated by get_current_directory()
+
 
 /*
 chdir() Function:
