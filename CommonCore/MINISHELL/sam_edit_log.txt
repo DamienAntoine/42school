@@ -13,3 +13,7 @@ working on          b_cd
 created             Makefile
 changed             removed "b_" from files under builtins directory(because it's not pretty lol lol)
 added               all existing prototypes to the .h file
+
+added               env.c 
+
+?? not sure about using printf. maybe it's safer to use ft_putstr_fd from libft  ??

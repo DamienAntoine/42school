@@ -2,35 +2,31 @@
 //syntax: cd <path>
 //should work with relative path (from current directory) and
 //also with absolute path (from home directory)
+
+static char *get_current_directory() 
+{
+    char *buf;
+    buf = NULL;
+    buf = getcwd(NULL, 0);  // Get the current working directory
+    return (buf);
+}
+
 void    cd(t_command *current)
 {
-    char    *home = 
-    if (current->args[1]    char    *home = 
+    char    *home;
+    char    *oldpwd;
+    char    *newpwd;
+     
+    oldpwd = get_current_directory();  
+    home = find_env_value(current->env, "HOME");
     if (current->args[1])
     {
         printf("Too many args for cd command");
+        free(oldpwd);
         return ;
     }
     if (!current->args[0])
-        //move to home
-    else if (!ft_strcmp(current->args[0], ".."))
-        // move one up
-    else (current->args[0])
-        // move to this path(current->args[i])
-})
-    {
-        printf("Too many args for cd command");
-        return ;
-    }
-    if (!current->args[0])
-        //move to home
-    else if (!ft_strcmp(current->args[0], ".."))
-        // move one up
-    else (current->args[0])
-        // move to this path(current->args[i])
-}
-    if (!current->args[0]) {  // No arguments, move to home directory
-        char *home = find_env_value(current->env, "HOME");
+    {  // No arguments, move to home directory
         if (!home) {
             printf("Home directory not set\n");
             free(oldpwd);
@@ -68,14 +64,18 @@ void    cd(t_command *current)
             return;
         }
     }
-
     // If we moved successfully, update OLDPWD and PWD
     update_env_value(current->env, "OLDPWD", oldpwd);
-    char *newpwd = get_current_directory();  // Get the new current directory
+    newpwd = get_current_directory();  // Get the new current directory
     update_env_value(current->env, "PWD", newpwd);
 
     free(oldpwd);  // Free the old PWD
     free(newpwd);  // Free the new PWD string allocated by get_current_directory()
+}
+
+
+
+    
 
 
 /*
