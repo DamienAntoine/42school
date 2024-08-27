@@ -1,0 +1,11 @@
+27.08
+
+**i won't add all the creadted functions in the .h file for now to avoid chaos**
+
+minishell.h         line 9: <errno.h> added
+created             env_value.c  under m_env
+                        -find_env_value
+                        -update_env_value
+created             m_free dir.
+                        -free_env.c 
+working on          b_cd
