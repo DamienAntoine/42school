@@ -39,9 +39,28 @@ int	ft_check_syntax(t_token_list *toklist)
 				return (-5);
 		}
 
+		//env var expansion
+		if (toklist->tokens[i][0] == '$' && !is_valid_env_variable(toklist->tokens[i]))
+			return -6; // Syntax error: invalid environment variable
+
 		i++;
 	}
 	return (0);
+}
+//maybe add max length,
+
+int	is_valid_env_variable(const char *var) //only checks if env var has valid syntax, not if the variable exists
+{
+	int	i;
+
+	i = 0;
+	if (var[1] == '\0')
+		return (1);
+	while (var[i])
+	{
+		if (!isalnum(var[i]) && var[i] != '_')
+			return (1);
+	}
 }
 
 int	check_quotes(t_token_list *toklist)
@@ -116,6 +135,11 @@ int	synt_errors_check(t_token_list *toklist)
 	else if (synt_result == -5)
 	{
 		printf("SYNTAX ERROR: Unmatched quotes");
+		return (1);
+	}
+	else if (synt_result == -6)
+	{
+		printf("SYNTAX ERROR: Invalid Env variable name");
 		return (1);
 	}
 		return (0);
