@@ -11,6 +11,13 @@
 # define BUFFER_SIZE 1024
 # define MAX_ARGS 100
 
+typedef struct s_data
+{
+	struct s_token_list		*toklist;
+	struct s_command		*commands;
+	struct s_redirection	*redirects;
+	struct s_env			*env;
+}	t_data;
 
 typedef struct s_env
 {
@@ -18,7 +25,6 @@ typedef struct s_env
 	char	*value;
 	struct s_env	*next;
 }	t_env;
-
 
 //maybe add a variable that counts the number of tokens in the input
 //and somehow separate the command from the flags and store the flags in another variable
@@ -63,7 +69,7 @@ char *find_env_value(t_env *env, const char *name);
 //init_env.c
 void unset_env_variable(t_env **env_list, char *name);
 void update_env_variable(t_env **env_list, char *name, char *value);
-void init_env(char **env, t_env **cur_env);
+void init_env(char **env, t_env *cur_env);
 
 ///////////////////////////m_free////////////////////////////////////////////
 //free_env.c

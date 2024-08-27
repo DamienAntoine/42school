@@ -135,20 +135,31 @@ void	handle_sigint(int sig)
 }
 //sighandle end
 
+t_data	*init_minishell(char **env)
+{
+	t_data *data;
+
+	data = malloc(sizeof(t_data));
+	data->commands = malloc(sizeof(t_command));
+	data->toklist = malloc(sizeof(t_token_list));
+	data->env = malloc(sizeof(t_env));
+	init_env(env, data->env);
+	if (!data || !data->commands || !data->toklist)
+		return (NULL);
+	return (data);
+}
 
 // need to store the input in a struct, cut it into tokens and check if its a correct input
 #include <string.h>
 int	main(int argc, char **argv, char **env)
 {
 	char			*input;
-	t_token_list	toklist;
-	t_env			*cur_env;
-	t_command		*cmds;
+	t_data			*data;
 
 	if (argc > 1)
 		exit(0);
-
-	init_env(env, cur_env);
+	(void)argv;
+	data = init_minishell(env);
 	signal(SIGINT, handle_sigint); //handle ctrl+c
 	while (1)
 	{
@@ -159,17 +170,17 @@ int	main(int argc, char **argv, char **env)
 			printf("Minishell Terminated (ctrl+d)\n");
 			exit(0);
 		}
-		toklist.tokens = ft_tokenize(input); // splits inputs and stores tokens in the structure (lexer)
+		data->toklist->tokens = ft_tokenize(input); // splits inputs and stores tokens in the structure (lexer)
 
-		if (synt_errors_check(toklist) == 0)    // checks tokens syntax and prints syntax errors
-			cmds = ft_sort_tokens(toklist, cmds); // creates hierarchy and redirects them to corresponding functions (parser to executor)
+		if (synt_errors_check(data->toklist) == 0)    // checks tokens syntax and prints syntax errors
+			data->commands = ft_sort_tokens(data->toklist, data->commands); // creates hierarchy and redirects them to corresponding functions (parser to executor)
 
 
 		//executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
 		//example of how lexer->parser->executor thing works: https://imgur.com/a/PTod73J
 
 		free(input);
-		free(toklist.tokens);
+		free(data->toklist->tokens);
 	}
 	return (0);
 }

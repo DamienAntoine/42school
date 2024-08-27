@@ -61,10 +61,6 @@ t_command	*ft_sort_tokens(t_token_list *toklist, t_command *table)
 
 	i = 0;
 	j = 0;
-	table = malloc(sizeof(t_command));
-	if (!table)
-		return (NULL);
-	memset(table, 0, sizeof(t_command));				// init first struct node
 	current = table;
 	ft_sortloop(toklist, current, i, j);
 	return (table);
