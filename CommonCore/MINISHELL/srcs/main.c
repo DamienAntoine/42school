@@ -144,9 +144,26 @@ t_data	*init_minishell(char **env)
 	data->toklist = malloc(sizeof(t_token_list));
 	data->env = malloc(sizeof(t_env));
 	init_env(env, data->env);
+    init_commands(data);
+    init_toklist(data);
 	if (!data || !data->commands || !data->toklist)
 		return (NULL);
 	return (data);
+}
+
+void    init_commands(t_data *data)
+{
+    data->commands->args = NULL;
+    data->commands->cmds = NULL;
+    data->commands->env = NULL;
+    data->commands->next = NULL;
+    data->commands->redirections = NULL;
+}
+
+void    init_toklist(t_data *data)
+{
+    data->toklist->token_count = NULL;
+    data->toklist->tokens = NULL;
 }
 
 #include <string.h>
@@ -178,7 +195,8 @@ int	main(int argc, char **argv, char **env)
 
 		//executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
 		//example of how lexer->parser->executor thing works: https://imgur.com/a/PTod73J
-
+        if (strcmp(data->commands->cmds, "pwd") == 0)
+            ft_pwd(data->env);
 		free(input);
 		free(data->toklist->tokens);
 	}

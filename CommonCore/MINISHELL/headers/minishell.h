@@ -62,6 +62,7 @@ typedef struct s_token_list
 void    cd(t_command *current);
 void    echo(t_command *current);
 void	env(t_env *lst);
+void	ft_pwd(t_env *cur_env);
 //void	exit();
 //void	export();
 //void	pwd();
