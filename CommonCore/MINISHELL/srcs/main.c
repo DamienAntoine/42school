@@ -149,7 +149,6 @@ t_data	*init_minishell(char **env)
 	return (data);
 }
 
-// need to store the input in a struct, cut it into tokens and check if its a correct input
 #include <string.h>
 int	main(int argc, char **argv, char **env)
 {

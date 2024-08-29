@@ -11,6 +11,13 @@
 # define BUFFER_SIZE 1024
 # define MAX_ARGS 100
 
+# define ERPIPE -101
+# define ERCONS -102
+# define ERREDIR -103
+# define ERTOKEN -104
+# define ERQUOTE -105
+# define ERVARN -106
+
 typedef struct s_data
 {
 	struct s_token_list		*toklist;
