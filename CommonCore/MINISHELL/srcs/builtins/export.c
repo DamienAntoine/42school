@@ -1,3 +1,6 @@
+
+#include "../../headers/minishell.h"
+
 //syntax: export
 //implemented with no options
 

@@ -10,7 +10,7 @@ SRCS = ./srcs/main.c ./srcs/builtins/cd.c ./srcs/builtins/echo.c ./srcs/builtins
 SRCS += ./srcs/m_env/env_value.c  ./srcs/m_env/init_env.c\
 
 # m_free
-SRCS += ./srcs/m_free/free_env.c\
+SRCS += ./srcs/m_free/free.c\
 
 # m_lexer
 SRCS += ./srcs/m_lexer/synt_checks.c ./srcs/m_lexer/tokenize.c\

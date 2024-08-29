@@ -17,3 +17,7 @@ added               all existing prototypes to the .h file
 added               env.c 
 
 ?? not sure about using printf. maybe it's safer to use ft_putstr_fd from libft  ??
+
+
+added               free.c     
+fixed(?)            cd.c

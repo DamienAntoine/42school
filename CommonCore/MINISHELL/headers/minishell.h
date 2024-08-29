@@ -60,6 +60,8 @@ void	env(t_env *lst);
 //void	unset();
 
 //utils.c
+void printf_and_free(const char *message, void *ptr);
+void perror_and_free(const char *message, void *ptr);
 
 ///////////////////////////m_env//////////////////////////////////////////////
 //env_value.c
@@ -72,8 +74,11 @@ void update_env_variable(t_env **env_list, char *name, char *value);
 void init_env(char **env, t_env *cur_env);
 
 ///////////////////////////m_free////////////////////////////////////////////
-//free_env.c
+//free.c
 void free_env_list(t_env *env);
+void free_token_list(t_token_list *token_list);
+void free_redirections(t_redirection *redirections);
+void free_command(t_command *command);
 
 ///////////////////////////m_lexer///////////////////////////////////////////
 //synt_checks.c
