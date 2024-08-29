@@ -69,7 +69,7 @@ void cd(t_command *current)
     }
 
     // If we moved successfully, update OLDPWD and PWD
-    update_env_value(current->env, "OLDPWD", oldpwd);
+    update_env_variable(current->env, "OLDPWD", oldpwd);
     
     newpwd = get_current_directory();  // Get the new current directory
     if (!newpwd) 
@@ -78,7 +78,7 @@ void cd(t_command *current)
         return;
     }
 
-    update_env_value(current->env, "PWD", newpwd);
+    update_env_variable(current->env, "PWD", newpwd);
 
     free(oldpwd);  // Free the old PWD
     free(newpwd);  // Free the new PWD string allocated by get_current_directory()

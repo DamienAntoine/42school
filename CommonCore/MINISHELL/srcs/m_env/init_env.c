@@ -39,11 +39,11 @@ void init_env(char **env, t_env *cur_env)
 }
 
 //use this to update an env variable (after cd for example to update PWD), instead of running init again which would reset the whole env
-void update_env_variable(t_env **env_list, char *name, char *value)
+void update_env_variable(t_env *env_list, char *name, char *value)
 {
 	t_env *current;
 
-	current = *env_list;
+	current = env_list;
 	while (current)
 	{
 		if (strcmp(current->type, name) == 0)

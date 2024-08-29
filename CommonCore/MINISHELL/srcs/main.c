@@ -174,7 +174,8 @@ int	main(int argc, char **argv, char **env)
 		if (synt_errors_check(data->toklist) == 0)    // checks tokens syntax and prints syntax errors
 			data->commands = ft_sort_tokens(data->toklist, data->commands); // creates hierarchy and redirects them to corresponding functions (parser to executor)
 
-
+        //start exec with checking commands and arguments
+        
 		//executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
 		//example of how lexer->parser->executor thing works: https://imgur.com/a/PTod73J
 
