@@ -32,7 +32,7 @@ typedef struct s_command
 {
 	char					*cmds;				//command (ls, env, cd, ...)
 	char					**args;				//arguments / flags (-l, "file.txt", ...)
-	t_env					*env;	//!!!!!!!!!!ADDED
+	struct s_env			*env;	//!!!!!!!!!!ADDED
 	struct s_redirection	*redirections;		//use this instead of the three variables above
 	struct s_command		*next;				//pointer to next command if pipe (|)
 }	t_command;
