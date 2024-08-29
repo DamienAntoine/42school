@@ -166,6 +166,34 @@ void    init_toklist(t_data *data)
     //data->toklist->token_count = 0;
 }
 
+int     ft_token_counter(t_token_list *toklist)
+{
+    int i;
+
+    i = 0;
+    while (toklist->tokens[i])
+        i++;
+    return (i);
+}
+
+void    printcommands(t_command *commands)
+{
+    int i = 0;
+    printf("\n\nCOMMANDS\n");
+    while (commands)
+    {
+        printf("cmd:");
+        printf("%s\n", commands->cmds);
+        while (commands->args[i])
+        {
+            printf("Arg %d\n", i);
+            printf("%s\n", commands->args[i]);
+            i++;
+        }
+        commands = commands->next;
+    }
+}
+
 #include <string.h>
 int	main(int argc, char **argv, char **env)
 {
@@ -187,24 +215,39 @@ int	main(int argc, char **argv, char **env)
 			exit(0);
 		}
         printf("Input received: %s\n", input);
-		data->toklist->tokens = ft_tokenize(input); // splits inputs and stores tokens in the structure (lexer)
+		data->toklist->tokens = ft_tokenize(data->toklist, input); // splits inputs and stores tokens in the structure (lexer)
 
-
+        t_token_list *tokens = data->toklist;
+        int i = 0;
+        while (tokens->tokens[i])
+        {
+            printf("%s\n", tokens->tokens[i]);
+            i++;
+        }
         printf("toklist tokens count: %d\n", data->toklist->token_count);
         printf("commands structure initialized: %p\n", (void*)data->commands);
         
 
 		if (synt_errors_check(data->toklist) == 0)    // checks tokens syntax and prints syntax errors
 			data->commands = ft_sort_tokens(data->toklist, data->commands); // creates hierarchy and redirects them to corresponding functions (parser to executor)
-        printf("cmds field value: %s\n", data->commands ? data->commands->cmds : "NULL");
-        /*if (ft_strcmp(data->commands->cmds, "pwd") == 0)
-            ft_pwd(data->env);*/
+
+
+
+        t_command *commands = data->commands;
+        printcommands(commands);
+
+
+
+        
+        if (ft_strcmp(data->commands->cmds, "pwd") == 0)
+            ft_pwd(data->env);
         //start exec with checking commands and arguments
 
 		//executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
 		//example of how lexer->parser->executor thing works: https://imgur.com/a/PTod73J
 		free(input);
 		free(data->toklist->tokens);
+        //data->toklist->token_count = 0;
 	}
 	return (0);
 }

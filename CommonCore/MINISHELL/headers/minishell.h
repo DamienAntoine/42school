@@ -68,7 +68,8 @@ void	ft_pwd(t_env *cur_env);
 //void	pwd();
 //void	unset();
 //utils.c
-
+int is_delimiter(char c, const char *delimiter);
+int		ft_isspace(int c);
 ///////////////init//////////////
 void    init_commands(t_data *data);
 void    init_toklist(t_data *data);
@@ -104,7 +105,7 @@ int	is_valid_env_variable(const char *var);
 int	ft_check_syntax(t_token_list *toklist);
 
 //tokenize.c
-char	**ft_tokenize(char *input);
+char	**ft_tokenize(t_token_list *toklist, char *input);
 char	*ft_strtok(char *str, const char *delimiter);
 size_t ft_toklen(const char *str, const char *delim);
 

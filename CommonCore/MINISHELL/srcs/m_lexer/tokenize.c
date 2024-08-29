@@ -37,6 +37,8 @@ char	*ft_strtok(char *str, const char *delimiter)
 	if (*end != '\0')
 	{
 		*end = '\0';
+        /*while (is_delimiter(*end + 1, delimiter))
+            end++;*/
 		last = end + 1; // set the last pointer to the start of the next token
 	}
 	else
@@ -46,7 +48,7 @@ char	*ft_strtok(char *str, const char *delimiter)
 
 //lexer takes the whole command line and splits every word into a token to store them into token_list->tokens.
 //example : ls -l = token 1 is "ls", token 2 is "-l"
-char	**ft_tokenize(char *input)
+char	**ft_tokenize(t_token_list *toklist, char *input)
 {
 	char	**args;
 	int		i;
@@ -60,6 +62,21 @@ char	**ft_tokenize(char *input)
 		args[i++] = token;
 		token = ft_strtok(NULL, " \t\n|<>");
 	}
+    toklist->token_count = i;
 	args[i] = NULL;
 	return (args);
+}
+
+int is_delimiter(char c, const char *delimiter)
+{
+    int i;
+
+    i = 0;
+    while (delimiter[i])
+    {
+        if (delimiter[i] == c)
+            return (1);
+        i++;
+    }
+    return (0);
 }
