@@ -62,6 +62,7 @@ t_command	*ft_sort_tokens(t_token_list *toklist, t_command *table)
 	i = 0;
 	j = 0;
 	current = table;
+    ft_memset(current, 0, 1);
 	ft_sortloop(toklist, current, i, j);
 	return (table);
 }

@@ -162,8 +162,8 @@ void    init_commands(t_data *data)
 
 void    init_toklist(t_data *data)
 {
-    data->toklist->token_count = NULL;
     data->toklist->tokens = NULL;
+    //data->toklist->token_count = 0;
 }
 
 #include <string.h>
@@ -186,17 +186,23 @@ int	main(int argc, char **argv, char **env)
 			printf("Minishell Terminated (ctrl+d)\n");
 			exit(0);
 		}
+        printf("Input received: %s\n", input);
 		data->toklist->tokens = ft_tokenize(input); // splits inputs and stores tokens in the structure (lexer)
+
+
+        printf("toklist tokens count: %d\n", data->toklist->token_count);
+        printf("commands structure initialized: %p\n", (void*)data->commands);
+        
 
 		if (synt_errors_check(data->toklist) == 0)    // checks tokens syntax and prints syntax errors
 			data->commands = ft_sort_tokens(data->toklist, data->commands); // creates hierarchy and redirects them to corresponding functions (parser to executor)
-
+        printf("cmds field value: %s\n", data->commands ? data->commands->cmds : "NULL");
+        /*if (ft_strcmp(data->commands->cmds, "pwd") == 0)
+            ft_pwd(data->env);*/
         //start exec with checking commands and arguments
 
 		//executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
 		//example of how lexer->parser->executor thing works: https://imgur.com/a/PTod73J
-        if (strcmp(data->commands->cmds, "pwd") == 0)
-            ft_pwd(data->env);
 		free(input);
 		free(data->toklist->tokens);
 	}

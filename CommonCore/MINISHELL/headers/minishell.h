@@ -67,8 +67,13 @@ void	ft_pwd(t_env *cur_env);
 //void	export();
 //void	pwd();
 //void	unset();
-
 //utils.c
+
+///////////////init//////////////
+void    init_commands(t_data *data);
+void    init_toklist(t_data *data);
+
+
 void printf_and_free(const char *message, void *ptr);
 void perror_and_free(const char *message, void *ptr);
 char *get_next_line(int fd);
