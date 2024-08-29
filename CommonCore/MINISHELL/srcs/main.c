@@ -1,6 +1,6 @@
 #include "../headers/minishell.h"
 
-char	*ft_strdup(const char *str)
+/*char	*ft_strdup(const char *str)
 {
 	int		i;
 	char	*dup;
@@ -114,7 +114,7 @@ char	**ft_tokenize(char *input)
 	}
 	args[i] = NULL;
 	return (args);
-}
+}*/
 //lexer end
 
 
@@ -175,7 +175,7 @@ int	main(int argc, char **argv, char **env)
 			data->commands = ft_sort_tokens(data->toklist, data->commands); // creates hierarchy and redirects them to corresponding functions (parser to executor)
 
         //start exec with checking commands and arguments
-        
+
 		//executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
 		//example of how lexer->parser->executor thing works: https://imgur.com/a/PTod73J
 

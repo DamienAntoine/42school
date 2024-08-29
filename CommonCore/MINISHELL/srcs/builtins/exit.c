@@ -3,12 +3,12 @@
 
 ///// MUST handle  LLONG_MIN    LLONG_MAX too.  
 
-void	exit(t_data *data, int status)
+void	ft_exit(t_data *data, int status)
 {
 	// Cleanup the environment
 	if (data->env)
 	{
-		free_env(data->env);
+		free_env_list(data->env);
 	}
 
 	// Cleanup commands and their components

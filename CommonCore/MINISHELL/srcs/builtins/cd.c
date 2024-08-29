@@ -8,7 +8,7 @@ static char *get_current_directory()
     return (getcwd(NULL, 0));  // Get the current working directory
 }
 
-void cd(t_command *current)
+void ft_cd(t_command *current)
 {
     char *home;
     char *oldpwd;

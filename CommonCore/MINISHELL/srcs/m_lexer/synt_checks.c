@@ -35,7 +35,7 @@ int	ft_check_syntax(t_token_list *toklist)
 		//quotes syntax
 		if ((ft_strcmp(toklist->tokens[i], "\'") == 0) || (ft_strcmp(toklist->tokens[i], "\"") == 0))
 		{
-			if (check_quotes == 1)
+			if (check_quotes(toklist) == 1)
 				return (ERQUOTE);
 		}
 
@@ -58,9 +58,10 @@ int	is_valid_env_variable(const char *var) //only checks if env var has valid sy
 		return (1);
 	while (var[i])
 	{
-		if (!isalnum(var[i]) && var[i] != '_')
+		if (!ft_isalnum(var[i]) && var[i] != '_')
 			return (1);
 	}
+    return (0);
 }
 
 int	check_quotes(t_token_list *toklist)

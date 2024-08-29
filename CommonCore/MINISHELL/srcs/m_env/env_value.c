@@ -1,4 +1,4 @@
-#include "../headers/minishell.h"
+#include "../../headers/minishell.h"
 
 // Function to find the value of the HOME environment variable in the linked list
 char *find_env_value(t_env *env, const char *name) 

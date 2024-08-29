@@ -1,6 +1,6 @@
 #include "../../headers/minishell.h"
 
-void    unset(??)
+/*void    ft_unset(??)
 {
 
-}
+}*/

@@ -70,6 +70,7 @@ void	env(t_env *lst);
 //utils.c
 void printf_and_free(const char *message, void *ptr);
 void perror_and_free(const char *message, void *ptr);
+char *get_next_line(int fd);
 
 ///////////////////////////m_env//////////////////////////////////////////////
 //env_value.c
