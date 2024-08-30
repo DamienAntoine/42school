@@ -46,7 +46,7 @@ void	printcommands(t_command *commands) // debugging function
 	}
 }
 
-#include <string.h>
+
 
 int	main(int argc, char **argv, char **env)
 {
@@ -54,6 +54,7 @@ int	main(int argc, char **argv, char **env)
 	t_data			*data;
 	t_command		*commands;
 	int				i;
+	int				process_input;
 
 	if (argc > 1)
 		exit(0);
@@ -62,6 +63,7 @@ int	main(int argc, char **argv, char **env)
 	signal(SIGINT, handle_sigint); // handle ctrl+c
 	while (1)
 	{
+		process_input = 1; 
 		write(1, "MSL$> ", 6);
 		input = get_next_line(STDIN_FILENO); // alias for '1' in unistd.h
 		
@@ -75,9 +77,22 @@ int	main(int argc, char **argv, char **env)
 			printf("Minishell Terminated (ctrl+d)\n");
 			exit(0);
 		}
-		data->toklist->tokens = ft_tokenize(data->toklist, input);	// splits inputs and stores tokens in the structure (lexer)
-		
 
+		// Trim the input to remove leading and trailing spaces
+	    char *trimmed_input = ft_strtrim(input, " \t\n\r");
+    
+    	if (trimmed_input == NULL || *trimmed_input == '\0') 
+		{
+        // Input is empty or contains only spaces, skip processing
+        	free(trimmed_input);
+        	process_input = 0;
+   		}
+
+		if (process_input)
+		{
+			data->toklist->tokens = ft_tokenize(data->toklist, input);	// splits inputs and stores tokens in the structure (lexer)
+		
+			free(trimmed_input);
 
 		/********DEBUGGING********/
 		i = 0;
@@ -92,21 +107,22 @@ int	main(int argc, char **argv, char **env)
 		}
 		printf("\n#toklist tokens count: %d\n", data->toklist->token_count);
 		//printf("\n#commands structure initialized: %p\n", (void *)data->commands);
-		if (data->commands) // reset command struct
-		{
-			free_command(data->commands);
-			data->commands = malloc(sizeof(t_command));
-			init_commands(data);
+		
+			if (data->commands) // reset command struct
+			{
+				free_command(data->commands);
+				data->commands = malloc(sizeof(t_command));
+				init_commands(data);
+			}
+			if (synt_errors_check(data->toklist) == 0)							// checks tokens syntax and prints syntax errors
+				data->commands = ft_sort_tokens(data->toklist, data->commands);	// creates hierarchy and redirects them to corresponding functions (parser to executor)
+			commands = data->commands;
+			printcommands(commands);
+			printf("**************************************\n\n");
+
+			if (ft_strcmp(data->commands->cmds, "pwd") == 0)
+				ft_pwd(data->env);
 		}
-		if (synt_errors_check(data->toklist) == 0)							// checks tokens syntax and prints syntax errors
-			data->commands = ft_sort_tokens(data->toklist, data->commands);	// creates hierarchy and redirects them to corresponding functions (parser to executor)
-		commands = data->commands;
-		printcommands(commands);
-		printf("**************************************\n\n");
-
-		if (ft_strcmp(data->commands->cmds, "pwd") == 0)
-			ft_pwd(data->env);
-
 		// start exec with checking commands and arguments
 		// executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
 		// example of how lexer->parser->executor thing works: https://imgur.com/a/PTod73J
