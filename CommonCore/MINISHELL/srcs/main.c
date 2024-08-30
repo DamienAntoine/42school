@@ -233,7 +233,7 @@ int	main(int argc, char **argv, char **env)
         printf("toklist tokens count: %d\n", data->toklist->token_count);
         printf("commands structure initialized: %p\n", (void*)data->commands);
 
-		if (data->commands) //free previous command
+		if (data->commands) //reset command struct
 		{
 			free_command(data->commands);
 			data->commands = malloc(sizeof(t_command));
