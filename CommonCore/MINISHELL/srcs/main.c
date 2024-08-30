@@ -29,7 +29,7 @@ void	printcommands(t_command *commands) // debugging function
 	t_command *cmd = commands;
 	int i = 0;
 
-	printf("\n\nCOMMANDS\n");
+	printf("\n#COMMANDS\n");
 	while (cmd)
 	{
 		printf("cmd:");
@@ -64,28 +64,34 @@ int	main(int argc, char **argv, char **env)
 	{
 		write(1, "MSL$> ", 6);
 		input = get_next_line(STDIN_FILENO); // alias for '1' in unistd.h
+		
+		
+		printf("\n**********Debugging*******************\n");
+		printf("#Input received: %s\n", input);
+		
+		
 		if (input == NULL)                   // ctrl + d
 		{
 			printf("Minishell Terminated (ctrl+d)\n");
 			exit(0);
 		}
 		data->toklist->tokens = ft_tokenize(data->toklist, input);	// splits inputs and stores tokens in the structure (lexer)
-
+		
 
 
 		/********DEBUGGING********/
 		i = 0;
-		t_token_list *tokens = tokens = data->toklist;
-		printf("**********Debugging*******************\n");
-		printf("Input received: %s\n", input);
-		printf("\nTOKENSaaaaaaaaaa\n");
-		while (tokens->tokens[i])
+		t_token_list *token;
+		token = data->toklist;
+		
+		printf("#TOKENS\n");
+		while (token->tokens[i])
 		{
-			printf("%s\n", tokens->tokens[i]);
+			printf("%s\n", token->tokens[i]);
 			i++;
 		}
-		printf("toklist tokens count: %d\n", data->toklist->token_count);
-		printf("commands structure initialized: %p\n", (void *)data->commands);
+		printf("\n#toklist tokens count: %d\n", data->toklist->token_count);
+		//printf("\n#commands structure initialized: %p\n", (void *)data->commands);
 		if (data->commands) // reset command struct
 		{
 			free_command(data->commands);
@@ -96,7 +102,7 @@ int	main(int argc, char **argv, char **env)
 			data->commands = ft_sort_tokens(data->toklist, data->commands);	// creates hierarchy and redirects them to corresponding functions (parser to executor)
 		commands = data->commands;
 		printcommands(commands);
-		printf("**************************************\n");
+		printf("**************************************\n\n");
 
 		if (ft_strcmp(data->commands->cmds, "pwd") == 0)
 			ft_pwd(data->env);
