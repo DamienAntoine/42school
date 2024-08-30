@@ -64,18 +64,27 @@ char	**ft_tokenize(t_token_list *toklist, char *input)
 	int		i;
 	char	*token;
 
+	input = trim_input(input);
+	if (input == NULL || *input == '\0')
+	{
+		free(input);
+		toklist->token_count = 0;
+		return (NULL);
+	}
 	args = malloc(MAX_ARGS * sizeof(char *));
 	if (!args)
+	{
+		free(input);
 		return (NULL);
+	}
 	i = 0;
-	input = trim_input(input);
 	token = ft_strtok(input, " \t\n|<>");
 	while (token != NULL && i < MAX_ARGS - 1)
 	{
 		args[i++] = ft_strdup(token);
 		token = ft_strtok(NULL, " \t\n|<>");
 	}
-    toklist->token_count = i;
+	toklist->token_count = i;
 	args[i] = NULL;
 	free(input);
 	return (args);
@@ -86,7 +95,10 @@ char	*trim_input(char *input)
 	char *trimmed_input = ft_strtrim(input, " \t\n\r");
 
     if (trimmed_input == NULL || *trimmed_input == '\0')
+	{
 		free(trimmed_input);
+		return (NULL);
+	}
 	return (trimmed_input);
 }
 

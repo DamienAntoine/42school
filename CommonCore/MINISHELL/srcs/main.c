@@ -75,35 +75,37 @@ int	main(int argc, char **argv, char **env)
 			exit(0);
 		}
 		data->toklist->tokens = ft_tokenize(data->toklist, input);	// splits inputs and stores tokens in the structure (lexer)
-
-		/********DEBUGGING********/
-		i = 0;
-		t_token_list *token;
-		token = data->toklist;
-
-		printf("#TOKENS\n");
-		while (token->tokens[i])
+		if (data->toklist->tokens != NULL)
 		{
-			printf("%s\n", token->tokens[i]);
-			i++;
-		}
-		printf("\n#toklist tokens count: %d\n", data->toklist->token_count);
-		//printf("\n#commands structure initialized: %p\n", (void *)data->commands);
+			/********DEBUGGING********/
+			i = 0;
+			t_token_list *token;
+			token = data->toklist;
 
-			if (data->commands) // reset command struct
+			printf("#TOKENS\n");
+			while (token->tokens[i])
 			{
-				free_command(data->commands);
-				data->commands = malloc(sizeof(t_command));
-				init_commands(data);
+				printf("%s\n", token->tokens[i]);
+				i++;
 			}
-			if (synt_errors_check(data->toklist) == 0)							// checks tokens syntax and prints syntax errors
-				data->commands = ft_sort_tokens(data->toklist, data->commands);	// creates hierarchy and redirects them to corresponding functions (parser to executor)
-			commands = data->commands;
-			printcommands(commands);
-			printf("**************************************\n\n");
+			printf("\n#toklist tokens count: %d\n", data->toklist->token_count);
+			//printf("\n#commands structure initialized: %p\n", (void *)data->commands);
 
-			if (ft_strcmp(data->commands->cmds, "pwd") == 0)
-				ft_pwd(data->env);
+				if (data->commands) // reset command struct
+				{
+					free_command(data->commands);
+					data->commands = malloc(sizeof(t_command));
+					init_commands(data);
+				}
+				if (synt_errors_check(data->toklist) == 0)							// checks tokens syntax and prints syntax errors
+					data->commands = ft_sort_tokens(data->toklist, data->commands);	// creates hierarchy and redirects them to corresponding functions (parser to executor)
+				commands = data->commands;
+				printcommands(commands);
+				printf("**************************************\n\n");
+
+				if (ft_strcmp(data->commands->cmds, "pwd") == 0)
+					ft_pwd(data->env);
+		}
 		// start exec with checking commands and arguments
 		// executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
 		// example of how lexer->parser->executor thing works: https://imgur.com/a/PTod73J
