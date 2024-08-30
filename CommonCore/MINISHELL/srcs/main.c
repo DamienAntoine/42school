@@ -85,12 +85,13 @@ int	main(int argc, char **argv, char **env)
 		{
         // Input is empty or contains only spaces, skip processing
         	free(trimmed_input);
+			free(input);  ///////////////////////added
         	process_input = 0;
    		}
 
 		if (process_input)
 		{
-			data->toklist->tokens = ft_tokenize(data->toklist, input);	// splits inputs and stores tokens in the structure (lexer)
+			data->toklist->tokens = ft_tokenize(data->toklist, trimmed_input);	// splits inputs and stores tokens in the structure (lexer)
 		
 			free(trimmed_input);
 

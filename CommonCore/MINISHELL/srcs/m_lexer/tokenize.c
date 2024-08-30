@@ -32,6 +32,16 @@ char	*ft_strtok(char *str, const char *delimiter)
 		str = last;
 	if (str == NULL || *str == '\0')
 		return (NULL);
+
+	while (*str && ft_strchr(delimiter, *str))
+		str++;
+	if (*str == '\0')
+	{
+		last = NULL;
+		return NULL;
+	}
+
+
 	start = str;
 	end = start + ft_toklen(start, delimiter);
 	if (*end != '\0')
@@ -55,11 +65,13 @@ char	**ft_tokenize(t_token_list *toklist, char *input)
 	char	*token;
 
 	args = malloc(MAX_ARGS * sizeof(char *));
+	if (!args)
+		return (NULL);
 	i = 0;
 	token = ft_strtok(input, " \t\n|<>");
 	while (token != NULL && i < MAX_ARGS - 1)
 	{
-		args[i++] = token;
+		args[i++] = ft_strdup(token);
 		token = ft_strtok(NULL, " \t\n|<>");
 	}
     toklist->token_count = i;
