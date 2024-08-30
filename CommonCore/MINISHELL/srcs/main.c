@@ -85,7 +85,8 @@ int	main(int argc, char **argv, char **env)
 		{
         // Input is empty or contains only spaces, skip processing
         	free(trimmed_input);
-			free(input);  ///////////////////////added
+			free(input);
+			input = NULL;  ///////////////////////added
         	process_input = 0;
    		}
 
