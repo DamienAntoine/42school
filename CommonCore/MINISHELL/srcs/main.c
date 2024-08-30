@@ -140,12 +140,26 @@ t_data	*init_minishell(char **env)
 	t_data *data;
 
 	data = malloc(sizeof(t_data));
+	if (!data)
+		return (NULL);
+	data->commands = NULL;
+	data->toklist = NULL;
+	data->env = NULL;
+	data->redirects = NULL;
 	data->commands = malloc(sizeof(t_command));
 	data->toklist = malloc(sizeof(t_token_list));
 	data->env = malloc(sizeof(t_env));
-	init_env(env, data->env);
-	if (!data || !data->commands || !data->toklist)
+	data->redirects = malloc(sizeof(t_redirection));
+	if (!data->commands || !data->toklist || !data->env || data->redirects)
+	{
+		free(data->commands);
+		free(data->toklist);
+		free(data->env);
+		free(data->redirects);
+		free(data);
 		return (NULL);
+	}
+	init_env(env, data->env);
 	return (data);
 }
 
@@ -171,14 +185,9 @@ int	main(int argc, char **argv, char **env)
 			exit(0);
 		}
 		data->toklist->tokens = ft_tokenize(input); // splits inputs and stores tokens in the structure (lexer)
-
 		if (synt_errors_check(data->toklist) == 0)    // checks tokens syntax and prints syntax errors
 			data->commands = ft_sort_tokens(data->toklist, data->commands); // creates hierarchy and redirects them to corresponding functions (parser to executor)
-
-
 		//executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
-		//example of how lexer->parser->executor thing works: https://imgur.com/a/PTod73J
-
 		free(input);
 		free(data->toklist->tokens);
 	}
