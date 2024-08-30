@@ -13,11 +13,11 @@ int	ft_check_syntax(t_token_list *toklist)
 		{
 			//if 1st token is pipe || pipe is last token || two pipes in a row not separated by a cmd
 			if (i == 0 || i == toklist->token_count - 1 || ft_strcmp(toklist->tokens[i + 1], "|") == 0)
-				return (-1); // Syntax error for consecutive pipes or pipe at start/end
+				return (ERPIPE); // Syntax error for consecutive pipes or pipe at start/end
 			else if (consecutive_check(toklist, ++i) == 1)
-				return (-2);
+				return (ERCONS);
 			else if (consecutive_check(toklist, ++i) == 2)
-				return (-4);
+				return (ERTOKEN);
 		}
 
 		//redir syntax
@@ -25,23 +25,23 @@ int	ft_check_syntax(t_token_list *toklist)
 		ft_strcmp(toklist->tokens[i], "<<") == 0 || ft_strcmp(toklist->tokens[i], ">>") == 0)
 		{
 			if (i == 0 || i == toklist->token_count)
-				return (-3);
+				return (ERREDIR);
 			else if (consecutive_check(toklist, ++i) == 1)
-				return (-2);
+				return (ERCONS);
 			else if (consecutive_check(toklist, ++i) == 2)
-				return (-4);
+				return (ERTOKEN);
 		}
 
 		//quotes syntax
 		if ((ft_strcmp(toklist->tokens[i], "\'") == 0) || (ft_strcmp(toklist->tokens[i], "\"") == 0))
 		{
-			if (check_quotes == 1)
-				return (-5);
+			if (check_quotes(toklist) == 1)
+				return (ERQUOTE);
 		}
 
 		//env var expansion
 		if (toklist->tokens[i][0] == '$' && !is_valid_env_variable(toklist->tokens[i]))
-			return -6; // Syntax error: invalid environment variable
+			return (ERVARN); // Syntax error: invalid environment variable
 
 		i++;
 	}
@@ -58,9 +58,10 @@ int	is_valid_env_variable(const char *var) //only checks if env var has valid sy
 		return (1);
 	while (var[i])
 	{
-		if (!isalnum(var[i]) && var[i] != '_')
+		if (!ft_isalnum(var[i]) && var[i] != '_')
 			return (1);
 	}
+    return (0);
 }
 
 int	check_quotes(t_token_list *toklist)
@@ -113,31 +114,31 @@ int	synt_errors_check(t_token_list *toklist)
 	int	synt_result;
 
 	synt_result = ft_check_syntax(toklist);
-	if (synt_result == -1)
+	if (synt_result == ERPIPE)
 	{
 		printf("SYNTAX ERROR: Pipe misplaced");
 		return (1);
 	}
-	else if (synt_result == -2)
+	else if (synt_result == ERCONS)
 	{
 		printf("SYNTAX ERROR: Consecutive operators");
 	}
-	else if (synt_result == -3)
+	else if (synt_result == ERREDIR)
 	{
 		printf("SYNTAX ERROR: Redirection at the start or end of the command line");
 		return (1);
 	}
-	else if (synt_result == -4)
+	else if (synt_result == ERTOKEN)
 	{
 		printf("SYNTAX ERROR: No token after operator");
 		return (1);
 	}
-	else if (synt_result == -5)
+	else if (synt_result == ERQUOTE)
 	{
 		printf("SYNTAX ERROR: Unmatched quotes");
 		return (1);
 	}
-	else if (synt_result == -6)
+	else if (synt_result == ERVARN)
 	{
 		printf("SYNTAX ERROR: Invalid Env variable name");
 		return (1);

@@ -1,4 +1,4 @@
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Wextra -Werror
 NAME = minishell
 
@@ -7,10 +7,10 @@ SRCS = ./srcs/main.c ./srcs/builtins/cd.c ./srcs/builtins/echo.c ./srcs/builtins
 		./srcs/builtins/export.c ./srcs/builtins/pwd.c ./srcs/builtins/unset.c ./srcs/builtins/utils.c\
 
 # m_env
-SRCS += ./srcs/m_env/env_value.c  ./srcs/m_env/init_env.c\
+SRCS += ./srcs/m_env/env_value.c  ./srcs/m_env/init_env.c	./includes/gnl.c\
 
 # m_free
-SRCS += ./srcs/m_free/free_env.c\
+SRCS += ./srcs/m_free/free.c\
 
 # m_lexer
 SRCS += ./srcs/m_lexer/synt_checks.c ./srcs/m_lexer/tokenize.c\

@@ -1,6 +1,6 @@
 #include "../../headers/minishell.h"
 
-void    env(t_env *lst)
+void    ft_env(t_env *lst)
 {
     while (lst)
     {

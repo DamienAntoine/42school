@@ -1,15 +1,15 @@
-#include "../headers/minishell.h"
+#include "../../headers/minishell.h"
 //syntax: pwd
 //implemented with no options
 //shows in which directory the shell is
-void	pwd(void)
+/*void	ft_pwd(void)
 {
 	char	cwd[1024];
 	printf("%s", getcwd(cwd, sizeof(cwd)));
-}
+}*/
 
 //could also be:
-void	pwd(t_env *cur_env)
+void	ft_pwd(t_env *cur_env)
 {
 	while (ft_strcmp(cur_env->type, "PWD") != 0)
 		cur_env = cur_env->next;

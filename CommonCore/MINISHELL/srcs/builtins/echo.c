@@ -2,7 +2,7 @@
 //syntax: echo <flag> <string>
 //echo prints the string given as input with a newline at the end
 //flag to implement : -n (prints the string without newline)
-void    echo(t_command *current)
+void    ft_echo(t_command *current)
 {
     int n_flag;
     int i;

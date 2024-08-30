@@ -1,6 +1,6 @@
 #include "../headers/minishell.h"
 
-char	*ft_strdup(const char *str)
+/*char	*ft_strdup(const char *str)
 {
 	int		i;
 	char	*dup;
@@ -114,7 +114,7 @@ char	**ft_tokenize(char *input)
 	}
 	args[i] = NULL;
 	return (args);
-}
+}*/
 //lexer end
 
 
@@ -160,10 +160,56 @@ t_data	*init_minishell(char **env)
 		return (NULL);
 	}
 	init_env(env, data->env);
+    init_commands(data);
+    init_toklist(data);
+	if (!data || !data->commands || !data->toklist)
+		return (NULL);
 	return (data);
 }
 
-// need to store the input in a struct, cut it into tokens and check if its a correct input
+void    init_commands(t_data *data)
+{
+    data->commands->args = NULL;
+    data->commands->cmds = NULL;
+    data->commands->env = NULL;
+    data->commands->next = NULL;
+    data->commands->redirections = NULL;
+}
+
+void    init_toklist(t_data *data)
+{
+    data->toklist->tokens = NULL;
+    //data->toklist->token_count = 0;
+}
+
+int     ft_token_counter(t_token_list *toklist)
+{
+    int i;
+
+    i = 0;
+    while (toklist->tokens[i])
+        i++;
+    return (i);
+}
+
+void    printcommands(t_command *commands)
+{
+    int i = 0;
+    printf("\n\nCOMMANDS\n");
+    while (commands)
+    {
+        printf("cmd:");
+        printf("%s\n", commands->cmds);
+        while (commands->args[i])
+        {
+            printf("Arg %d\n", i);
+            printf("%s\n", commands->args[i]);
+            i++;
+        }
+        commands = commands->next;
+    }
+}
+
 #include <string.h>
 int	main(int argc, char **argv, char **env)
 {
@@ -185,11 +231,17 @@ int	main(int argc, char **argv, char **env)
 			exit(0);
 		}
 		data->toklist->tokens = ft_tokenize(input); // splits inputs and stores tokens in the structure (lexer)
+
 		if (synt_errors_check(data->toklist) == 0)    // checks tokens syntax and prints syntax errors
 			data->commands = ft_sort_tokens(data->toklist, data->commands); // creates hierarchy and redirects them to corresponding functions (parser to executor)
+
+
 		//executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
+		//example of how lexer->parser->executor thing works: https://imgur.com/a/PTod73J
+
 		free(input);
 		free(data->toklist->tokens);
+        //data->toklist->token_count = 0;
 	}
 	return (0);
 }

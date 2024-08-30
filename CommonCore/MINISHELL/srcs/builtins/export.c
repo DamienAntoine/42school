@@ -1,3 +1,6 @@
+
+#include "../../headers/minishell.h"
+
 //syntax: export
 //implemented with no options
 
@@ -11,7 +14,7 @@ meaning they are available to child processes.
 This is useful for verifying which environment
 variables have been configured for export.*/
 
-void    export(??)
+/*void    ft_export(??)
 {
 
-}
+}*/

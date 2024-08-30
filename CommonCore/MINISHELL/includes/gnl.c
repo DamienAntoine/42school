@@ -1,29 +1,4 @@
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-
-#define BUFFER_SIZE 1024
-
-static char	*ft_strdup(const char *str)
-{
-	int		i;
-	char	*dup;
-
-	i = 0;
-	while (str[i])
-		i++;
-	dup = malloc(sizeof(char) * (i + 1));
-	if (!dup)
-		return (NULL);
-	i = 0;
-	while (str[i])
-	{
-		dup[i] = str[i];
-		i++;
-	}
-	dup[i] = '\0';
-	return (dup);
-}
+#include "../headers/minishell.h"
 
 char	*get_next_line(int fd)
 {
@@ -31,8 +6,6 @@ char	*get_next_line(int fd)
 	int		bytesread;
 	char	c;
 	char	buf[BUFFER_SIZE + 1];
-	char	*start;
-	char	*end;
 
 	i = 0;
 	if (fd < 0 || BUFFER_SIZE <= 0)

@@ -37,21 +37,35 @@ void	ft_sortloop(t_token_list *toklist, t_command *current, int i, int j)
 		return;
 	while (i < toklist->token_count)
 	{
+        if (ft_strcmp(toklist->tokens[i], " ") == 0)
+            i++;
 		if (ft_strcmp(toklist->tokens[i], "|") == 0)
 			current = ft_sortpipes(current);
 		else if (ft_strcmp(toklist->tokens[i], "<") == 0 || ft_strcmp(toklist->tokens[i], ">") == 0 || ft_strcmp(toklist->tokens[i], ">>") == 0)
 			current = ft_sortredirect(toklist, current, &i);
-		else
+		else if (ft_strlen(toklist->tokens[i]) > 0 && !ft_isspace(toklist->tokens[i][0]))
 		{
 			if (current->cmds == NULL)
 				current->cmds = ft_strdup(toklist->tokens[i]);
 			else
 				current->args[j++] = ft_strdup(toklist->tokens[i]);
+            i++;
 		}
-		i++;
+        else
+		    i++;
 	}
 	current->args[j] = NULL;
 }
+
+int		ft_isspace(int c)
+{
+	c = (unsigned char)c;
+	if (c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r'
+		|| c == ' ')
+		return (1);
+	return (0);
+}
+
 //every strdup will need a free at some point
 t_command	*ft_sort_tokens(t_token_list *toklist, t_command *table)
 {
@@ -62,6 +76,7 @@ t_command	*ft_sort_tokens(t_token_list *toklist, t_command *table)
 	i = 0;
 	j = 0;
 	current = table;
+    ft_memset(current, 0, 1);
 	ft_sortloop(toklist, current, i, j);
 	return (table);
 }
