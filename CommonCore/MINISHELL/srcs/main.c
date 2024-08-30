@@ -140,25 +140,9 @@ t_data	*init_minishell(char **env)
 	t_data *data;
 
 	data = malloc(sizeof(t_data));
-	if (!data)
-		return (NULL);
-	data->commands = NULL;
-	data->toklist = NULL;
-	data->env = NULL;
-	data->redirects = NULL;
 	data->commands = malloc(sizeof(t_command));
 	data->toklist = malloc(sizeof(t_token_list));
 	data->env = malloc(sizeof(t_env));
-	data->redirects = malloc(sizeof(t_redirection));
-	if (!data->commands || !data->toklist || !data->env || data->redirects)
-	{
-		free(data->commands);
-		free(data->toklist);
-		free(data->env);
-		free(data->redirects);
-		free(data);
-		return (NULL);
-	}
 	init_env(env, data->env);
     init_commands(data);
     init_toklist(data);
@@ -192,23 +176,28 @@ int     ft_token_counter(t_token_list *toklist)
     return (i);
 }
 
-void    printcommands(t_command *commands)
+void printcommands(t_command *commands)
 {
-    int i = 0;
+    t_command *cmd = commands;
+	int i = 0;
+
     printf("\n\nCOMMANDS\n");
-    while (commands)
+    while (cmd)
     {
         printf("cmd:");
-        printf("%s\n", commands->cmds);
-        while (commands->args[i])
+        printf("%s\n", cmd->cmds);
+
+        i = 0;
+        while (cmd->args[i])
         {
             printf("Arg %d\n", i);
-            printf("%s\n", commands->args[i]);
+            printf("%s\n", cmd->args[i]);
             i++;
         }
-        commands = commands->next;
+        cmd = cmd->next;
     }
 }
+
 
 #include <string.h>
 int	main(int argc, char **argv, char **env)
@@ -230,15 +219,43 @@ int	main(int argc, char **argv, char **env)
 			printf("Minishell Terminated (ctrl+d)\n");
 			exit(0);
 		}
-		data->toklist->tokens = ft_tokenize(input); // splits inputs and stores tokens in the structure (lexer)
+        printf("Input received: %s\n", input);
+		data->toklist->tokens = ft_tokenize(data->toklist, input); // splits inputs and stores tokens in the structure (lexer)
 
+        t_token_list *tokens = data->toklist;
+        int i = 0;
+		printf("\nTOKENS\n");
+        while (tokens->tokens[i])
+        {
+            printf("%s\n", tokens->tokens[i]);
+            i++;
+        }
+        printf("toklist tokens count: %d\n", data->toklist->token_count);
+        printf("commands structure initialized: %p\n", (void*)data->commands);
+
+		if (data->commands) //free previous command
+		{
+			free_command(data->commands);
+			data->commands = malloc(sizeof(t_command));
+			init_commands(data);
+		}
 		if (synt_errors_check(data->toklist) == 0)    // checks tokens syntax and prints syntax errors
 			data->commands = ft_sort_tokens(data->toklist, data->commands); // creates hierarchy and redirects them to corresponding functions (parser to executor)
 
 
+
+        t_command *commands = data->commands;
+        printcommands(commands);
+
+
+
+
+        if (ft_strcmp(data->commands->cmds, "pwd") == 0)
+            ft_pwd(data->env);
+        //start exec with checking commands and arguments
+
 		//executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)
 		//example of how lexer->parser->executor thing works: https://imgur.com/a/PTod73J
-
 		free(input);
 		free(data->toklist->tokens);
         //data->toklist->token_count = 0;
