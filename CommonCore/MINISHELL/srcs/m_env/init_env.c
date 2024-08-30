@@ -2,7 +2,7 @@
 
 //init (when starting minishell)
 //to print with the env cmd, just go through every node and print "NAME"+"="+"value"+newline
-void init_env(char **env, t_env *cur_env)
+void init_env(char **env, t_env **cur_env)
 {
 	int		i;
 	char	**temp;
@@ -10,7 +10,7 @@ void init_env(char **env, t_env *cur_env)
 	t_env	*last_node;
 
 	i = 0;
-	cur_env = NULL; //init linked list
+	*cur_env = NULL; //init linked list
 	while (env[i])
 	{
 		temp = ft_split(env[i], '=');
@@ -21,11 +21,11 @@ void init_env(char **env, t_env *cur_env)
 		new_node->value = strdup(temp[1]); // copy value
 		new_node->next = NULL;
 		// if first node (first loop)
-		if (cur_env == NULL)
-			cur_env = new_node;
+		if (*cur_env == NULL)
+			*cur_env = new_node;
 		else
 		{
-			last_node = cur_env;
+			last_node = *cur_env;
 			// go to end of list and add new node (i think theres smth in libft for that)
 			while (last_node->next)
 				last_node = last_node->next;

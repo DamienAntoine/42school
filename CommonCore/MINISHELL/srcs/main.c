@@ -140,6 +140,8 @@ t_data	*init_minishell(char **env)
 	t_data *data;
 
 	data = malloc(sizeof(t_data));
+	if (!data)
+		return (NULL);
 	data->commands = malloc(sizeof(t_command));
 	data->toklist = malloc(sizeof(t_token_list));
 	data->env = malloc(sizeof(t_env));
@@ -151,7 +153,7 @@ t_data	*init_minishell(char **env)
 		free(data);
 		return (NULL);
 	}
-	init_env(env, data->env);
+	init_env(env, &data->env);
 	init_commands(data);
 	data->toklist->tokens = NULL;
 	return (data);
@@ -246,10 +248,6 @@ int	main(int argc, char **argv, char **env)
 
         t_command *commands = data->commands;
         printcommands(commands);
-
-
-
-
         if (ft_strcmp(data->commands->cmds, "pwd") == 0)
             ft_pwd(data->env);
         //start exec with checking commands and arguments

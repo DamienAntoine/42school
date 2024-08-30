@@ -87,7 +87,7 @@ char *find_env_value(t_env *env, const char *name);
 //init_env.c
 void unset_env_variable(t_env **env_list, char *name);
 void update_env_variable(t_env *env_list, char *name, char *value);
-void init_env(char **env, t_env *cur_env);
+void init_env(char **env, t_env **cur_env);
 
 ///////////////////////////m_free////////////////////////////////////////////
 //free.c
