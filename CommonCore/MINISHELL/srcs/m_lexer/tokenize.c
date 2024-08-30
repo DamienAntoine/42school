@@ -68,6 +68,7 @@ char	**ft_tokenize(t_token_list *toklist, char *input)
 	if (!args)
 		return (NULL);
 	i = 0;
+	input = trim_input(input);
 	token = ft_strtok(input, " \t\n|<>");
 	while (token != NULL && i < MAX_ARGS - 1)
 	{
@@ -76,7 +77,21 @@ char	**ft_tokenize(t_token_list *toklist, char *input)
 	}
     toklist->token_count = i;
 	args[i] = NULL;
+	free(input);
 	return (args);
+}
+
+char	*trim_input(char *input)
+{
+	char *trimmed_input = ft_strtrim(input, " \t\n\r");
+
+    if (trimmed_input == NULL || *trimmed_input == '\0')
+	{
+    	// Input is empty or contains only spaces, skip processing
+		free(trimmed_input);
+		free(input);
+	}
+	return (trimmed_input);
 }
 
 int is_delimiter(char c, const char *delimiter)
