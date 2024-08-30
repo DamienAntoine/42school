@@ -76,9 +76,9 @@ int	main(int argc, char **argv, char **env)
 		/********DEBUGGING********/
 		i = 0;
 		t_token_list *tokens = tokens = data->toklist;
-		printf("**********Debugging*******************\nhello");
+		printf("**********Debugging*******************\n");
 		printf("Input received: %s\n", input);
-		printf("\nTOKENS\n");
+		printf("\nTOKENSaaaaaaaaaa\n");
 		while (tokens->tokens[i])
 		{
 			printf("%s\n", tokens->tokens[i]);
