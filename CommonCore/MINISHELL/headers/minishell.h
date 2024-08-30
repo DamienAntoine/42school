@@ -75,7 +75,7 @@ int is_delimiter(char c, const char *delimiter);
 int		ft_isspace(int c);
 ///////////////init//////////////
 void    init_commands(t_data *data);
-void    init_toklist(t_data *data);
+
 
 
 void printf_and_free(const char *message, void *ptr);

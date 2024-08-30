@@ -20,14 +20,8 @@ t_data	*init_minishell(char **env)
 	}
 	init_env(env, &data->env);
 	init_commands(data);
-	init_toklist(data);
-	//data->toklist->tokens = NULL;
-	return (data);
-}
-void	init_toklist(t_data *data)
-{
 	data->toklist->tokens = NULL;
-	data->toklist->token_count = 0;
+	return (data);
 }
 
 void    init_commands(t_data *data)
