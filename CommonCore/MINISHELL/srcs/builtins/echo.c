@@ -16,6 +16,8 @@ void    ft_echo(t_command *current)
     }
     while (current->args[i])
         printf("%s",current->args[i++]);
-    if (!n_flag)
+    if (n_flag)
+        return ;
+    else
         printf("\n");
 }
