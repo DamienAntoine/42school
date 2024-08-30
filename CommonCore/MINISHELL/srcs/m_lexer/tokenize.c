@@ -86,11 +86,7 @@ char	*trim_input(char *input)
 	char *trimmed_input = ft_strtrim(input, " \t\n\r");
 
     if (trimmed_input == NULL || *trimmed_input == '\0')
-	{
-    	// Input is empty or contains only spaces, skip processing
 		free(trimmed_input);
-		free(input);
-	}
 	return (trimmed_input);
 }
 
