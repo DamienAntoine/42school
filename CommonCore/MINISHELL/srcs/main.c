@@ -129,6 +129,7 @@ int	main(int argc, char **argv, char **env)
 
 		free(input);
 		free(data->toklist->tokens);
+		data->toklist->tokens = NULL;
 		// data->toklist->token_count = 0;
 	}
 	return (0);
