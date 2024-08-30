@@ -60,6 +60,7 @@ typedef struct s_token_list
 
 
 t_data	*init_minishell(char **env);
+void    init_commands(t_data *data);
 ///////////////////////////builtins///////////////////////////////////////////
 void    cd(t_command *current);
 void    echo(t_command *current);

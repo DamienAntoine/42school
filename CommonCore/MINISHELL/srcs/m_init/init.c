@@ -1,4 +1,4 @@
-#include "../headers/minishell.h"
+#include "../../headers/minishell.h"
 
 t_data	*init_minishell(char **env)
 {

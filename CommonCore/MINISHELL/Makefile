@@ -3,11 +3,11 @@ CFLAGS = -Wall -Wextra -Werror
 NAME = minishell
 
 # main and builtins
-SRCS = ./srcs/main.c ./srcs/builtins/cd.c ./srcs/builtins/echo.c ./srcs/builtins/env.c ./srcs/builtins/exit.c\
+SRCS = ./srcs/m_init/init.c ./srcs/main.c ./srcs/builtins/cd.c ./srcs/builtins/echo.c ./srcs/builtins/env.c ./srcs/builtins/exit.c\
 		./srcs/builtins/export.c ./srcs/builtins/pwd.c ./srcs/builtins/unset.c ./srcs/builtins/utils.c\
 
 # m_env
-SRCS += ./srcs/m_env/env_value.c  ./srcs/m_env/init_env.c	./includes/gnl.c\
+SRCS += ./srcs/m_env/init_env.c	./includes/gnl.c\
 
 # m_free
 SRCS += ./srcs/m_free/free.c\
