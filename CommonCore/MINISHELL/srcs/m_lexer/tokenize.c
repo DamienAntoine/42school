@@ -21,18 +21,19 @@ size_t ft_toklen(const char *str, const char *delim)
 	return (len);
 }
 
-// strtok is like ft_split but it replaces delimiter characters with null characters,making every word of the string a token. It returns the next token everytime its called
 char	*ft_strtok(char *str, const char *delimiter)
 {
-	static char *last; // keeps track of next token
+	static char *last; // Keeps track of next token
 	char	*start;
 	char	*end;
+	bool	in_quotes = false;
 
 	if (str == NULL)
 		str = last;
 	if (str == NULL || *str == '\0')
 		return (NULL);
 
+	// Skip leading delimiters
 	while (*str && ft_strchr(delimiter, *str))
 		str++;
 	if (*str == '\0')
@@ -41,20 +42,35 @@ char	*ft_strtok(char *str, const char *delimiter)
 		return NULL;
 	}
 
-
 	start = str;
-	end = start + ft_toklen(start, delimiter);
+	while (*str)
+	{
+		if (*str == '"')
+			in_quotes = !in_quotes; // Toggle in_quotes when encountering a double quote
+		else if (ft_strchr(delimiter, *str) && !in_quotes)
+			break;
+		str++;
+	}
+
+	end = str; // End points to the current position of str
 	if (*end != '\0')
 	{
-		*end = '\0';
-        /*while (is_delimiter(*end + 1, delimiter))
-            end++;*/
-		last = end + 1; // set the last pointer to the start of the next token
+		*end = '\0'; // Null-terminate the current token
+		last = end + 1; // Set the last pointer to the start of the next token
 	}
 	else
 		last = NULL;
+
+	// Remove surrounding quotes if the token was quoted
+	if (*start == '"' && *(end - 1) == '"')
+	{
+		start++;
+		*(end - 1) = '\0'; // Null-terminate after removing the closing quote
+	}
+
 	return (start);
 }
+
 
 //lexer takes the whole command line and splits every word into a token to store them into token_list->tokens.
 //example : ls -l = token 1 is "ls", token 2 is "-l"

@@ -10,6 +10,8 @@
 #include <sys/types.h>
 #include <errno.h>
 #include <sys/wait.h> //for waitpid
+#include <stdbool.h>
+
 
 # define BUFFER_SIZE 1024
 # define MAX_ARGS 100
@@ -81,7 +83,7 @@ void	handle_redirection(t_data *data);
 
 //#########################   builtins   ########################
 void    ft_cd(t_command *current);
-void    ft_echo(t_command *current);
+void    ft_echo(t_token_list *cur);
 void	ft_env(t_env *lst);
 char	**env_list_to_array(t_env *env_list);
 void	unset_env_var(t_env **env_list, char *name);
