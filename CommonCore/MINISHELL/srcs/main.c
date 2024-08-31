@@ -103,6 +103,9 @@ int	main(int argc, char **argv, char **env)
 				printcommands(commands);
 				printf("*****************************\n\n");
 
+				/*  later replace  under with 
+					execute_command(data); */
+				
 				if (ft_strcmp(data->commands->cmds, "env") == 0) // replace this with executor
 					ft_env(data->env);
 		}
