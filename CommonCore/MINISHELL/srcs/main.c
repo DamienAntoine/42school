@@ -2,27 +2,23 @@
 
 void	handle_sigint(int sig)
 {
-	/*
+/*	
 	(void)sig;
 	printf("\n");
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	*/
+*/	
 	(void)sig;
-	write(1, "\nMSL$> ", 8);
-
+	ft_putstr_fd("\nMSL$> ", 1);
 }
 
-int	ft_token_counter(t_token_list *toklist)
+void	handle_sigquit(int sig)
 {
-	int	i;
-
-	i = 0;
-	while (toklist->tokens[i])
-		i++;
-	return (i);
+	(void)sig;
+	ft_putstr_fd("\nMSL$> ", 1);
 }
+
 
 void	printcommands(t_command *commands) // debugging function
 {
@@ -59,7 +55,11 @@ int	main(int argc, char **argv, char **env)
 		exit(0);
 	(void)argv;
 	data = init_minishell(env);
+
+  
 	signal(SIGINT, handle_sigint); // handle ctrl+c
+	signal(SIGQUIT, handle_sigquit); //handle ctrl+\ //
+	
 	while (1)
 	{
 		write(1, "MSL$> ", 6);

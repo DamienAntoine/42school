@@ -59,49 +59,68 @@ typedef struct s_token_list
 	int			token_count;
 }	t_token_list;
 
+//####  need to be sorted later  ########################
 
-t_data	*init_minishell(char **env);
 void	init_commands(t_data *data);
 char	*trim_input(char *input);
-///////////////////////////builtins///////////////////////////////////////////
-void    cd(t_command *current);
-void    echo(t_command *current);
-void	env(t_env *lst);
+
+
+
+
+
+
+//#########################   builtins   ########################
+void    ft_cd(t_command *current);
+void    ft_echo(t_command *current);
+void	unset_env_var(t_env **env_list, char *name);
 void	ft_pwd(t_env *cur_env);
+void	print_export(t_env *env_list);
+void    export_with_args(t_env **env_list, char *name, char *value);
 //void	exit();
 //void	export();
-//void	pwd();
-//void	unset();
-//utils.c
+
+//#########################   Utils   ########################
+//utils_print.c
+void printf_and_free(const char *message, void *ptr);
+void perror_and_free(const char *message, void *ptr);
+
+//utils_str.c
 int is_delimiter(char c, const char *delimiter);
 int		ft_isspace(int c);
-///////////////init//////////////
+
+//utils_error.c
+void	error_msg(char *cmd, char *msg);
+
+
+
+///////////////init.c//////////////
+t_data	*init_minishell(char **env);
 void    init_commands(t_data *data);
 
 
 
-void printf_and_free(const char *message, void *ptr);
-void perror_and_free(const char *message, void *ptr);
+
+//includes/gnl.c
 char *get_next_line(int fd);
 
-///////////////////////////m_env//////////////////////////////////////////////
-//env_value.c
-void update_env_value(t_env **env, const char *name, const char *new_value);
-char *find_env_value(t_env *env, const char *name);
+//#########################   m_env   ########################
+
+
 
 //init_env.c
-void unset_env_variable(t_env **env_list, char *name);
+
+char *find_env_value(t_env *env, const char *name);
 void update_env_variable(t_env *env_list, char *name, char *value);
 void init_env(char **env, t_env **cur_env);
 
-///////////////////////////m_free////////////////////////////////////////////
+//#########################   m_free   ########################
 //free.c
 void free_env_list(t_env *env);
 void free_token_list(t_token_list *token_list);
 void free_redirections(t_redirection *redirections);
 void free_command(t_command *command);
 
-///////////////////////////m_lexer///////////////////////////////////////////
+//#########################   m_lexer   ########################
 //synt_checks.c
 int	synt_errors_check(t_token_list *toklist);
 int consecutive_check(t_token_list *toklist, int i);
@@ -114,7 +133,7 @@ char	**ft_tokenize(t_token_list *toklist, char *input);
 char	*ft_strtok(char *str, const char *delimiter);
 size_t ft_toklen(const char *str, const char *delim);
 
-///////////////////////////m_parser//////////////////////////////////////////
+//#########################   m_parser   ########################
 //create_redirects.c
 void ft_add_redirection(t_command *current, char *file, int type);
 t_redirection *ft_create_redirection(char *file, int type);
