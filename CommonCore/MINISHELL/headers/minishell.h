@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
-#include <errno.h>	//sam: added for error msg for b_cd.c
+#include <errno.h>
 
 # define BUFFER_SIZE 1024
 # define MAX_ARGS 100
@@ -68,7 +68,7 @@ char	*trim_input(char *input);
 
 
 
-///////////////////////////builtins///////////////////////////////////////////
+//#########################   builtins   ########################
 void    ft_cd(t_command *current);
 void    ft_echo(t_command *current);
 void	unset_env_var(t_env **env_list, char *name);
@@ -78,7 +78,7 @@ void    export_with_args(t_env **env_list, char *name, char *value);
 //void	exit();
 //void	export();
 
-////////////////////////////Utils//////////////////////////////////////////
+//#########################   Utils   ########################
 //utils_print.c
 void printf_and_free(const char *message, void *ptr);
 void perror_and_free(const char *message, void *ptr);
@@ -102,7 +102,7 @@ void    init_commands(t_data *data);
 //includes/gnl.c
 char *get_next_line(int fd);
 
-///////////////////////////m_env//////////////////////////////////////////////
+//#########################   m_env   ########################
 
 
 
@@ -112,14 +112,14 @@ char *find_env_value(t_env *env, const char *name);
 void update_env_variable(t_env *env_list, char *name, char *value);
 void init_env(char **env, t_env **cur_env);
 
-///////////////////////////m_free////////////////////////////////////////////
+//#########################   m_free   ########################
 //free.c
 void free_env_list(t_env *env);
 void free_token_list(t_token_list *token_list);
 void free_redirections(t_redirection *redirections);
 void free_command(t_command *command);
 
-///////////////////////////m_lexer///////////////////////////////////////////
+//#########################   m_lexer   ########################
 //synt_checks.c
 int	synt_errors_check(t_token_list *toklist);
 int consecutive_check(t_token_list *toklist, int i);
@@ -132,7 +132,7 @@ char	**ft_tokenize(t_token_list *toklist, char *input);
 char	*ft_strtok(char *str, const char *delimiter);
 size_t ft_toklen(const char *str, const char *delim);
 
-///////////////////////////m_parser//////////////////////////////////////////
+//#########################   m_parser   ########################
 //create_redirects.c
 void ft_add_redirection(t_command *current, char *file, int type);
 t_redirection *ft_create_redirection(char *file, int type);
