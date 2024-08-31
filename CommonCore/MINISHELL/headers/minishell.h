@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
+#include <sys/types.h>
 #include <errno.h>	//sam: added for error msg for b_cd.c
 
 # define BUFFER_SIZE 1024
@@ -48,7 +49,7 @@ typedef struct s_command
 typedef struct s_redirection				//this struct is to be able to use multiple redirections in one command
 {
 	char					*file;			// file for redirection
-	int						type;			// 0 for input ("<"), 1 for output (">"), 2 for append (">>")
+	int						type;			// 0 for input ("<"), 1 for output (">"), 2 for append (">>"), 3 for ("<<")
 	struct	s_redirection	*next;			// pointer to the next redirection
 }	t_redirection;
 

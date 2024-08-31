@@ -27,6 +27,13 @@ t_command *ft_sortredirect(t_token_list *toklist, t_command *current, int *i)
 		if (++(*i) < toklist->token_count)	// check if theres a token after operator
 			ft_add_redirection(current, toklist->tokens[*i], 2); // 2 for append
 	}
+	else if (ft_strcmp(toklist->tokens[*i], "<<") == 0)
+	{
+		if (++(*i) < toklist->token_count)	// check if theres a token after operator
+			ft_add_redirection(current, toklist->tokens[*i], 3);
+			// "<< should be given a delimiter, then read the input until a line containing thedelimiter is seen.
+			//However, it doesn’t have to update the history!" (whatever that means)
+	}
 	return (current);
 }
 

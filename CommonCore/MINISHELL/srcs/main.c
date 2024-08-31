@@ -66,7 +66,7 @@ int	main(int argc, char **argv, char **env)
 		input = get_next_line(STDIN_FILENO); // alias for '1' in unistd.h
 
 
-		printf("\n**********Debugging*******************\n");
+		printf("\n**********Debugging**********\n");
 		printf("#Input received: %s\n", input);
 
 		if (input == NULL)                   // ctrl + d
@@ -101,9 +101,9 @@ int	main(int argc, char **argv, char **env)
 					data->commands = ft_sort_tokens(data->toklist, data->commands);	// creates hierarchy and redirects them to corresponding functions (parser to executor)
 				commands = data->commands;
 				printcommands(commands);
-				printf("**************************************\n\n");
+				printf("*****************************\n\n");
 
-				if (ft_strcmp(data->commands->cmds, "pwd") == 0)
+				if (ft_strcmp(data->commands->cmds, "pwd") == 0) // replace this with executor
 					ft_pwd(data->env);
 		}
 		// start exec with checking commands and arguments
