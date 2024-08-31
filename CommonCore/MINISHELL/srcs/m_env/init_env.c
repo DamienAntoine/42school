@@ -17,8 +17,8 @@ void	init_env(char **env, t_env **cur_env)
 		new_node = (t_env *)malloc(sizeof(t_env)); // new node
 		if (!new_node)
 			return ;
-		new_node->type = strdup(temp[0]);  // copy var name
-		new_node->value = strdup(temp[1]); // copy value
+		new_node->type = ft_strdup(temp[0]);  // copy var name
+		new_node->value = ft_strdup(temp[1]); // copy value
 		new_node->next = NULL;
 		// if first node (first loop)
 		if (*cur_env == NULL)

@@ -42,10 +42,11 @@ void   print_export(t_env *env_list)
     }
 }
 
-void    export_with_args(t_env **env_list, char *name, char *value)
+void    export_with_arg(t_env **env_list, char *name, char *value)
 {
     t_env   *current;
     current = *env_list;
+ 
 
     while (current)
     {

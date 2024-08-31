@@ -9,6 +9,9 @@ SRCS = ./srcs/m_init/init.c ./srcs/main.c ./srcs/builtins/cd.c ./srcs/builtins/e
 # m_env
 SRCS += ./srcs/m_env/init_env.c	./includes/gnl.c\
 
+# m_executor
+SRCS += ./srcs/m_executor/executor.c ./srcs/m_executor/pipes.c ./srcs/m_executor/redirection.c\
+
 # m_free
 SRCS += ./srcs/m_free/free.c\
 

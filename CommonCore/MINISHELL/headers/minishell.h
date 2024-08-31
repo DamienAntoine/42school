@@ -8,7 +8,8 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/types.h>
-#include <errno.h>	//sam: added for error msg for b_cd.c
+#include <errno.h>
+#include <sys/wait.h> //for waitpid
 
 # define BUFFER_SIZE 1024
 # define MAX_ARGS 100
@@ -66,17 +67,28 @@ char	*trim_input(char *input);
 void    ft_env(t_env *lst);
 
 
+//######################### m_executor ##########################
+//pipes.c
+void	handle_pipe(t_data *data);
 
+//executor.c
+int	execute_command(t_data *data);
+
+//redirection.c
+void	handle_redirection(t_data *data);
 
 
 
 //#########################   builtins   ########################
 void    ft_cd(t_command *current);
 void    ft_echo(t_command *current);
+void	ft_env(t_env *lst);
+char	**env_list_to_array(t_env *env_list);
 void	unset_env_var(t_env **env_list, char *name);
 void	ft_pwd(t_env *cur_env);
 void	print_export(t_env *env_list);
-void    export_with_args(t_env **env_list, char *name, char *value);
+void    export_with_arg(t_env **env_list, char *name, char *value);
+void	ft_exit(t_data *data, int status);
 //void	exit();
 //void	export();
 
