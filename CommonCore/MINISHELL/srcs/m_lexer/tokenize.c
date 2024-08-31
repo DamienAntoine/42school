@@ -26,8 +26,9 @@ char	*ft_strtok(char *str, const char *delimiter)
 	static char *last; // Keeps track of next token
 	char	*start;
 	char	*end;
-	bool	in_quotes = false;
+	int		in_quotes;
 
+	in_quotes = 0;
 	if (str == NULL)
 		str = last;
 	if (str == NULL || *str == '\0')
