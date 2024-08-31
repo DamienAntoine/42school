@@ -2,13 +2,13 @@
 
 void	handle_sigint(int sig)
 {
-/*	
+/*
 	(void)sig;
 	printf("\n");
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-*/	
+*/
 	(void)sig;
 	ft_putstr_fd("\nMSL$> ", 1);
 }
@@ -56,10 +56,10 @@ int	main(int argc, char **argv, char **env)
 	(void)argv;
 	data = init_minishell(env);
 
-  
+
 	signal(SIGINT, handle_sigint); // handle ctrl+c
 	signal(SIGQUIT, handle_sigquit); //handle ctrl+\ //
-	
+
 	while (1)
 	{
 		write(1, "MSL$> ", 6);
@@ -103,8 +103,8 @@ int	main(int argc, char **argv, char **env)
 				printcommands(commands);
 				printf("*****************************\n\n");
 
-				if (ft_strcmp(data->commands->cmds, "pwd") == 0) // replace this with executor
-					ft_pwd(data->env);
+				if (ft_strcmp(data->commands->cmds, "env") == 0) // replace this with executor
+					ft_env(data->env);
 		}
 		// start exec with checking commands and arguments
 		// executor works with fork() and execve(), handles redirections (>, <, >>, <<) and pipes (|), and also handles error management(command not found, ...)

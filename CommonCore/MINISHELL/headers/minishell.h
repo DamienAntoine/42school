@@ -63,6 +63,7 @@ typedef struct s_token_list
 
 void	init_commands(t_data *data);
 char	*trim_input(char *input);
+void    ft_env(t_env *lst);
 
 
 
