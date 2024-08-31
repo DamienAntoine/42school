@@ -73,7 +73,7 @@ void	handle_pipe(t_data *data);
 
 //executor.c
 int	execute_command(t_data *data);
-
+void	send_command(t_data *data);
 //redirection.c
 void	handle_redirection(t_data *data);
 

@@ -16,6 +16,15 @@ void	free_env_list(t_env *env)
 
 void	free_command(t_command *command)
 {
+
+   if (command->args) {
+        for (int i = 0; command->args[i]; i++)
+            free(command->args[i]);
+        free(command->args);
+    }
+    free(command->cmds);
+    free(command);
+/*
 	t_command	*temp;
 
 	while (command)
@@ -33,7 +42,8 @@ void	free_command(t_command *command)
 		}
 		free_redirections(temp->redirections);
 		free(temp);
-	}
+*/
+
 }
 
 void	free_redirections(t_redirection *redirections)
@@ -51,16 +61,5 @@ void	free_redirections(t_redirection *redirections)
 
 void	free_token_list(t_token_list *token_list)
 {
-	if (token_list)
-	{
-		if (token_list->tokens)
-		{
-			for (int i = 0; i < token_list->token_count; ++i)
-			{
-				free(token_list->tokens[i]);
-			}
-			free(token_list->tokens);
-		}
-		free(token_list);
-	}
+    free(token_list->tokens);
 }

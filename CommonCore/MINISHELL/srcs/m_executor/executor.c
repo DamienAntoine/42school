@@ -1,6 +1,6 @@
 #include "../../headers/minishell.h"
 
-static void	send_command(t_data *data)
+void	send_command(t_data *data)
 		// need to change the parameters sent to builtins depenting on their needs
 {
 	char	**envp = env_list_to_array(data->env);
@@ -56,12 +56,14 @@ static void	send_command(t_data *data)
 
 int	execute_command(t_data *data)
 {
+	/*
 	t_command *cmdtable;
 
 	cmdtable = data->commands;
+	
 	if (cmdtable->next != NULL) // means theres a pipe
 	{
-		handle_pipe(data, -1);
+		handle_pipe(data);
 		// from what i understand: run first command, fork the process,
 		// fork will come back to execute_command at some point and check again if theres another pipe or a redirect
 		return (0);
@@ -71,6 +73,7 @@ int	execute_command(t_data *data)
 		handle_redirection(data);
 		return (0);
 	}
+	*/
 	// no pipe, just check command syntax and execute
 	send_command(data);
 	return (0);
