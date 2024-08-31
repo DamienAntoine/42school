@@ -57,14 +57,6 @@ void	ft_sortloop(t_token_list *toklist, t_command *current, int i, int j)
 	current->args[j] = NULL;
 }
 
-int		ft_isspace(int c)
-{
-	c = (unsigned char)c;
-	if (c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r'
-		|| c == ' ')
-		return (1);
-	return (0);
-}
 
 //every strdup will need a free at some point
 t_command	*ft_sort_tokens(t_token_list *toklist, t_command *table)

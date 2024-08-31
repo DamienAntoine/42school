@@ -101,17 +101,3 @@ char	*trim_input(char *input)
 	}
 	return (trimmed_input);
 }
-
-int is_delimiter(char c, const char *delimiter)
-{
-    int i;
-
-    i = 0;
-    while (delimiter[i])
-    {
-        if (delimiter[i] == c)
-            return (1);
-        i++;
-    }
-    return (0);
-}

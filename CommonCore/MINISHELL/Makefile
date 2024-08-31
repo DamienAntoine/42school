@@ -4,7 +4,7 @@ NAME = minishell
 
 # main and builtins
 SRCS = ./srcs/m_init/init.c ./srcs/main.c ./srcs/builtins/cd.c ./srcs/builtins/echo.c ./srcs/builtins/env.c ./srcs/builtins/exit.c\
-		./srcs/builtins/export.c ./srcs/builtins/pwd.c ./srcs/builtins/unset.c ./srcs/builtins/utils.c\
+		./srcs/builtins/export.c ./srcs/builtins/pwd.c ./srcs/builtins/unset.c\
 
 # m_env
 SRCS += ./srcs/m_env/init_env.c	./includes/gnl.c\
@@ -16,7 +16,10 @@ SRCS += ./srcs/m_free/free.c\
 SRCS += ./srcs/m_lexer/synt_checks.c ./srcs/m_lexer/tokenize.c\
 
 # m_parser
-SRCS += ./srcs/m_parser/create_redirects.c ./srcs/m_parser/sort_tokens.c
+SRCS += ./srcs/m_parser/create_redirects.c ./srcs/m_parser/sort_tokens.c\
+
+# utils
+SRCS += ./srcs/utils/utils_str.c ./srcs/utils/utils_error.c ./srcs/utils/utils_print.c
 
 
 
