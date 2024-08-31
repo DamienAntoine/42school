@@ -19,15 +19,6 @@ void	handle_sigquit(int sig)
 	ft_putstr_fd("\nMSL$> ", 1);
 }
 
-int	ft_token_counter(t_token_list *toklist)
-{
-	int	i;
-
-	i = 0;
-	while (toklist->tokens[i])
-		i++;
-	return (i);
-}
 
 void	printcommands(t_command *commands) // debugging function
 {
