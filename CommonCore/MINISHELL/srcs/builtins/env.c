@@ -4,7 +4,7 @@ void	ft_env(t_env *lst)
 {
 	while (lst)
 	{
-		if (lst->value)
+		if (lst->value && *lst->value)
 		{
 			ft_putstr_fd(lst->type, 1);
 			ft_putchar_fd('=', 1);

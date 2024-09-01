@@ -86,10 +86,12 @@ void    ft_cd(t_command *current);
 void    ft_echo(t_token_list *cur);
 void	ft_env(t_env *lst);
 char	**env_list_to_array(t_env *env_list);
-void	unset_env_var(t_env **env_list, char *name);
+void    handle_unset(t_env **lst, char **args);
+
 void	ft_pwd(t_env *cur_env);
 void	print_export(t_env *env_list);
-void	    export_with_arg(t_env **env_list, char *arg);
+void    handle_export(t_env **lst, char **args);
+
 void	ft_exit(t_data *data, int status);
 //void	exit();
 //void	export();

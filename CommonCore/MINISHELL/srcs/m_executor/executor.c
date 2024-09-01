@@ -28,7 +28,8 @@ void	send_command(t_data *data)
 		if (data->toklist->token_count == 1)
 			print_export(data->env);
 		else
-			export_with_arg(&data->env, data->toklist->tokens[1]);
+			handle_export(&data->env, data->toklist->tokens);
+		//	export_with_arg(&data->env, data->toklist->tokens[1]);
 
 	}
 		
@@ -36,7 +37,8 @@ void	send_command(t_data *data)
 		ft_pwd(data->env);
 
 	else if (ft_strcmp(cmdtable->cmds, "unset") == 0)
-		unset_env_var(&data->env, cmdtable->args[0]);
+		handle_unset(&data->env, data->toklist->tokens);
+		//unset_env_var(&data->env, cmdtable->args[0]);
 
 	else // Handle non-builtins
 	{

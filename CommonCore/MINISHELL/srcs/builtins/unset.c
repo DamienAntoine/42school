@@ -1,7 +1,11 @@
 #include "../../headers/minishell.h"
 
+// FIX FOR MULTIPLE ARGS  like unset AAAAA BBBBB+
+
+
+
 // use to unset a variable (like raja showed with "unset pwd")
-void	unset_env_var(t_env **env_list, char *name)
+static void	unset_env_var(t_env **env_list, char *name)
 {
 	t_env	*current;
 	t_env	*previous;
@@ -25,4 +29,12 @@ void	unset_env_var(t_env **env_list, char *name)
 		previous = current;
 		current = current->next;
 	}
+}
+
+void    handle_unset(t_env **lst, char **args)
+{
+    int i;
+    i = 1;
+    while (args[i])
+        unset_env_var(lst, args[i++]);
 }

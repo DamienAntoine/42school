@@ -16,23 +16,52 @@ variables have been configured for export.*/
 
 //to undo export, do unset.
 
-//  how to use export.
-//      either   just       export
-//      or                  export MY_VAR="hello"   command and one arg(name="value").  
-//      it doesnt work like export MY_VAR hello 
+// Function to insert a node into a sorted linked list
+static void sorted_insert(t_env **sorted_list, t_env *new_node) {
+    if (!(*sorted_list) || strcmp((*sorted_list)->type, new_node->type) >= 0) {
+        new_node->next = *sorted_list;
+        *sorted_list = new_node;
+    } else {
+        t_env *current = *sorted_list;
+        while (current->next && strcmp(current->next->type, new_node->type) < 0) {
+            current = current->next;
+        }
+        new_node->next = current->next;
+        current->next = new_node;
+    }
+}
 
-void   print_export(t_env *env_list)
-{
-    t_env   *current;
-    current = env_list;
+// Function to clone nodes for sorting to avoid modifying the original list
+static t_env *clone_node(t_env *node) {
+    if (node == NULL) return NULL;
+    t_env *new_node = malloc(sizeof(t_env));
+    if (!new_node) return NULL;
+    new_node->type = node->type;  // Assuming these are pointers and don't need duplication
+    new_node->value = node->value;
+    new_node->next = NULL;
+    return new_node;
+}
 
-    while (current)
-    {
+void print_export(t_env *env_list) {
+    t_env *current = env_list;
+    t_env *sorted_list = NULL;
+    t_env *new_node;
+
+    // Create a new sorted list
+    while (current) {
+        new_node = clone_node(current);
+        if (new_node) {
+            sorted_insert(&sorted_list, new_node);
+        }
+        current = current->next;
+    }
+
+    // Print the sorted list
+    current = sorted_list;
+    while (current) {
         ft_putstr_fd("declare -x ", 1);
         ft_putstr_fd(current->type, 1);
-
-        if (current->value && *current->value)
-        {
+        if (current->value && *current->value) {
             ft_putstr_fd("=\"", 1);
             ft_putstr_fd(current->value, 1);
             ft_putstr_fd("\"", 1);
@@ -40,40 +69,53 @@ void   print_export(t_env *env_list)
         ft_putchar_fd('\n', 1);
         current = current->next;
     }
+
+    // Free the sorted list
+    while (sorted_list) {
+        current = sorted_list;
+        sorted_list = sorted_list->next;
+        free(current);  // Free the cloned node
+    }
 }
 
-void    export_with_arg(t_env **env_list, char *arg)
+static void export_with_arg(t_env **env_list, char *arg)
 {   
-    t_env   *new;
-    t_env   *current;
-    char    *name;
-    char    *new_value;
-
-    name = ft_strtok(arg, "=");
-    new_value = ft_strtok(NULL, "");
+    char    *name = ft_strtok(arg, "=");
+    char    *new_value = ft_strtok(NULL, "");
 
     if (new_value == NULL)
-        new_value = "";
+        new_value = "";  // Ensure new_value is not NULL
 
-    current = *env_list;
-
-
-    while (current)
-    {
-        if (!ft_strcmp(current->type, name))
-        {
-            // if the variable already exists, update its value
-            free(current->value);
-            current->value = ft_strdup(new_value);
-            return ;
-        }
-        current = current->next;
+    // Find the end of the list or the existing variable to update
+    t_env **current = env_list;
+    while (*current && ft_strcmp((*current)->type, name) != 0) {
+        current = &(*current)->next;
     }
 
-    // if the variabale doesn't exist, create a new node
-    new = malloc(sizeof(t_env));
-    new->type = ft_strdup(name);
-    new->value = ft_strdup(new_value);
-    new->next = *env_list;
-    *env_list = new;
+    if (*current) {
+        // Update existing variable
+        free((*current)->value);
+        (*current)->value = ft_strdup(new_value);
+    } else {
+        // Append new variable at the end
+        t_env *new_node = malloc(sizeof(t_env));
+        if (!new_node) {
+            perror("Failed to allocate memory for new environment variable");
+            return;
+        }
+        new_node->type = ft_strdup(name);
+        new_node->value = ft_strdup(new_value);
+        new_node->next = NULL;
+
+        *current = new_node;  // Append the new node at the end of the list
+    }
+}
+
+
+void    handle_export(t_env **lst, char **args)
+{
+    int i;
+    i = 1;
+    while (args[i])
+        export_with_arg(lst, args[i++]);
 }
