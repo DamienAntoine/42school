@@ -28,7 +28,7 @@ void	send_command(t_data *data)
 		if (data->toklist->token_count == 1)
 			print_export(data->env);
 		else
-			export_with_arg(&data->env, cmdtable->cmds, cmdtable->args[0]);
+			export_with_arg(&data->env, data->toklist->tokens[1]);
 
 	}
 		

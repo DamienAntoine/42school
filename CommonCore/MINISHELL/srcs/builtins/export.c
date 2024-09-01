@@ -31,7 +31,7 @@ void   print_export(t_env *env_list)
         ft_putstr_fd("declare -x ", 1);
         ft_putstr_fd(current->type, 1);
 
-        if (current->value)
+        if (current->value && *current->value)
         {
             ft_putstr_fd("=\"", 1);
             ft_putstr_fd(current->value, 1);
@@ -42,16 +42,18 @@ void   print_export(t_env *env_list)
     }
 }
 
-int    export_with_arg(t_env **env_list, char *name, char *given_value)
-{
+void    export_with_arg(t_env **env_list, char *arg)
+{   
+    t_env   *new;
     t_env   *current;
-    t_env   *new_node;
+    char    *name;
+    char    *new_value;
 
-    if (!env_list || !name || !value)
-    {
-        ft_putstr_fd("Error: Invalid input for export\n", 2);
-        return (1);
-    }
+    name = ft_strtok(arg, "=");
+    new_value = ft_strtok(NULL, "");
+
+    if (new_value == NULL)
+        new_value = "";
 
     current = *env_list;
 
@@ -61,19 +63,17 @@ int    export_with_arg(t_env **env_list, char *name, char *given_value)
         if (!ft_strcmp(current->type, name))
         {
             // if the variable already exists, update its value
-            new_value
             free(current->value);
-            current->value = ft_strdup(value);
+            current->value = ft_strdup(new_value);
             return ;
         }
         current = current->next;
     }
 
     // if the variabale doesn't exist, create a new node
-    t_env *new;
     new = malloc(sizeof(t_env));
     new->type = ft_strdup(name);
-    new->value = ft_strdup(value);
+    new->value = ft_strdup(new_value);
     new->next = *env_list;
     *env_list = new;
 }

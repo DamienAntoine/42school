@@ -89,7 +89,7 @@ char	**env_list_to_array(t_env *env_list);
 void	unset_env_var(t_env **env_list, char *name);
 void	ft_pwd(t_env *cur_env);
 void	print_export(t_env *env_list);
-int	    export_with_arg(t_env **env_list, char *name, char *new_value);
+void	    export_with_arg(t_env **env_list, char *arg);
 void	ft_exit(t_data *data, int status);
 //void	exit();
 //void	export();
