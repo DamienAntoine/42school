@@ -42,17 +42,26 @@ void   print_export(t_env *env_list)
     }
 }
 
-void    export_with_arg(t_env **env_list, char *name, char *value)
+int    export_with_arg(t_env **env_list, char *name, char *given_value)
 {
     t_env   *current;
+    t_env   *new_node;
+
+    if (!env_list || !name || !value)
+    {
+        ft_putstr_fd("Error: Invalid input for export\n", 2);
+        return (1);
+    }
+
     current = *env_list;
- 
+
 
     while (current)
     {
         if (!ft_strcmp(current->type, name))
         {
             // if the variable already exists, update its value
+            new_value
             free(current->value);
             current->value = ft_strdup(value);
             return ;
