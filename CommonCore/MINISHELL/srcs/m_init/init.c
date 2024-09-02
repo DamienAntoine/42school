@@ -21,6 +21,7 @@ t_data	*init_minishell(char **env)
 	init_env(env, &data->env);
 	init_commands(data);
 	data->toklist->tokens = NULL;
+	data->state.last_exit_status = 0;
 	return (data);
 }
 
@@ -28,7 +29,7 @@ void    init_commands(t_data *data)
 {
 	data->commands->args = NULL;
 	data->commands->cmds = NULL;
-	data->commands->env = NULL;
+	//data->env = NULL;
 	data->commands->next = NULL;
 	data->commands->redirections = NULL;
 }

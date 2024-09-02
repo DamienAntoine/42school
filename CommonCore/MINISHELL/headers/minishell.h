@@ -51,7 +51,7 @@ typedef struct s_command
 {
 	char					*cmds;				//command (ls, env, cd, ...)
 	char					**args;				//arguments / flags (-l, "file.txt", ...)
-	struct s_env			*env;	//!!!!!!!!!!ADDED
+	//struct s_env			*env;	//!!!!!!!!!!ADDED
 	struct s_redirection	*redirections;		//use this instead of the three variables above
 	struct s_command		*next;				//pointer to next command if pipe (|)
 }	t_command;
@@ -74,6 +74,7 @@ typedef struct s_token_list
 void	init_commands(t_data *data);
 char	*trim_input(char *input);
 void    ft_env(t_env *lst);
+char	*get_current_directory(void);
 
 
 //######################### m_executor ##########################
@@ -89,8 +90,8 @@ void	handle_redirection(t_data *data);
 
 
 //#########################   builtins   ########################
-void    ft_cd(t_command *current);
-void    ft_echo(t_token_list *cur, t_state *state);
+void    ft_cd(t_data *cur);
+void    ft_echo(t_token_list *cur, t_state *state, t_env *lst);
 void	ft_env(t_env *lst);
 char	**env_list_to_array(t_env *env_list);
 void    handle_unset(t_env **lst, char **args);

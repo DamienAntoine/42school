@@ -20,7 +20,61 @@ size_t ft_toklen(const char *str, const char *delim)
 	}
 	return (len);
 }
+char	*ft_strtok(char *str, const char *delimiter)
+{
+	static char *last; // Keeps track of next token
+	char	*start;
+	char	*end;
+	int		in_double_quotes = 0;
+	int		in_single_quotes = 0;
 
+	if (str == NULL)
+		str = last;
+	if (str == NULL || *str == '\0')
+		return (NULL);
+
+	// Skip leading delimiters
+	while (*str && ft_strchr(delimiter, *str))
+		str++;
+	if (*str == '\0')
+	{
+		last = NULL;
+		return NULL;
+	}
+
+	start = str;
+	while (*str)
+	{
+		if (*str == '"' && !in_single_quotes)
+			in_double_quotes = !in_double_quotes; // Toggle in_double_quotes when encountering a double quote
+		else if (*str == '\'' && !in_double_quotes)
+			in_single_quotes = !in_single_quotes; // Toggle in_single_quotes when encountering a single quote
+		else if (ft_strchr(delimiter, *str) && !in_double_quotes && !in_single_quotes)
+			break;
+		str++;
+	}
+
+	end = str; // End points to the current position of str
+	if (*end != '\0')
+	{
+		*end = '\0'; // Null-terminate the current token
+		last = end + 1; // Set the last pointer to the start of the next token
+	}
+	else
+		last = NULL;
+
+	// Remove surrounding double quotes if the token was quoted
+	if ((*start == '"' && *(end - 1) == '"') || (*start == '\'' && *(end - 1) == '\''))
+	{
+		start++;
+		*(end - 1) = '\0'; // Null-terminate after removing the closing quote
+	}
+
+	return (start);
+}
+
+
+/*
 char	*ft_strtok(char *str, const char *delimiter)
 {
 	static char *last; // Keeps track of next token
@@ -71,6 +125,7 @@ char	*ft_strtok(char *str, const char *delimiter)
 
 	return (start);
 }
+*/
 
 
 //lexer takes the whole command line and splits every word into a token to store them into token_list->tokens.

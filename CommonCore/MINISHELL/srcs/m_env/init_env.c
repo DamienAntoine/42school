@@ -14,23 +14,54 @@ void	init_env(char **env, t_env **cur_env)
 	while (env[i])
 	{
 		temp = ft_split(env[i], '=');
+
+		if (!temp || !temp[0] || !temp[1])
+		{
+			if (temp)
+			{
+				free(temp[0]);
+				free(temp[1]);
+				free(temp);
+			}
+			i++;
+			continue;
+		}
+
 		new_node = (t_env *)malloc(sizeof(t_env)); // new node
 		if (!new_node)
-			return ;
+		{
+			perror("failed to allocate memory for new env var");
+			exit(EXIT_FAILURE);
+		}
 		new_node->type = ft_strdup(temp[0]);  // copy var name
 		new_node->value = ft_strdup(temp[1]); // copy value
 		new_node->next = NULL;
+
+		if (!new_node->type || !new_node->value)
+		{
+			free(new_node->type);
+			free(new_node->value);
+			free(new_node);
+			exit(EXIT_FAILURE);
+		}
+
+		//printf("Adding env variable: %s = %s\n", new_node->type, new_node->value);
+
 		// if first node (first loop)
 		if (*cur_env == NULL)
 			*cur_env = new_node;
 		else
+			last_node->next = new_node;
+		last_node = new_node;
+
+/*
 		{
 			last_node = *cur_env;
 			// go to end of list and add new node (i think theres smth in libft for that)
 			while (last_node->next)
 				last_node = last_node->next;
 			last_node->next = new_node;
-		}
+		}*/
 		free(temp[0]);
 		free(temp[1]);
 		free(temp);
@@ -57,9 +88,11 @@ void	update_env_variable(t_env *env_list, char *name, char *value)
 }
 
 char	*find_env_value(t_env *env, const char *name)
-{
+{	
+	//printf("fell into find_env_value function\n");
 	while (env != NULL)
 	{
+	//	printf("checking variable: %s\n", env->type);
 		if (!ft_strcmp(env->type, name))
 			return (env->value);
 		env = env->next;

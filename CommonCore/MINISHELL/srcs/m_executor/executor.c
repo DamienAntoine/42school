@@ -16,12 +16,12 @@ void	send_command(t_data *data)
 
 	if (ft_strcmp(cmdtable->cmds, "cd") == 0)
 	{
-		ft_cd(cmdtable);
+		ft_cd(data);
 		// check if argument is a folder (or should we check this inside the builtin file to make it more clear)
 	}
 
 	else if (ft_strcmp(cmdtable->cmds, "echo") == 0)
-		ft_echo(data->toklist, &(data->state));
+		ft_echo(data->toklist, &(data->state), data->env);
 
 	else if (ft_strcmp(cmdtable->cmds, "env") == 0)
 		ft_env(data->env);
