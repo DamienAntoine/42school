@@ -12,12 +12,10 @@ int	ft_check_syntax(t_token_list *toklist)
 		if (ft_strcmp(toklist->tokens[i], "|") == 0)
 		{
 			//if 1st token is pipe || pipe is last token || two pipes in a row not separated by a cmd
-			if (i == 0 || i == toklist->token_count - 1 || ft_strcmp(toklist->tokens[i + 1], "|") == 0)
-				return (ERPIPE); // Syntax error for consecutive pipes or pipe at start/end
-			else if (consecutive_check(toklist, ++i) == 1)
-				return (ERCONS);
-			else if (consecutive_check(toklist, ++i) == 2)
-				return (ERTOKEN);
+			if (i == 0 || i == toklist->token_count - 1)
+				return (ERPIPE); // syntax error for pipe at start/end
+			else if (consecutive_check(toklist, i + 1) == 1)
+				return (ERCONS); // syntax error for consecutive pipes
 		}
 
 		//redir syntax
@@ -98,14 +96,21 @@ int consecutive_check(t_token_list *toklist, int i)
 	operators[4] = ">>";
 	operators[5] = NULL;
 	j = 0;
-	if (i >= toklist->token_count || !toklist->tokens[i])
-		return (2);
 	while (operators[j] != NULL)
 	{
-		if (ft_strcmp(toklist->tokens[i], operators[j]) == 0) //if current token is an operator, means there are two operators in a row
+		if (ft_strcmp(toklist->tokens[i], operators[j]) == 0) //current token is operator
+		{
+			j = 0;
+			while (operators[j] != NULL)
+			{
+				if (ft_strcmp(toklist->tokens[i + 1], operators[j]) == 0)
+					return (1); // consecutive op
+				j++;
+			}
 			return (1); // Invalid: operator cannot be a filename
+		}
 		j++;
-    }
+	}
 	return (0);
 } //next: if file doesnt exist and '>': create file. if '<': error. if '>>': create file. if '<<': ??
 
@@ -122,6 +127,7 @@ int	synt_errors_check(t_token_list *toklist)
 	else if (synt_result == ERCONS)
 	{
 		printf("SYNTAX ERROR: Consecutive operators");
+		return (1);
 	}
 	else if (synt_result == ERREDIR)
 	{

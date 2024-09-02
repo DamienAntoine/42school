@@ -10,13 +10,13 @@ void	handle_sigint(int sig)
 	rl_redisplay();
 */
 	(void)sig;
-	ft_putstr_fd("\nMSL$> ", 1);
+	ft_putstr_fd("\n\033[35mMSL> \033[0m", 1);
 }
 
 void	handle_sigquit(int sig)
 {
 	(void)sig;
-	ft_putstr_fd("\nMSL$> ", 1);
+	ft_putstr_fd("\n\033[35mMSL> \033[0m", 1);
 }
 
 

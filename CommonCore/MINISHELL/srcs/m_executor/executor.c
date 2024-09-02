@@ -31,7 +31,7 @@ void	send_command(t_data *data)
 			export_with_arg(&data->env, cmdtable->cmds, cmdtable->args[0]);
 
 	}
-		
+
 	else if (ft_strcmp(cmdtable->cmds, "pwd") == 0)
 		ft_pwd(data->env);
 
@@ -56,11 +56,11 @@ void	send_command(t_data *data)
 
 int	execute_command(t_data *data)
 {
-	/*
+
 	t_command *cmdtable;
 
 	cmdtable = data->commands;
-	
+
 	if (cmdtable->next != NULL) // means theres a pipe
 	{
 		handle_pipe(data);
@@ -68,6 +68,7 @@ int	execute_command(t_data *data)
 		// fork will come back to execute_command at some point and check again if theres another pipe or a redirect
 		return (0);
 	}
+	/*
 	if (cmdtable->redirections >= 0 && cmdtable->redirections <= 3)
 	{
 		handle_redirection(data);
