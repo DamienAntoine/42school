@@ -28,7 +28,7 @@ void	ft_exit(t_data *data, int status)
 		ft_putnbr_fd(status, STDERR_FILENO);
 		ft_putstr_fd("\n", STDERR_FILENO);
 	}
-
+	data->state.last_exit_status = status;
 	// Exit the shell process with the specified status
 	exit(status);
 }

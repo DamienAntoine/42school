@@ -9,7 +9,7 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <errno.h>
-#include <sys/wait.h> //for waitpid
+#include <sys/wait.h> //for waitpid, WIFEXITED, WEXITSTATUS
 #include <stdbool.h>
 
 
@@ -22,6 +22,10 @@
 # define ERTOKEN -104
 # define ERQUOTE -105
 # define ERVARN -106
+typedef struct s_state
+{
+	int	last_exit_status;
+}	t_state;
 
 typedef struct s_data
 {
@@ -29,7 +33,10 @@ typedef struct s_data
 	struct s_command		*commands;
 	struct s_redirection	*redirects;
 	struct s_env			*env;
+	t_state			state;   //added for echo
 }	t_data;
+
+
 
 typedef struct s_env
 {
@@ -83,14 +90,14 @@ void	handle_redirection(t_data *data);
 
 //#########################   builtins   ########################
 void    ft_cd(t_command *current);
-void    ft_echo(t_token_list *cur);
+void    ft_echo(t_token_list *cur, t_state *state);
 void	ft_env(t_env *lst);
 char	**env_list_to_array(t_env *env_list);
 void    handle_unset(t_env **lst, char **args);
 
 void	ft_pwd(t_env *cur_env);
 void	print_export(t_env *env_list);
-void    handle_export(t_env **lst, char **args);
+void    handle_export(t_env **lst, char **args, t_state *state);
 
 void	ft_exit(t_data *data, int status);
 //void	exit();

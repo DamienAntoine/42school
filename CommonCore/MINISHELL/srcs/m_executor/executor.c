@@ -8,6 +8,12 @@ void	send_command(t_data *data)
 	pid_t pid;
 
 	cmdtable = data->commands;
+	if (!cmdtable || !cmdtable->cmds)
+	{
+		ft_putstr_fd("No command provided\n", 2);
+		return ;
+	}
+
 	if (ft_strcmp(cmdtable->cmds, "cd") == 0)
 	{
 		ft_cd(cmdtable);
@@ -15,7 +21,7 @@ void	send_command(t_data *data)
 	}
 
 	else if (ft_strcmp(cmdtable->cmds, "echo") == 0)
-		ft_echo(data->toklist);
+		ft_echo(data->toklist, &(data->state));
 
 	else if (ft_strcmp(cmdtable->cmds, "env") == 0)
 		ft_env(data->env);
@@ -28,7 +34,7 @@ void	send_command(t_data *data)
 		if (data->toklist->token_count == 1)
 			print_export(data->env);
 		else
-			handle_export(&data->env, data->toklist->tokens);
+			handle_export(&data->env, data->toklist->tokens, &(data->state));
 		//	export_with_arg(&data->env, data->toklist->tokens[1]);
 
 	}
@@ -49,9 +55,17 @@ void	send_command(t_data *data)
 			perror("execve");
 			exit(EXIT_FAILURE);
 		}
-		else                       // parent
-			waitpid(pid, NULL, 0); // Wait for the child process to finish
+		else if (pid > 0)
+		{
+			int status;
+			waitpid(pid, &status, 0);
+			if (WIFEXITED(status))
+				data->state.last_exit_status = WEXITSTATUS(status);
+		}
+		else                     
+			perror("fork"); 
 	}
+	free(envp);
 }
 
 
@@ -78,5 +92,5 @@ int	execute_command(t_data *data)
 	*/
 	// no pipe, just check command syntax and execute
 	send_command(data);
-	return (0);
+	return (data->state.last_exit_status);
 }

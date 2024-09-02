@@ -78,6 +78,58 @@ void print_export(t_env *env_list) {
     }
 }
 
+static void export_with_arg(t_env **env_list, char *arg, t_state *state)
+{   
+    char *name = ft_strtok(arg, "=");
+    char *new_value = ft_strtok(NULL, "");
+
+    if (new_value == NULL)
+        new_value = "";  // Ensure new_value is not NULL
+
+    // Find the end of the list or the existing variable to update
+    t_env **current = env_list;
+    while (*current && ft_strcmp((*current)->type, name) != 0) {
+        current = &(*current)->next;
+    }
+
+    if (*current) 
+    {
+        // Update existing variable
+        free((*current)->value);
+        (*current)->value = ft_strdup(new_value);
+        if ((*current)->value == NULL) {
+            perror("Memory allocation failed for value");
+            state->last_exit_status = 1;  // Indicate failure
+            return;
+        }
+        state->last_exit_status = 0;  // Indicate success
+    } 
+    else 
+    {
+        // Append new variable at the end
+        t_env *new_node = malloc(sizeof(t_env));
+        if (!new_node) {
+            perror("Failed to allocate memory for new environment variable");
+            state->last_exit_status = 1;  // Indicate failure
+            return;
+        }
+        new_node->type = ft_strdup(name);
+        new_node->value = ft_strdup(new_value);
+        new_node->next = NULL;
+
+        if (new_node->type == NULL || new_node->value == NULL) {
+            free(new_node->type);  // Clean up in case of partial failure
+            free(new_node->value);
+            free(new_node);
+            state->last_exit_status = 1;  // Indicate failure
+            return;
+        }
+
+        *current = new_node;  // Append the new node at the end of the list
+        state->last_exit_status = 0;  // Indicate success
+    }
+}
+/*
 static void export_with_arg(t_env **env_list, char *arg)
 {   
     char    *name = ft_strtok(arg, "=");
@@ -110,12 +162,13 @@ static void export_with_arg(t_env **env_list, char *arg)
         *current = new_node;  // Append the new node at the end of the list
     }
 }
+*/
 
 
-void    handle_export(t_env **lst, char **args)
+void    handle_export(t_env **lst, char **args, t_state *state)
 {
     int i;
     i = 1;
     while (args[i])
-        export_with_arg(lst, args[i++]);
+        export_with_arg(lst, args[i++], state);
 }
