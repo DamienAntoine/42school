@@ -95,11 +95,11 @@ char	**ft_tokenize(t_token_list *toklist, char *input)
 		return (NULL);
 	}
 	i = 0;
-	token = ft_strtok(input, " \t\n|<>");
+	token = ft_strtok(input, " \t\n<>");
 	while (token != NULL && i < MAX_ARGS - 1)
 	{
 		args[i++] = ft_strdup(token);
-		token = ft_strtok(NULL, " \t\n|<>");
+		token = ft_strtok(NULL, " \t\n<>");
 	}
 	toklist->token_count = i;
 	args[i] = NULL;
