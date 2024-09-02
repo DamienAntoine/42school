@@ -42,7 +42,7 @@ static t_env *clone_node(t_env *node) {
     return new_node;
 }
 
-void print_export(t_env *env_list) {
+void print_export(t_env *env_list, t_state *state) {
     t_env *current = env_list;
     t_env *sorted_list = NULL;
     t_env *new_node;
@@ -76,6 +76,7 @@ void print_export(t_env *env_list) {
         sorted_list = sorted_list->next;
         free(current);  // Free the cloned node
     }
+    state->last_exit_status = 0;
 }
 
 static void export_with_arg(t_env **env_list, char *arg, t_state *state)

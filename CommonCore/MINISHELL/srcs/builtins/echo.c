@@ -32,5 +32,5 @@ void    ft_echo(t_token_list  *cur, t_state *state)
 
     if (!n_flag)
         ft_putchar_fd('\n', 1);
-
+    state->last_exit_status = 0;  //echo usually succeeds
 }

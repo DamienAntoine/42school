@@ -96,7 +96,7 @@ char	**env_list_to_array(t_env *env_list);
 void    handle_unset(t_env **lst, char **args);
 
 void	ft_pwd(t_env *cur_env);
-void	print_export(t_env *env_list);
+void	print_export(t_env *env_list, t_state *state);
 void    handle_export(t_env **lst, char **args, t_state *state);
 
 void	ft_exit(t_data *data, int status);

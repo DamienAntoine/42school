@@ -27,12 +27,16 @@ void	send_command(t_data *data)
 		ft_env(data->env);
 
 	else if (ft_strcmp(cmdtable->cmds, "exit") == 0)
-		ft_exit(data, ft_atoi(data->toklist->tokens[1]));
-
+	{
+		if (data->toklist->token_count == 1)
+			ft_exit(data, 0);
+		else
+			ft_exit(data, ft_atoi(data->toklist->tokens[1]));
+	}
 	else if (ft_strcmp(cmdtable->cmds, "export") == 0)
 	{
 		if (data->toklist->token_count == 1)
-			print_export(data->env);
+			print_export(data->env, &(data->state));
 		else
 			handle_export(&data->env, data->toklist->tokens, &(data->state));
 		//	export_with_arg(&data->env, data->toklist->tokens[1]);
