@@ -3,6 +3,10 @@
 //echo prints the string given as input with a newline at the end
 //flag to implement : -n (prints the string without newline)
 
+
+// handle echo $?  for error status***************
+
+
 void    ft_echo(t_token_list  *cur)
 {
     int n_flag;
