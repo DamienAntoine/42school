@@ -62,7 +62,7 @@ int	main(int argc, char **argv, char **env)
 
 	while (1)
 	{
-		write(1, "MSL$> ", 6);
+		write(1, "\033[35mMSL> \033[0m", 14);
 		input = get_next_line(STDIN_FILENO); // alias for '1' in unistd.h
 
 
@@ -103,8 +103,8 @@ int	main(int argc, char **argv, char **env)
 				printcommands(commands);
 				printf("*****************************\n\n");
 
-				 
-				execute_command(data); 
+
+				execute_command(data);
 				/*
 				if (ft_strcmp(data->commands->cmds, "env") == 0) // replace this with executor
 					ft_env(data->env);*/
