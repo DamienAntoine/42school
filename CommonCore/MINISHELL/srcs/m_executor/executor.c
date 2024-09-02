@@ -97,10 +97,5 @@ int	execute_command(t_data *data)
 	*/
 	// no pipe, just check command syntax and execute
 	send_command(data);
-<<<<<<< HEAD
 	return (data->state.last_exit_status);
 }
-=======
-	return (0);
-}
->>>>>>> 69992de21611d19ba41f840d1436112f00793b6a
