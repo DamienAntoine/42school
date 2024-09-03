@@ -38,7 +38,7 @@ void	send_command(t_data *data)
 	else if (ft_strcmp(cmdtable->cmds, "unset") == 0)
 		unset_env_var(&data->env, cmdtable->args[0]);
 
-	else // Handle non-builtins
+	else
 	{
 		pid = fork();
 		if (pid == 0) // child
@@ -47,8 +47,8 @@ void	send_command(t_data *data)
 			perror("execve");
 			exit(EXIT_FAILURE);
 		}
-		else                       // parent
-			waitpid(pid, NULL, 0); // Wait for the child process to finish
+		else          // parent
+			waitpid(pid, NULL, 0);
 	}
 }
 

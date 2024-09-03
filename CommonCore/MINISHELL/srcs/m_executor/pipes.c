@@ -25,9 +25,7 @@ void	handle_pipe(t_data *data)
 			}
 
 			if (cmdtable->next)
-			{
 				dup2(fd[1], STDOUT_FILENO);// dup2: duplicate a file descriptor. this (should) redirect the output from before the pipe to the command after the pipe
-			}//not sure if its fd[1] or fd[0] here?
 			close(fd[0]);
 			close(fd[1]);
 			execute_command(data);//send the child back to execute function, and execute the new command (after the pipe), while also checking if theres another pipe or a redirection
@@ -35,16 +33,19 @@ void	handle_pipe(t_data *data)
 		}
 
 		//and this will be true for parent (main process)
-		else
+		else if (pid > 0)
 		{
-			close(fd[1]); // Close write end of the pipe in the parent process
+			close(fd[1]); // close parent pipe (write)
 			if (previous_fd != -1)
-				close(previous_fd);
-			previous_fd = fd[0];
+				close(previous_fd);//close previous read
+			previous_fd = fd[0];//update previous read to current read
 			cmdtable = cmdtable->next;
 		}
-
-
+		else
+		{
+			perror("fork error in pipe function");
+			exit(EXIT_FAILURE);
+		}
 	}
-	// add wait for all child processes to finish
+	while (wait(NULL) > 0);
 }
