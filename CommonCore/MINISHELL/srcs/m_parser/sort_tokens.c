@@ -44,10 +44,14 @@ void	ft_sortloop(t_token_list *toklist, t_command *current, int i, int j)
 		return;
 	while (i < toklist->token_count)
 	{
-        if (ft_strcmp(toklist->tokens[i], " ") == 0)
-            i++;
+		if (ft_strcmp(toklist->tokens[i], " ") == 0)
+			i++;
 		if (ft_strcmp(toklist->tokens[i], "|") == 0)
+		{
 			current = ft_sortpipes(current);
+			i++;
+		}
+
 		else if (ft_strcmp(toklist->tokens[i], "<") == 0 || ft_strcmp(toklist->tokens[i], ">") == 0 || ft_strcmp(toklist->tokens[i], ">>") == 0)
 			current = ft_sortredirect(toklist, current, &i);
 		else if (ft_strlen(toklist->tokens[i]) > 0 && !ft_isspace(toklist->tokens[i][0]))
@@ -56,10 +60,10 @@ void	ft_sortloop(t_token_list *toklist, t_command *current, int i, int j)
 				current->cmds = ft_strdup(toklist->tokens[i]);
 			else
 				current->args[j++] = ft_strdup(toklist->tokens[i]);
-            i++;
+			i++;
 		}
-        else
-		    i++;
+		else
+			i++;
 	}
 	current->args[j] = NULL;
 }

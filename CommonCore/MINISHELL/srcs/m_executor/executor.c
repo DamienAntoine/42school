@@ -52,18 +52,34 @@ void	send_command(t_data *data)
 	}
 }
 
+int	is_pipe(t_data *data)
+{
+	t_token_list	*toklist;
+	int				i;
 
+	toklist = data->toklist;
+	i = 0;
+	while (toklist->tokens[i])
+	{
+		if (ft_strcmp(toklist->tokens[i], "|") == 0)
+			return (1);
+		i++;
+	}
+	return (0);
+}
 
 int	execute_command(t_data *data)
 {
-
 	t_command *cmdtable;
 
 	cmdtable = data->commands;
 
-	if (cmdtable->next != NULL) // means theres a pipe
+	if (is_pipe(data)) // means theres a pipe
 	{
+		write(1, "hello\n", 1);
+		send_command(data);
 		handle_pipe(data);
+		cmdtable = cmdtable->next;
 		// from what i understand: run first command, fork the process,
 		// fork will come back to execute_command at some point and check again if theres another pipe or a redirect
 		return (0);
