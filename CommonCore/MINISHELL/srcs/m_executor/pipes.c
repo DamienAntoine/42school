@@ -28,6 +28,7 @@ void	handle_pipe(t_data *data)
 				dup2(fd[1], STDOUT_FILENO);// dup2: duplicate a file descriptor. this (should) redirect the output from before the pipe to the command after the pipe
 			close(fd[0]);
 			close(fd[1]);
+			data->commands = data->commands->next;
 			execute_command(data);//send the child back to execute function, and execute the new command (after the pipe), while also checking if theres another pipe or a redirection
 			exit(0);//KILL THE CHILD
 		}

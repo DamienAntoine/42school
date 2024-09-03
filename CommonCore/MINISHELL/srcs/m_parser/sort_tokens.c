@@ -46,11 +46,20 @@ void	ft_sortloop(t_token_list *toklist, t_command *current, int i, int j)
 	{
 		if (ft_strcmp(toklist->tokens[i], " ") == 0)
 			i++;
+
+		//theres probably a problem coming from this part
+		//using "echo" after the pipe seems to take the pipe itself and echo as arguments for some reasons ??
 		if (ft_strcmp(toklist->tokens[i], "|") == 0)
 		{
+			current->args[j] = NULL;
 			current = ft_sortpipes(current);
+			j = 0;
+			current->args = malloc(sizeof(char *) * (toklist->token_count + 1));
+			if (!current->args)
+				return;
 			i++;
 		}
+
 
 		else if (ft_strcmp(toklist->tokens[i], "<") == 0 || ft_strcmp(toklist->tokens[i], ">") == 0 || ft_strcmp(toklist->tokens[i], ">>") == 0)
 			current = ft_sortredirect(toklist, current, &i);
@@ -79,7 +88,7 @@ t_command	*ft_sort_tokens(t_token_list *toklist, t_command *table)
 	i = 0;
 	j = 0;
 	current = table;
-    ft_memset(current, 0, 1);
+	ft_memset(current, 0, sizeof(t_command));
 	ft_sortloop(toklist, current, i, j);
 	return (table);
 }
