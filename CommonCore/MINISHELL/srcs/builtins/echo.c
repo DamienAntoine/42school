@@ -2,8 +2,8 @@
 //syntax: echo <flag> <string>
 //echo prints the string given as input with a newline at the end
 //flag to implement : -n (prints the string without newline)
-
-void    ft_echo(t_token_list  *cur)
+/*
+void    ft_echo(t_token_list  *cur)//version printing from tokens
 {
     int n_flag;
     int i;
@@ -20,7 +20,7 @@ void    ft_echo(t_token_list  *cur)
             n_flag = 1;
             i++;
         }
-        while (cur->tokens[i])
+        while (cur->tokens[i] && ft_strcmp(cur->tokens[i], "|"))
         {
             ft_putstr_fd(cur->tokens[i], 1);
             if (cur->tokens[i + 1] && cur->tokens[i][0])
@@ -30,7 +30,30 @@ void    ft_echo(t_token_list  *cur)
         if (n_flag == 0)
             ft_putchar_fd('\n', 1);
     }
+}*/
 
+void ft_echo(t_data *cur)//version with data to be able to print from commands->args (not working for some reason ?)
+{
+	int n_flag;
+	int i;
+
+	n_flag = 0;
+	i = 0;
+	while (cur->commands->args[i] && ft_strcmp(cur->commands->args[i], "-n") == 0)
+	{
+		n_flag = 1;
+		i++;
+	}
+	while (cur->commands->args[i])
+	{
+		ft_putstr_fd(cur->commands->args[i], 1);
+		if (cur->commands->args[i + 1])
+			ft_putchar_fd(' ', 1);
+		i++;
+	}
+	if (!n_flag)
+		ft_putchar_fd('\n', 1);
+}
 
 
 /*
@@ -56,4 +79,3 @@ void    ft_echo(t_token_list  *cur)
         ft_putchar_fd('\n', 1);
 
 */
-}
