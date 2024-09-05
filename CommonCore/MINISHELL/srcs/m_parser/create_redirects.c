@@ -13,19 +13,19 @@ t_redirection *ft_create_redirection(char *file, int type)
 	return (redir);
 }
 
-void ft_add_redirection(t_command *current, char *file, int type)
+void ft_add_redirection(t_data *data, char *file, int type)
 {
 	t_redirection *redir;
-    t_redirection *tmp;
+	t_redirection *tmp;
 
 	redir = ft_create_redirection(file, type);
 	if (!redir)
 		return;
-	if (current->redirections == NULL)
-		current->redirections = redir;
+	if (data->redirects == NULL)
+		data->redirects = redir;
 	else
 	{
-		tmp = current->redirections;
+		tmp = data->redirects;
 		while (tmp->next)
 			tmp = tmp->next;
 		tmp->next = redir;

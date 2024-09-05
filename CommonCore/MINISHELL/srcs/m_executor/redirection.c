@@ -1,5 +1,5 @@
 #include "../../headers/minishell.h"
-
+/*
 void	handle_redirection(t_data *data)
 {
 	if (data->commands->redirections->type == 0)
@@ -18,4 +18,4 @@ void	handle_redirection(t_data *data)
 	{
 		//'<<'
 	}
-}
+}*/

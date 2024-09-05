@@ -14,9 +14,17 @@ void	init_env(char **env, t_env **cur_env)
 	while (env[i])
 	{
 		temp = ft_split(env[i], '=');
+		if (!temp || !temp[0])
+		{
+			free(temp);
+			return ;
+		}
 		new_node = (t_env *)malloc(sizeof(t_env)); // new node
 		if (!new_node)
+		{
+			free_split(temp);
 			return ;
+		}
 		new_node->type = ft_strdup(temp[0]);  // copy var name
 		new_node->value = ft_strdup(temp[1]); // copy value
 		new_node->next = NULL;
@@ -31,9 +39,7 @@ void	init_env(char **env, t_env **cur_env)
 				last_node = last_node->next;
 			last_node->next = new_node;
 		}
-		free(temp[0]);
-		free(temp[1]);
-		free(temp);
+		free_split(temp);
 		i++;
 	}
 }

@@ -28,7 +28,5 @@ void    init_commands(t_data *data)
 {
 	data->commands->args = NULL;
 	data->commands->cmds = NULL;
-	data->commands->env = NULL;
 	data->commands->next = NULL;
-	data->commands->redirections = NULL;
 }

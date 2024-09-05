@@ -99,7 +99,7 @@ int	main(int argc, char **argv, char **env)
 					init_commands(data);
 				}
 				if (synt_errors_check(data->toklist) == 0)							// checks tokens syntax and prints syntax errors
-					data->commands = ft_sort_tokens(data->toklist, data->commands);	// creates hierarchy and redirects them to corresponding functions (parser to executor)
+					data->commands = ft_sort_tokens(data);	// creates hierarchy and redirects them to corresponding functions (parser to executor)
 				commands = data->commands;
 				printcommands(commands);
 				printf("*****************************\n\n");

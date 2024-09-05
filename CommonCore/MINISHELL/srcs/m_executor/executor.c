@@ -3,14 +3,14 @@
 void	send_command(t_data *data)
 		// need to change the parameters sent to builtins depenting on their needs
 {
-	char	**envp = env_list_to_array(data->env);
-	t_command *cmdtable;
-	pid_t pid;
+	char		**envp = env_list_to_array(data->env);
+	t_command	*cmdtable;
+	pid_t		pid;
 
 	cmdtable = data->commands;
 	if (ft_strcmp(cmdtable->cmds, "cd") == 0)
 	{
-		ft_cd(cmdtable);
+		ft_cd(data);
 		// check if argument is a folder (or should we check this inside the builtin file to make it more clear)
 	}
 

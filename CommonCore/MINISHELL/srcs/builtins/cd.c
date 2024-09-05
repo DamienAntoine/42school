@@ -9,20 +9,22 @@ static char	*get_current_directory(void)
 	return (getcwd(NULL, 0)); // Get the current working directory
 }
 
-void	ft_cd(t_command *current)
+void	ft_cd(t_data *data)
 {
-	char	*home;
-	char	*oldpwd;
-	char	*newpwd;
-	char	*oldpwd_env;
+	char		*home;
+	char		*oldpwd;
+	char		*newpwd;
+	char		*oldpwd_env;
+	t_command	*current;
 
+	current = data->commands;
 	oldpwd = get_current_directory();
 	if (!oldpwd)
 	{
 		perror("getcwd");
 		return ;
 	}
-	home = find_env_value(current->env, "HOME");
+	home = find_env_value(data->env, "HOME");
 	if (current->args[1])
 	{
 		printf_and_free("Too many args for cd command\n", oldpwd);
@@ -51,7 +53,7 @@ void	ft_cd(t_command *current)
 	}
 	else if (!ft_strcmp(current->args[0], "-"))
 	{ // Argument is "-", move to previous directory
-		oldpwd_env = find_env_value(current->env, "OLDPWD");
+		oldpwd_env = find_env_value(data->env, "OLDPWD");
 		if (!oldpwd_env)
 		{
 			printf_and_free("OLDPWD not set\n", oldpwd);
@@ -75,14 +77,14 @@ void	ft_cd(t_command *current)
 		}
 	}
 	// If we moved successfully, update OLDPWD and PWD
-	update_env_variable(current->env, "OLDPWD", oldpwd);
+	update_env_variable(data->env, "OLDPWD", oldpwd);
 	newpwd = get_current_directory(); // Get the new current directory
 	if (!newpwd)
 	{
 		perror_and_free("getcwd", oldpwd);
 		return ;
 	}
-	update_env_variable(current->env, "PWD", newpwd);
+	update_env_variable(data->env, "PWD", newpwd);
 	free(oldpwd); // Free the old PWD
 	free(newpwd);
 		// Free the new PWD string allocated by get_current_directory()
