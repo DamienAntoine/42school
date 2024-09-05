@@ -72,6 +72,7 @@ int	main(int argc, char **argv, char **env)
 		if (input == NULL)                   // ctrl + d
 		{
 			printf("Minishell Terminated (ctrl+d)\n");
+			free_minishell(data);
 			exit(0);
 		}
 		data->toklist->tokens = ft_tokenize(data->toklist, input);	// splits inputs and stores tokens in the structure (lexer)

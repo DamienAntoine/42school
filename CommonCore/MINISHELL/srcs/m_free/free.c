@@ -63,3 +63,11 @@ void	free_token_list(t_token_list *token_list)
 {
     free(token_list->tokens);
 }
+void	free_minishell(t_data *data)
+{
+	free_token_list(data->toklist);
+	//free_redirections(data->redirects);
+	free_command(data->commands);
+	free_env_list(data->env);
+	free(data);
+}
