@@ -112,6 +112,7 @@ void	ft_cd(t_data *cur)
 printf("before current dir\n");
 
 
+	current = data->commands;
 	oldpwd = get_current_directory();
 	if (!oldpwd)
 	{

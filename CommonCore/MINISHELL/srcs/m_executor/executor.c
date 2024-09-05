@@ -3,9 +3,9 @@
 void	send_command(t_data *data)
 		// need to change the parameters sent to builtins depenting on their needs
 {
-	char	**envp = env_list_to_array(data->env);
-	t_command *cmdtable;
-	pid_t pid;
+	char		**envp = env_list_to_array(data->env);
+	t_command	*cmdtable;
+	pid_t		pid;
 
 	cmdtable = data->commands;
 	if (!cmdtable || !cmdtable->cmds)
@@ -50,7 +50,7 @@ void	send_command(t_data *data)
 		handle_unset(&data->env, data->toklist->tokens);
 		//unset_env_var(&data->env, cmdtable->args[0]);
 
-	else // Handle non-builtins
+	else
 	{
 		pid = fork();
 		if (pid == 0) // child
@@ -72,18 +72,31 @@ void	send_command(t_data *data)
 	free(envp);
 }
 
+int	is_pipe(t_data *data)
+{
+	t_token_list	*toklist;
+	int				i;
 
+	toklist = data->toklist;
+	i = 0;
+	while (toklist->tokens[i])
+	{
+		if (ft_strcmp(toklist->tokens[i], "|") == 0)
+			return (1);
+		i++;
+	}
+	return (0);
+}
 
 int	execute_command(t_data *data)
 {
-
 	t_command *cmdtable;
 
 	cmdtable = data->commands;
-
 	if (cmdtable->next != NULL) // means theres a pipe
 	{
 		handle_pipe(data);
+		//cmdtable = cmdtable->next;
 		// from what i understand: run first command, fork the process,
 		// fork will come back to execute_command at some point and check again if theres another pipe or a redirect
 		return (0);

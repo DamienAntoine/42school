@@ -105,73 +105,96 @@ t_command	*ft_sortpipes(t_command *current)
 	return (current);
 }
 
-t_command *ft_sortredirect(t_token_list *toklist, t_command *current, int *i)
+t_command *ft_sortredirect(t_data *data, int *i)
 {
+	t_token_list *toklist;
+	t_command *current;
+
+	toklist = data->toklist;
+	current = data->commands;
 	if (ft_strcmp(toklist->tokens[*i], "<") == 0)
 	{
 		if (++(*i) < toklist->token_count)	// check if theres a token after operator
-			ft_add_redirection(current, toklist->tokens[*i], 0); // 0 for input
+			ft_add_redirection(data, toklist->tokens[*i], 0); // 0 for input
 	}
 	else if (ft_strcmp(toklist->tokens[*i], ">") == 0)
 	{
 		if (++(*i) < toklist->token_count)	// check if theres a token after operator
-			ft_add_redirection(current, toklist->tokens[*i], 1); // 1 for output
+			ft_add_redirection(data, toklist->tokens[*i], 1); // 1 for output
 	}
 	else if (ft_strcmp(toklist->tokens[*i], ">>") == 0)
 	{
 		if (++(*i) < toklist->token_count)	// check if theres a token after operator
-			ft_add_redirection(current, toklist->tokens[*i], 2); // 2 for append
+			ft_add_redirection(data, toklist->tokens[*i], 2); // 2 for append
 	}
 	else if (ft_strcmp(toklist->tokens[*i], "<<") == 0)
 	{
 		if (++(*i) < toklist->token_count)	// check if theres a token after operator
-			ft_add_redirection(current, toklist->tokens[*i], 3);
+			ft_add_redirection(data, toklist->tokens[*i], 3);
 			// "<< should be given a delimiter, then read the input until a line containing thedelimiter is seen.
 			//However, it doesn’t have to update the history!" (whatever that means)
 	}
 	return (current);
 }
 
-void	ft_sortloop(t_token_list *toklist, t_command *current, int i, int j)
+void	ft_sortloop(t_data *data, int i, int j)
 {
+	t_token_list *toklist;
+	t_command *current;
+
+	toklist = data->toklist;
+	current = data->commands;
 	current->args = malloc(sizeof(char *) * (toklist->token_count + 1)); // +1 for NULL termination
 	if (!current->args)
 		return;
 	while (i < toklist->token_count)
 	{
-        if (ft_strcmp(toklist->tokens[i], " ") == 0)
-            i++;
+		if (ft_strcmp(toklist->tokens[i], " ") == 0)
+			i++;
+
+		//theres probably a problem coming from this part
+		//using "echo" after the pipe seems to take the pipe itself and echo as arguments for some reasons ??
 		if (ft_strcmp(toklist->tokens[i], "|") == 0)
+		{
+			current->args[j] = NULL;
 			current = ft_sortpipes(current);
+			j = 0;
+			current->args = malloc(sizeof(char *) * (toklist->token_count + 1));
+			if (!current->args)
+				return;
+			i++;
+		}
 		else if (ft_strcmp(toklist->tokens[i], "<") == 0 || ft_strcmp(toklist->tokens[i], ">") == 0 || ft_strcmp(toklist->tokens[i], ">>") == 0)
-			current = ft_sortredirect(toklist, current, &i);
+			current = ft_sortredirect(data, &i);
 		else if (ft_strlen(toklist->tokens[i]) > 0 && !ft_isspace(toklist->tokens[i][0]))
 		{
 			if (current->cmds == NULL)
 				current->cmds = ft_strdup(toklist->tokens[i]);
 			else
 				current->args[j++] = ft_strdup(toklist->tokens[i]);
-            i++;
+			i++;
 		}
-        else
-		    i++;
+		else
+			i++;
 	}
 	current->args[j] = NULL;
 }
 
 
 //every strdup will need a free at some point
-t_command	*ft_sort_tokens(t_token_list *toklist, t_command *table)
+t_command	*ft_sort_tokens(t_data *data)
 {
 	int         i;
 	int         j;
 	t_command   *current;
+	t_command *table;
 
+	table = data->commands;
 	i = 0;
 	j = 0;
 	current = table;
-    ft_memset(current, 0, 1);
-	ft_sortloop(toklist, current, i, j);
+	ft_memset(current, 0, sizeof(t_command));
+	ft_sortloop(data, i, j);
 	return (table);
 }
 */

@@ -10,7 +10,7 @@
 #include <sys/types.h>
 #include <errno.h>
 #include <sys/wait.h> //for waitpid, WIFEXITED, WEXITSTATUS
-#include <stdbool.h>
+
 
 
 # define BUFFER_SIZE 1024
@@ -73,6 +73,8 @@ void	init_commands(t_data *data);
 char	*trim_input(char *input);
 void    ft_env(t_env *lst);
 char	*get_current_directory(void);
+void	free_minishell(t_data *data);
+void	free_split(char **split);
 
 
 //######################### m_executor ##########################
