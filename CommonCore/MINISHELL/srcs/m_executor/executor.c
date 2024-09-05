@@ -1,11 +1,11 @@
 #include "../../headers/minishell.h"
 
 void	send_command(t_data *data)
-		// need to change the parameters sent to builtins depenting on their needs
+// need to change the parameters sent to builtins depenting on their needs
 {
-	char		**envp = env_list_to_array(data->env);
-	t_command	*cmdtable;
-	pid_t		pid;
+	char **envp = env_list_to_array(data->env);
+	t_command *cmdtable;
+	pid_t pid;
 
 	cmdtable = data->commands;
 	if (!cmdtable || !cmdtable->cmds)
@@ -40,7 +40,6 @@ void	send_command(t_data *data)
 		else
 			handle_export(&data->env, data->toklist->tokens, &(data->state));
 		//	export_with_arg(&data->env, data->toklist->tokens[1]);
-
 	}
 
 	else if (ft_strcmp(cmdtable->cmds, "pwd") == 0)
@@ -48,7 +47,7 @@ void	send_command(t_data *data)
 
 	else if (ft_strcmp(cmdtable->cmds, "unset") == 0)
 		handle_unset(&data->env, data->toklist->tokens);
-		//unset_env_var(&data->env, cmdtable->args[0]);
+	// unset_env_var(&data->env, cmdtable->args[0]);
 
 	else
 	{
@@ -66,8 +65,8 @@ void	send_command(t_data *data)
 			if (WIFEXITED(status))
 				data->state.last_exit_status = WEXITSTATUS(status);
 		}
-		else                     
-			perror("fork"); 
+		else
+			perror("fork");
 	}
 	free(envp);
 }
@@ -90,13 +89,13 @@ int	is_pipe(t_data *data)
 
 int	execute_command(t_data *data)
 {
-	t_command *cmdtable;
+	t_command	*cmdtable;
 
 	cmdtable = data->commands;
 	if (cmdtable->next != NULL) // means theres a pipe
 	{
 		handle_pipe(data);
-		//cmdtable = cmdtable->next;
+		// cmdtable = cmdtable->next;
 		// from what i understand: run first command, fork the process,
 		// fork will come back to execute_command at some point and check again if theres another pipe or a redirect
 		return (0);

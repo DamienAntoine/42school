@@ -1,12 +1,13 @@
 #include "../../headers/minishell.h"
 
-size_t ft_toklen(const char *str, const char *delim)
+size_t	ft_toklen(const char *str, const char *delim)
 {
-	size_t len = 0;
-	int i;
+	size_t	len;
+	int		i;
 
+	len = 0;
 	if (str == NULL || delim == NULL)
-		return 0;
+		return (0);
 	while (str[len])
 	{
 		i = 0;
@@ -22,114 +23,60 @@ size_t ft_toklen(const char *str, const char *delim)
 }
 char	*ft_strtok(char *str, const char *delimiter)
 {
-	static char *last; // Keeps track of next token
 	char	*start;
 	char	*end;
-	int		in_double_quotes = 0;
-	int		in_single_quotes = 0;
+	int		in_double_quotes;
+	int		in_single_quotes;
 
+	static char *last; // Keeps track of next token
+	in_double_quotes = 0;
+	in_single_quotes = 0;
 	if (str == NULL)
 		str = last;
 	if (str == NULL || *str == '\0')
 		return (NULL);
-
 	// Skip leading delimiters
 	while (*str && ft_strchr(delimiter, *str))
 		str++;
 	if (*str == '\0')
 	{
 		last = NULL;
-		return NULL;
+		return (NULL);
 	}
-
 	start = str;
 	while (*str)
 	{
 		if (*str == '"' && !in_single_quotes)
-			in_double_quotes = !in_double_quotes; // Toggle in_double_quotes when encountering a double quote
+			in_double_quotes = !in_double_quotes;
+				// Toggle in_double_quotes when encountering a double quote
 		else if (*str == '\'' && !in_double_quotes)
-			in_single_quotes = !in_single_quotes; // Toggle in_single_quotes when encountering a single quote
-		else if (ft_strchr(delimiter, *str) && !in_double_quotes && !in_single_quotes)
-			break;
+			in_single_quotes = !in_single_quotes;
+				// Toggle in_single_quotes when encountering a single quote
+		else if (ft_strchr(delimiter, *str) && !in_double_quotes
+			&& !in_single_quotes)
+			break ;
 		str++;
 	}
-
 	end = str; // End points to the current position of str
 	if (*end != '\0')
 	{
-		*end = '\0'; // Null-terminate the current token
+		*end = '\0';    // Null-terminate the current token
 		last = end + 1; // Set the last pointer to the start of the next token
 	}
 	else
 		last = NULL;
-
 	// Remove surrounding double quotes if the token was quoted
-	if ((*start == '"' && *(end - 1) == '"') || (*start == '\'' && *(end - 1) == '\''))
+	if ((*start == '"' && *(end - 1) == '"') || (*start == '\'' && *(end
+			- 1) == '\''))
 	{
 		start++;
 		*(end - 1) = '\0'; // Null-terminate after removing the closing quote
 	}
-
 	return (start);
 }
 
-
-/*
-char	*ft_strtok(char *str, const char *delimiter)
-{
-	static char *last; // Keeps track of next token
-	char	*start;
-	char	*end;
-	int		in_quotes;
-
-	in_quotes = 0;
-	if (str == NULL)
-		str = last;
-	if (str == NULL || *str == '\0')
-		return (NULL);
-
-	// Skip leading delimiters
-	while (*str && ft_strchr(delimiter, *str))
-		str++;
-	if (*str == '\0')
-	{
-		last = NULL;
-		return NULL;
-	}
-
-	start = str;
-	while (*str)
-	{
-		if (*str == '"')
-			in_quotes = !in_quotes; // Toggle in_quotes when encountering a double quote
-		else if (ft_strchr(delimiter, *str) && !in_quotes)
-			break;
-		str++;
-	}
-
-	end = str; // End points to the current position of str
-	if (*end != '\0')
-	{
-		*end = '\0'; // Null-terminate the current token
-		last = end + 1; // Set the last pointer to the start of the next token
-	}
-	else
-		last = NULL;
-
-	// Remove surrounding quotes if the token was quoted
-	if (*start == '"' && *(end - 1) == '"')
-	{
-		start++;
-		*(end - 1) = '\0'; // Null-terminate after removing the closing quote
-	}
-
-	return (start);
-}
-*/
-
-
-//lexer takes the whole command line and splits every word into a token to store them into token_list->tokens.
-//example : ls -l = token 1 is "ls", token 2 is "-l"
+// lexer takes the whole command line and splits every word into a token to store them into token_list->tokens.
+// example : ls -l = token 1 is "ls", token 2 is "-l"
 char	**ft_tokenize(t_token_list *toklist, char *input)
 {
 	char	**args;
@@ -164,9 +111,10 @@ char	**ft_tokenize(t_token_list *toklist, char *input)
 
 char	*trim_input(char *input)
 {
-	char *trimmed_input = ft_strtrim(input, " \t\n\r");
+	char	*trimmed_input;
 
-    if (trimmed_input == NULL || *trimmed_input == '\0')
+	trimmed_input = ft_strtrim(input, " \t\n\r");
+	if (trimmed_input == NULL || *trimmed_input == '\0')
 	{
 		free(trimmed_input);
 		return (NULL);
