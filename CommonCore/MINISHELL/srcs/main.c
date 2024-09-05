@@ -20,9 +20,9 @@ void	handle_sigquit(int sig)
 }
 
 
-void	printcommands(t_command *commands) // debugging function
+void	printcommands(t_data *data) // debugging function
 {
-	t_command *cmd = commands;
+	t_command *cmd = data->commands;
 	int i = 0;
 
 	printf("\n#COMMANDS\n");
@@ -115,8 +115,8 @@ int	main(int argc, char **argv, char **env)
 {
 	char			*input;
 	t_data			*data;
-	t_command		*commands;
-	int				i;
+	//t_command		*commands;
+
 
 	if (argc > 1)
 		exit(0);
@@ -145,7 +145,7 @@ int	main(int argc, char **argv, char **env)
 		if (data->toklist->tokens != NULL)
 		{
 			/********DEBUGGING********/
-			i = 0;
+			int i = 0;
 			t_token_list *token;
 			token = data->toklist;
 
@@ -165,9 +165,9 @@ int	main(int argc, char **argv, char **env)
 					init_commands(data);
 				}
 				if (synt_errors_check(data->toklist) == 0)							// checks tokens syntax and prints syntax errors
-					data->commands = ft_sort_tokens(data->toklist, data->commands);	// creates hierarchy and redirects them to corresponding functions (parser to executor)
-				commands = data->commands;
-				printcommands(commands);
+					ft_sort_tokens(data);	// creates hierarchy and redirects them to corresponding functions (parser to executor)
+			
+				printcommands(data);
 				printf("*****************************\n\n");
 
 

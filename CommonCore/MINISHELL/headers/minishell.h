@@ -51,8 +51,6 @@ typedef struct s_command
 {
 	char					*cmds;				//command (ls, env, cd, ...)
 	char					**args;				//arguments / flags (-l, "file.txt", ...)
-	//struct s_env			*env;	//!!!!!!!!!!ADDED
-	struct s_redirection	*redirections;		//use this instead of the three variables above
 	struct s_command		*next;				//pointer to next command if pipe (|)
 }	t_command;
 
@@ -91,7 +89,7 @@ void	handle_redirection(t_data *data);
 
 //#########################   builtins   ########################
 void    ft_cd(t_data *cur);
-void    ft_echo(t_token_list *cur, t_state *state, t_env *lst);
+void    ft_echo(t_data *data);
 void	ft_env(t_env *lst);
 char	**env_list_to_array(t_env *env_list);
 void    handle_unset(t_env **lst, char **args);
@@ -160,13 +158,19 @@ size_t ft_toklen(const char *str, const char *delim);
 
 //#########################   m_parser   ########################
 //create_redirects.c
-void ft_add_redirection(t_command *current, char *file, int type);
+void ft_add_redirection(t_data *data, char *file, int type);
 t_redirection *ft_create_redirection(char *file, int type);
 
 //sort_tokens.c
-t_command	*ft_sort_tokens(t_token_list *toklist, t_command *table);
-void	ft_sortloop(t_token_list *toklist, t_command *current, int i, int j);
-t_command *ft_sortredirect(t_token_list *toklist, t_command *current, int *i);
-t_command	*ft_sortpipes(t_command *current);
+void	ft_sort_tokens(t_data *data);
+void	ft_sortloop(t_data *data, int i, int j);
+void	ft_sortredirect(t_data *data, int *i);
+void	ft_sortpipes(t_data *data);
+
+
+//t_command	*ft_sort_tokens(t_token_list *toklist, t_command *table);
+//void	ft_sortloop(t_token_list *toklist, t_command *current, int i, int j);
+//t_command *ft_sortredirect(t_token_list *toklist, t_command *current, int *i);
+//t_command	*ft_sortpipes(t_command *current);
 
 #endif

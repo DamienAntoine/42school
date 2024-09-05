@@ -21,7 +21,7 @@ void	send_command(t_data *data)
 	}
 
 	else if (ft_strcmp(cmdtable->cmds, "echo") == 0)
-		ft_echo(data->toklist, &(data->state), data->env);
+		ft_echo(data);
 
 	else if (ft_strcmp(cmdtable->cmds, "env") == 0)
 		ft_env(data->env);
