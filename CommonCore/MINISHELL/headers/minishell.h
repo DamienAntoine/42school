@@ -75,6 +75,12 @@ void    ft_env(t_env *lst);
 char	*get_current_directory(void);
 void	free_minishell(t_data *data);
 void	free_split(char **split);
+int		is_builtin(char *cmd);
+void	execute_builtin(t_command *cmdtable, t_data *data);
+char	*get_command_path(const char *cmd);
+
+
+
 
 
 //######################### m_executor ##########################

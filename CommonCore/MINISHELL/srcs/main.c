@@ -32,6 +32,7 @@ void	printcommands(t_data *data) // debugging function
 		}
 		cmd = cmd->next;
 	}
+	printf("*****************************\n\n");
 }
 
 // Function to check if the quotes are balanced
@@ -143,7 +144,7 @@ int	main(int argc, char **argv, char **env)
 				printcommands(data);
 				execute_command(data);
 			}
-			printf("*****************************\n\n");
+			
 		}
 		//free_token_list(data->toklist);
 		//data->toklist->tokens = NULL;
