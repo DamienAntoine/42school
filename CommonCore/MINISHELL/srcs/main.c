@@ -54,25 +54,24 @@ int	are_quotes_balanced(const char *input)
 }
 
 // Function to handle input and ensure quotes are closed
-char	*get_full_input(void)
+char *get_full_input(void)
 {
-	char	*input;
-	char	*full_input;
-	char	*temp;
-	int		unbalanced_quotes;
+	char *input;
+	char *full_input = NULL;
+	char *temp;
+	int unbalanced_quotes;
 
-	full_input = NULL;
-	unbalanced_quotes = 0;
 	while (1)
 	{
-		input = get_next_line(STDIN_FILENO); // Read the input
+		input = get_next_line(STDIN_FILENO);
 		if (input == NULL) // Handle Ctrl+D
 		{
+			if (full_input)
+				free(full_input);
 			printf("Minishell Terminated (ctrl+d)\n");
-			//free(full_input);
-			exit(0);
+			return (NULL);
 		}
-		// Concatenate the input to full_input
+
 		if (full_input == NULL)
 			full_input = ft_strdup(input);
 		else
@@ -81,11 +80,12 @@ char	*get_full_input(void)
 			full_input = ft_strjoin(full_input, input);
 			free(temp);
 		}
-		free(input); // Free the current line input
+		free(input);
+
 		unbalanced_quotes = !are_quotes_balanced(full_input);
 		if (!unbalanced_quotes)
-			break ;
-		// If quotes are not balanced, prompt for more input
+			break;
+
 		write(1, "> ", 2);
 	}
 	return (full_input);
@@ -108,18 +108,18 @@ int	main(int argc, char **argv, char **env)
 		write(1, "\033[35mMSL> \033[0m", 14);
 		input = get_full_input();
 		//input = get_next_line(1);
-		printf("\n**********Debugging**********\n");
-		printf("#Input received: %s\n", input);
 		if (input == NULL) // ctrl + d
 		{
 			printf("Minishell Terminated (ctrl+d)\n");
 			free_minishell(data);
-			exit(0);
+			return (0);
 		}
+		printf("\n**********Debugging**********\n");
+		printf("#Input received: %s\n", input);
 		data->toklist->tokens = ft_tokenize(data->toklist, input);
+		free(input);
 		if (data->toklist->tokens != NULL)
 		{
-			/********DEBUGGING********/
 			int i = 0;
 			t_token_list *token;
 			token = data->toklist;
@@ -132,21 +132,21 @@ int	main(int argc, char **argv, char **env)
 			printf("\n#toklist tokens count: %d\n", data->toklist->token_count);
 			if (data->commands) // reset command struct
 			{
+				write(1, "reset\n", 6);
 				free_command(data->commands);
 				data->commands = malloc(sizeof(t_command));
 				init_commands(data);
 			}
 			if (synt_errors_check(data->toklist) == 0)
-				// checks tokens syntax and prints syntax errors
+			{
 				ft_sort_tokens(data);
-					// creates hierarchy and redirects them to corresponding functions (parser to executor)
-			printcommands(data);
+				printcommands(data);
+				execute_command(data);
+			}
 			printf("*****************************\n\n");
-			execute_command(data);
 		}
-		free(input);
-		free_token_list(data->toklist);
-		data->toklist->tokens = NULL;
+		//free_token_list(data->toklist);
+		//data->toklist->tokens = NULL;
 	}
 	return (0);
 }

@@ -77,24 +77,12 @@ void	free_token_list(t_token_list *token_list)
 void	free_minishell(t_data *data)
 {
 	if (data->toklist)
-	{
 		free_token_list(data->toklist);
-		free(data->toklist);
-	}
 	if (data->commands)
-	{
 		free_command(data->commands);
-		free(data->commands);
-	}
 	if (data->env)
-	{
 		free_env_list(data->env);
-		free(data->env);
-	}
-	if (data->redirects)
-	{
-		free_redirections(data->redirects);
-		free(data->redirects);
-	}
+	//if (data->redirects)
+		//free_redirections(data->redirects);
 	free(data);
 }
