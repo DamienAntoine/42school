@@ -141,7 +141,7 @@ char *get_next_line(int fd);
 //init_env.c
 
 char *find_env_value(t_env *env, const char *name);
-void update_env_variable(t_env *env_list, char *name, char *value);
+void update_or_add_env_variable(t_env **env_list, const char *name, const char *value);
 void init_env(char **env, t_env **cur_env);
 
 //#########################   m_free   ########################
