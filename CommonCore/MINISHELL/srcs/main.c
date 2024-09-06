@@ -145,8 +145,6 @@ int	main(int argc, char **argv, char **env)
 			}
 			printf("*****************************\n\n");
 		}
-		//free_token_list(data->toklist);
-		//data->toklist->tokens = NULL;
 	}
 	return (0);
 }
