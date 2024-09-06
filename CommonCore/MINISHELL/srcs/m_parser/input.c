@@ -34,7 +34,6 @@ char *get_full_input(void)
 		{
 			if (full_input)
 				free(full_input);
-			printf("Minishell Terminated (ctrl+d)\n");
 			return (NULL);
 		}
 
