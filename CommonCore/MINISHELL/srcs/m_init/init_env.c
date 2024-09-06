@@ -11,48 +11,41 @@ void	init_env(char **env, t_env **cur_env)
 	t_env	*last_node;
 
 	i = 0;
-	*cur_env = NULL; // init linked list
+	*cur_env = NULL;
 	while (env[i])
 	{
 		temp = ft_split(env[i], '=');
 		if (!temp || !temp[0] || !temp[1])
 		{
 			if (temp)
-			{
-				free(temp[0]);
-				free(temp[1]);
-				free(temp);
-			}
+				free_split(temp);
 			i++;
 			continue ;
 		}
-		new_node = (t_env *)malloc(sizeof(t_env)); // new node
+		new_node = (t_env *)malloc(sizeof(t_env));
 		if (!new_node)
 		{
 			perror("failed to allocate memory for new env var");
+			free_split(temp);
 			exit(EXIT_FAILURE);
 		}
-		new_node->type = ft_strdup(temp[0]);  // copy var name
-		new_node->value = ft_strdup(temp[1]); // copy value
+		new_node->type = ft_strdup(temp[0]);
+		new_node->value = ft_strdup(temp[1]);
 		new_node->next = NULL;
 		if (!new_node->type || !new_node->value)
 		{
 			free(new_node->type);
 			free(new_node->value);
 			free(new_node);
+			free_split(temp);
 			exit(EXIT_FAILURE);
 		}
-		// printf("Adding env variable: %s = %s\n", new_node->type, new_node->value);
-		// if first node (first loop)
 		if (*cur_env == NULL)
 			*cur_env = new_node;
 		else
 			last_node->next = new_node;
 		last_node = new_node;
-
-		free(temp[0]);
-		free(temp[1]);
-		free(temp);
+		free_split(temp);
 		i++;
 	}
 }

@@ -16,20 +16,27 @@ void	free_env_list(t_env *env)
 
 void	free_command(t_command *command)
 {
-	int	i;
+	t_command	*temp;
+	int			i;
 
-	i = 0;
-	if (command->args)
+	while (command)
 	{
-		while (command->args[i])
+		i = 0;
+		temp = command;
+		if (command->args)
 		{
-			free(command->args[i]);
-			i++;
+			while (command->args[i])
+			{
+				free(command->args[i]);
+				i++;
+			}
+			free(command->args);
 		}
-		free(command->args);
+		if (command->cmds)
+			free(command->cmds);
+		command = command->next;
+		free(temp);
 	}
-	free(command->cmds);
-	free(command);
 }
 
 void	free_split(char **split)
@@ -37,7 +44,7 @@ void	free_split(char **split)
 	int	i;
 
 	if (!split)
-		return;
+		return ;
 	i = 0;
 	while (split[i])
 	{
@@ -62,19 +69,32 @@ void	free_redirections(t_redirection *redirections)
 
 void	free_token_list(t_token_list *token_list)
 {
-	free_split(token_list->tokens);
+	if (token_list->tokens)
+		free_split(token_list->tokens);
 	free(token_list);
 }
 
 void	free_minishell(t_data *data)
 {
-	 if (data->toklist)
+	if (data->toklist)
+	{
 		free_token_list(data->toklist);
+		free(data->toklist);
+	}
 	if (data->commands)
+	{
 		free_command(data->commands);
+		free(data->commands);
+	}
 	if (data->env)
+	{
 		free_env_list(data->env);
+		free(data->env);
+	}
 	if (data->redirects)
+	{
 		free_redirections(data->redirects);
+		free(data->redirects);
+	}
 	free(data);
 }
