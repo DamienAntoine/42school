@@ -69,7 +69,7 @@ char	*get_full_input(void)
 		if (input == NULL) // Handle Ctrl+D
 		{
 			printf("Minishell Terminated (ctrl+d)\n");
-			free(full_input);
+			//free(full_input);
 			exit(0);
 		}
 		// Concatenate the input to full_input
@@ -95,7 +95,7 @@ int	main(int argc, char **argv, char **env)
 {
 	char	*input;
 	t_data	*data;
-				
+
 
 	if (argc > 1)
 		exit(0);
@@ -107,6 +107,7 @@ int	main(int argc, char **argv, char **env)
 	{
 		write(1, "\033[35mMSL> \033[0m", 14);
 		input = get_full_input();
+		//input = get_next_line(1);
 		printf("\n**********Debugging**********\n");
 		printf("#Input received: %s\n", input);
 		if (input == NULL) // ctrl + d
@@ -137,7 +138,7 @@ int	main(int argc, char **argv, char **env)
 			}
 			if (synt_errors_check(data->toklist) == 0)
 				// checks tokens syntax and prints syntax errors
-				ft_sort_tokens(data);                 
+				ft_sort_tokens(data);
 					// creates hierarchy and redirects them to corresponding functions (parser to executor)
 			printcommands(data);
 			printf("*****************************\n\n");
