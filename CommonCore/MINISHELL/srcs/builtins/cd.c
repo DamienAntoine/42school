@@ -44,9 +44,7 @@ void	ft_cd(t_data *cur)
 		}
 	}
 	else if (!ft_strcmp(cur->commands->args[0], ".."))
-	{
 		target_dir = "..";
-	}
 	else if (!ft_strcmp(cur->commands->args[0], "-"))
 	{
 		oldpwd_env = find_env_value(cur->env, "OLDPWD");
@@ -70,13 +68,7 @@ void	ft_cd(t_data *cur)
 		}
 	}
 	else
-	{
-		// Move to the specified directory
 		target_dir = cur->commands->args[0];
-	}
-
-	
-
 	// Perform the directory change
 	if (chdir(target_dir) != 0)
 	{
