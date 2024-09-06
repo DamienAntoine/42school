@@ -40,6 +40,8 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	new[j] = '\0';
 	return (new);
 }
+
+
 /*
 #include <stdio.h>
 int	main(void)

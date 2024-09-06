@@ -2,15 +2,15 @@
 
 void	free_env_list(t_env *env)
 {
-	t_env	*tmp;
+	t_env	*temp;
 
 	while (env != NULL)
 	{
-		tmp = env;
-		env = env->next;
-		free(tmp->type);
-		free(tmp->value);
-		free(tmp);
+		temp = env->next;
+		free(env->type);
+		free(env->value);
+		free(env);
+		env = temp;
 	}
 }
 
@@ -22,9 +22,11 @@ void	free_command(t_command *command)
 	if (command->args)
 	{
 		while (command->args[i])
+		{
 			free(command->args[i]);
+			i++;
+		}
 		free(command->args);
-		i++;
 	}
 	free(command->cmds);
 	free(command);
@@ -63,6 +65,7 @@ void	free_token_list(t_token_list *token_list)
 	free_split(token_list->tokens);
 	free(token_list);
 }
+
 void	free_minishell(t_data *data)
 {
 	 if (data->toklist)

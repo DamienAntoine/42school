@@ -145,7 +145,7 @@ int	main(int argc, char **argv, char **env)
 			execute_command(data);
 		}
 		free(input);
-		free(data->toklist->tokens);
+		free_token_list(data->toklist);
 		data->toklist->tokens = NULL;
 	}
 	return (0);
