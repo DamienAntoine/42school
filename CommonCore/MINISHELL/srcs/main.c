@@ -78,7 +78,7 @@ int	main(int argc, char **argv, char **env)
 		input = get_full_input();
 		if (input == NULL) // ctrl + d
 		{
-			printf("Minishell Terminated (ctrl+d)\n");
+			//printf("Minishell Terminated (ctrl+d)\n");
 			free_minishell(data);
 			return (0);
 		}
