@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <errno.h>
 #include <sys/wait.h> //for waitpid, WIFEXITED, WEXITSTATUS
+#include <termios.h>
 
 
 
@@ -78,7 +79,7 @@ void	free_split(char **split);
 int		is_builtin(char *cmd);
 void	execute_builtin(t_command *cmdtable, t_data *data);
 char	*get_command_path(const char *cmd);
-
+char *get_full_input(void);
 
 
 

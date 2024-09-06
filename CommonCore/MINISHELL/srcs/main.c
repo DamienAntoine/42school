@@ -1,16 +1,37 @@
 #include "../headers/minishell.h"
 
+void ignore_sigquit() {
+    struct sigaction sa;
+    sa.sa_handler = SIG_IGN; // Ignore SIGQUIT
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+
+    if (sigaction(SIGQUIT, &sa, NULL) == -1) {
+        perror("Failed to ignore SIGQUIT");
+    }
+}
+
+void setup_terminal() {
+    struct termios tio;
+    if (tcgetattr(STDIN_FILENO, &tio) != 0) {
+        perror("Failed to get terminal attributes");
+        return;
+    }
+
+    tio.c_lflag &= ~ECHOCTL; // Disable control characters echoing
+
+    if (tcsetattr(STDIN_FILENO, TCSANOW, &tio) != 0) {
+        perror("Failed to set terminal attributes");
+    }
+}
+
 void	handle_sigint(int sig)
 {
 	(void)sig;
 	ft_putstr_fd("\n\033[35mMSL> \033[0m", 1);
 }
 
-void	handle_sigquit(int sig)
-{
-	(void)sig;
-	ft_putstr_fd("\n\033[35mMSL> \033[0m", 1);
-}
+
 
 void	printcommands(t_data *data) // debugging function
 {
@@ -35,62 +56,7 @@ void	printcommands(t_data *data) // debugging function
 	printf("*****************************\n\n");
 }
 
-// Function to check if the quotes are balanced
-int	are_quotes_balanced(const char *input)
-{
-	int	single_quote;
-	int	double_quote;
 
-	single_quote = 0;
-	double_quote = 0;
-	while (*input)
-	{
-		if (*input == '\'' && double_quote % 2 == 0)
-			single_quote++;
-		else if (*input == '\"' && single_quote % 2 == 0)
-			double_quote++;
-		input++;
-	}
-	return (single_quote % 2 == 0 && double_quote % 2 == 0);
-}
-
-// Function to handle input and ensure quotes are closed
-char *get_full_input(void)
-{
-	char *input;
-	char *full_input = NULL;
-	char *temp;
-	int unbalanced_quotes;
-
-	while (1)
-	{
-		input = get_next_line(STDIN_FILENO);
-		if (input == NULL) // Handle Ctrl+D
-		{
-			if (full_input)
-				free(full_input);
-			printf("Minishell Terminated (ctrl+d)\n");
-			return (NULL);
-		}
-
-		if (full_input == NULL)
-			full_input = ft_strdup(input);
-		else
-		{
-			temp = full_input;
-			full_input = ft_strjoin(full_input, input);
-			free(temp);
-		}
-		free(input);
-
-		unbalanced_quotes = !are_quotes_balanced(full_input);
-		if (!unbalanced_quotes)
-			break;
-
-		write(1, "> ", 2);
-	}
-	return (full_input);
-}
 
 int	main(int argc, char **argv, char **env)
 {
@@ -102,13 +68,13 @@ int	main(int argc, char **argv, char **env)
 		exit(0);
 	(void)argv;
 	data = init_minishell(env);
+	setup_terminal();
 	signal(SIGINT, handle_sigint);   // handle ctrl+c
-	signal(SIGQUIT, handle_sigquit); // handle ctrl+\ //
+	ignore_sigquit();
 	while (1)
 	{
 		write(1, "\033[35mMSL> \033[0m", 14);
 		input = get_full_input();
-		//input = get_next_line(1);
 		if (input == NULL) // ctrl + d
 		{
 			printf("Minishell Terminated (ctrl+d)\n");
