@@ -10,19 +10,20 @@ t_data	*init_minishell(char **env)
 	data->commands = malloc(sizeof(t_command));
 	data->toklist = malloc(sizeof(t_token_list));
 	data->env = malloc(sizeof(t_env));
-	//data->redirects = malloc(sizeof(t_redirection));
-	if (!data->commands || !data->toklist || !data->env/* || !data->redirects*/)
+	data->redirects = malloc(sizeof(t_redirection));
+	if (!data->commands || !data->toklist || !data->env || !data->redirects)
 	{
 		free(data->commands);
 		free(data->toklist);
 		free(data->env);
-		//free(data->redirects);
+		free(data->redirects);
 		free(data);
 		return (NULL);
 	}
 	init_env(env, &data->env);
 	init_commands(data);
-	//init_redirections(data);
+	data->redirects->file = NULL;
+	data->redirects->type = 0;
 	data->toklist->tokens = NULL;
 	data->state.last_exit_status = 0;
 	return (data);

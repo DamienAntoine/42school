@@ -22,11 +22,11 @@ int	ft_check_syntax(t_token_list *toklist)
 		if (ft_strcmp(toklist->tokens[i], "<") == 0 || ft_strcmp(toklist->tokens[i], ">") == 0 || \
 		ft_strcmp(toklist->tokens[i], "<<") == 0 || ft_strcmp(toklist->tokens[i], ">>") == 0)
 		{
-			if (i == 0 || i == toklist->token_count)
+			if (i == 0 || i == toklist->token_count - 1)
 				return (ERREDIR);
-			else if (is_consecutive(toklist, ++i) == 1)
+			else if (is_consecutive(toklist, i) == 1)
 				return (ERCONS);
-			else if (is_consecutive(toklist, ++i) == 2)
+			else if (is_consecutive(toklist, i) == 2)
 				return (ERTOKEN);
 		}
 
@@ -109,7 +109,7 @@ int is_consecutive(t_token_list *toklist, int i)
 					return (1); // consecutive op
 				j++;
 			}
-			return (0);//i changed return (1) to (0) // Invalid: operator cannot be a filename
+			return (2);//i changed return (1) to (2) // Invalid: operator cannot be a filename
 		}
 		j++;
 	}
