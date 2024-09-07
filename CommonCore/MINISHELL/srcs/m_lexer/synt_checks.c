@@ -14,7 +14,7 @@ int	ft_check_syntax(t_token_list *toklist)
 			//if 1st token is pipe || pipe is last token || two pipes in a row not separated by a cmd
 			if (i == 0 || i == toklist->token_count - 1)
 				return (ERPIPE); // syntax error for pipe at start/end
-			else if (is_consecutive(toklist, i + 1) == 1)
+			else if (is_consecutive(toklist, i) == 1)
 				return (ERCONS); // syntax error for consecutive pipes
 		}
 
@@ -38,7 +38,7 @@ int	ft_check_syntax(t_token_list *toklist)
 		}
 
 		//env var expansion
-		if (toklist->tokens[i][0] == '$' && !is_valid_env_variable(toklist->tokens[i]))
+		if (toklist->tokens[i][0] == '$' && !is_valid_env_variable(toklist->tokens[i] + 1))
 			return (ERVARN); // Syntax error: invalid environment variable
 
 		i++;
@@ -52,14 +52,19 @@ int	is_valid_env_variable(const char *var) //only checks if env var has valid sy
 	int	i;
 
 	i = 0;
-	if (var[1] == '\0')
+	if (var == NULL || var[0] == '\0')
+		return (0);
+	if (var[0] == '?' && var[1] == '\0')
 		return (1);
+	if (!ft_isalnum(var[0]) && var[0] != '_')
+		return (0);
 	while (var[i])
 	{
 		if (!ft_isalnum(var[i]) && var[i] != '_')
-			return (1);
+			return (0);
+		i++;
 	}
-    return (0);
+    return (1);
 }
 
 int	check_quotes(t_token_list *toklist)
@@ -88,6 +93,7 @@ int is_consecutive(t_token_list *toklist, int i)
 {
 	char *operators[6];
 	int j;
+	int	k;
 
 	operators[0] = "|"; //need a better way to do this
 	operators[1] = "<";
@@ -96,18 +102,19 @@ int is_consecutive(t_token_list *toklist, int i)
 	operators[4] = ">>";
 	operators[5] = NULL;
 	j = 0;
+	k = 0;
 	if (i + 1 >= toklist->token_count)
 		return (0); // ensure there's a next token
 	while (operators[j] != NULL)
 	{
 		if (ft_strcmp(toklist->tokens[i], operators[j]) == 0) //current token is operator
 		{
-			j = 0;
-			while (operators[j] != NULL)
+			k = 0;
+			while (operators[k] != NULL)
 			{
-				if (ft_strcmp(toklist->tokens[i + 1], operators[j]) == 0)
+				if (ft_strcmp(toklist->tokens[i + 1], operators[k]) == 0)
 					return (1); // consecutive op
-				j++;
+				k++;
 			}
 			return (2);//i changed return (1) to (2) // Invalid: operator cannot be a filename
 		}
