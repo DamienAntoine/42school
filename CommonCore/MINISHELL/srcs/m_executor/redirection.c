@@ -119,7 +119,31 @@ void ft_add_redirection(t_data *data, char *file, int type)
 	}
 }
 */
+void ft_sortredirect(t_data *data, int *i) {
+    t_token_list *toklist = data->toklist;
+    int redirect_type = -1;
 
+    if (ft_strcmp(toklist->tokens[*i], "<") == 0)
+        redirect_type = 0; // Input
+    else if (ft_strcmp(toklist->tokens[*i], ">") == 0)
+        redirect_type = 1; // Output
+    else if (ft_strcmp(toklist->tokens[*i], ">>") == 0)
+        redirect_type = 2; // Append
+    else if (ft_strcmp(toklist->tokens[*i], "<<") == 0)
+        redirect_type = 3; // Here-doc
+
+    // Process redirection if a valid type was found
+    if (redirect_type != -1) 
+	{
+        (*i)++;
+        if (*i < toklist->token_count)
+            add_redirection(data, toklist->tokens[*i], redirect_type);
+        else
+            // Error handling: expected a filename after redirection operator
+        	fprintf(stderr, "Syntax error: No file name after redirection operator.\n");
+    }
+}
+/*
 void	ft_sortredirect(t_data *data, int *i)
 {
 	t_token_list *toklist = data->toklist;
@@ -146,6 +170,7 @@ void	ft_sortredirect(t_data *data, int *i)
 			add_redirection(data, toklist->tokens[*i], 3); // 3 for here-doc
 	}
 }
+*/
 
 /*
 // Function to handle Here-Doc redirection

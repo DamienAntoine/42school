@@ -158,5 +158,5 @@ int	synt_errors_check(t_token_list *toklist)
 		printf("SYNTAX ERROR: Invalid Env variable name");
 		return (1);
 	}
-		return (0);
+	return (0);
 }
