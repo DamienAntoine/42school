@@ -11,6 +11,7 @@
 #include <errno.h>
 #include <sys/wait.h> //for waitpid, WIFEXITED, WEXITSTATUS
 #include <termios.h>
+#include <fcntl.h>
 
 
 
@@ -80,6 +81,7 @@ int		is_builtin(char *cmd);
 void	execute_builtin(t_command *cmdtable, t_data *data);
 char	*get_command_path(const char *cmd);
 char *get_full_input(void);
+void add_redirection(t_data *data, char *file, int type);
 
 
 
@@ -155,7 +157,7 @@ void free_command(t_command *command);
 //#########################   m_lexer   ########################
 //synt_checks.c
 int	synt_errors_check(t_token_list *toklist);
-int consecutive_check(t_token_list *toklist, int i);
+int is_consecutive(t_token_list *toklist, int i);
 int	check_quotes(t_token_list *toklist);
 int	is_valid_env_variable(const char *var);
 int	ft_check_syntax(t_token_list *toklist);
@@ -167,7 +169,7 @@ size_t ft_toklen(const char *str, const char *delim);
 
 //#########################   m_parser   ########################
 //create_redirects.c
-void ft_add_redirection(t_data *data, char *file, int type);
+//void ft_add_redirection(t_data *data, char *file, int type);
 t_redirection *ft_create_redirection(char *file, int type);
 
 //sort_tokens.c

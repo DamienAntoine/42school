@@ -198,13 +198,14 @@ int	execute_command(t_data *data)
 		// fork will come back to execute_command at some point and check again if theres another pipe or a redirect
 		return (0);
 	}
-	/*
-	if (cmdtable->redirections >= 0 && cmdtable->redirections <= 3)
+	
+	if (data->redirects)
 	{
 		handle_redirection(data);
-		return (0);
+		send_command(data);
+		return (data->state.last_exit_status);
 	}
-	*/
+	
 	// no pipe, just check command syntax and execute
 	send_command(data);
 	return (data->state.last_exit_status);

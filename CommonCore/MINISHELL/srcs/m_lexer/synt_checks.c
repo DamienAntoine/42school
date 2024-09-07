@@ -14,7 +14,7 @@ int	ft_check_syntax(t_token_list *toklist)
 			//if 1st token is pipe || pipe is last token || two pipes in a row not separated by a cmd
 			if (i == 0 || i == toklist->token_count - 1)
 				return (ERPIPE); // syntax error for pipe at start/end
-			else if (consecutive_check(toklist, i + 1) == 1)
+			else if (is_consecutive(toklist, i + 1) == 1)
 				return (ERCONS); // syntax error for consecutive pipes
 		}
 
@@ -24,9 +24,9 @@ int	ft_check_syntax(t_token_list *toklist)
 		{
 			if (i == 0 || i == toklist->token_count)
 				return (ERREDIR);
-			else if (consecutive_check(toklist, ++i) == 1)
+			else if (is_consecutive(toklist, ++i) == 1)
 				return (ERCONS);
-			else if (consecutive_check(toklist, ++i) == 2)
+			else if (is_consecutive(toklist, ++i) == 2)
 				return (ERTOKEN);
 		}
 
@@ -84,7 +84,7 @@ int	check_quotes(t_token_list *toklist)
 }
 
 //checks if two consecutive operators
-int consecutive_check(t_token_list *toklist, int i)
+int is_consecutive(t_token_list *toklist, int i)
 {
 	char *operators[6];
 	int j;
@@ -96,6 +96,8 @@ int consecutive_check(t_token_list *toklist, int i)
 	operators[4] = ">>";
 	operators[5] = NULL;
 	j = 0;
+	if (i + 1 >= toklist->token_count)
+		return (0); // ensure there's a next token
 	while (operators[j] != NULL)
 	{
 		if (ft_strcmp(toklist->tokens[i], operators[j]) == 0) //current token is operator
@@ -107,7 +109,7 @@ int consecutive_check(t_token_list *toklist, int i)
 					return (1); // consecutive op
 				j++;
 			}
-			return (1); // Invalid: operator cannot be a filename
+			return (0);//i changed return (1) to (0) // Invalid: operator cannot be a filename
 		}
 		j++;
 	}
