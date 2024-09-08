@@ -77,6 +77,7 @@ int is_consecutive(t_token_list *toklist, int i)
 	}
 	return (0);
 } //next: if file doesnt exist and '>': create file. if '<': error. if '>>': create file. if '<<': ??
+
 //we need a function to check syntax here (cant use two pipes in a row without a command between, ...)
 int	ft_check_syntax(t_token_list *toklist)
 {
