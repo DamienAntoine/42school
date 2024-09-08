@@ -113,10 +113,8 @@ int	main(int argc, char **argv, char **env)
 				printcommands(data);
 				execute_command(data);
 			}
-			
+
 		}
-		//free_token_list(data->toklist);
-		//data->toklist->tokens = NULL;
 	}
 	return (0);
 }
