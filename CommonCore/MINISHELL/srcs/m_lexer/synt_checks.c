@@ -59,7 +59,7 @@ int is_consecutive(t_token_list *toklist, int i)
 	j = 0;
 	k = 0;
 	if (i + 1 >= toklist->token_count)
-		return (0); // ensure there's a next token
+		return (2); // ensure there's a next token
 	while (operators[j] != NULL)
 	{
 		if (ft_strcmp(toklist->tokens[i], operators[j]) == 0) //current token is operator
@@ -71,7 +71,7 @@ int is_consecutive(t_token_list *toklist, int i)
 					return (1); // consecutive op
 				k++;
 			}
-			return (2);//i changed return (1) to (2) // Invalid: operator cannot be a filename
+			return (0);//i changed return (1) to (0) // Invalid: operator cannot be a filename
 		}
 		j++;
 	}
