@@ -124,40 +124,28 @@ int	ft_check_syntax(t_token_list *toklist)
 	return (0);
 }
 
+
 int	has_synt_errors(t_token_list *toklist)
 {
 	int	synt_result;
 
 	synt_result = ft_check_syntax(toklist);
-	if (synt_result == ERPIPE)
+	if (synt_result != 0)
 	{
-		printf("SYNTAX ERROR: Pipe misplaced");
+		if (synt_result == ERPIPE)
+			printf("SYNTAX ERROR: Pipe misplaced");
+		else if (synt_result == ERCONS)
+			printf("SYNTAX ERROR: Consecutive operators");
+		else if (synt_result == ERREDIR)
+			printf("SYNTAX ERROR: Redirection at the start or end of the command line");
+		else if (synt_result == ERTOKEN)
+			printf("SYNTAX ERROR: No token after operator");
+		else if (synt_result == ERQUOTE)
+			printf("SYNTAX ERROR: Unmatched quotes");
+		else if (synt_result == ERVARN)
+			printf("SYNTAX ERROR: Invalid Env variable name");
 		return (1);
 	}
-	else if (synt_result == ERCONS)
-	{
-		printf("SYNTAX ERROR: Consecutive operators");
-		return (1);
-	}
-	else if (synt_result == ERREDIR)
-	{
-		printf("SYNTAX ERROR: Redirection at the start or end of the command line");
-		return (1);
-	}
-	else if (synt_result == ERTOKEN)
-	{
-		printf("SYNTAX ERROR: No token after operator");
-		return (1);
-	}
-	else if (synt_result == ERQUOTE)
-	{
-		printf("SYNTAX ERROR: Unmatched quotes");
-		return (1);
-	}
-	else if (synt_result == ERVARN)
-	{
-		printf("SYNTAX ERROR: Invalid Env variable name");
-		return (1);
-	}
-	return (0);
+	else
+		return (0);
 }
