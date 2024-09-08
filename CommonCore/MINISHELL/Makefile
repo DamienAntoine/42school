@@ -20,7 +20,7 @@ SRCS += ./srcs/m_free/free.c\
 SRCS += ./srcs/m_lexer/synt_checks.c ./srcs/m_lexer/tokenize.c\
 
 # m_parser
-SRCS += ./srcs/m_parser/create_redirects.c ./srcs/m_parser/sort_tokens.c\
+SRCS += ./srcs/m_parser/sort_tokens.c ./srcs/m_parser/input.c\
 
 # utils
 SRCS += ./srcs/utils/utils_str.c ./srcs/utils/utils_error.c ./srcs/utils/utils_print.c

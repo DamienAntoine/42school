@@ -50,24 +50,31 @@ void	init_env(char **env, t_env **cur_env)
 	}
 }
 
-// use this to update an env variable (after cd for example to update PWD),
-//	instead of running init again which would reset the whole env
-void	update_env_variable(t_env *env_list, char *name, char *value)
+void update_or_add_env_variable(t_env **env_list, const char *name, const char *value) 
 {
-	t_env	*current;
-
-	current = env_list;
-	while (current)
+    t_env	*env;
+	t_env	*new_node;
+	env = *env_list;
+    while (env != NULL) 
 	{
-		if (ft_strcmp(current->type, name) == 0)
-		{
-			free(current->value);              // free old value
-			current->value = ft_strdup(value); // set new value
-			return ;
-		}
-		current = current->next;
-	}
+        if (ft_strcmp(env->type, name) == 0) {
+            free(env->value); // Free the old value
+            env->value = ft_strdup(value); // Duplicate and assign the new value
+            return;
+        }
+        env = env->next;
+    }
+    // If not found, append a new node
+    new_node = malloc(sizeof(t_env));
+    if (new_node) 
+	{
+        new_node->type = ft_strdup(name);
+        new_node->value = ft_strdup(value);
+        new_node->next = *env_list;
+        *env_list = new_node; // Set the new node as the head of the list
+    }
 }
+
 
 char	*find_env_value(t_env *env, const char *name)
 {

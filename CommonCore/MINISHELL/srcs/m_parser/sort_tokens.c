@@ -11,32 +11,6 @@ void	ft_sortpipes(t_command *commands)
 	memset(current->next, 0, sizeof(t_command));		// init new node
 }
 
-void	ft_sortredirect(t_data *data, int *i)
-{
-	t_token_list *toklist = data->toklist;
-	//t_command *current = data->commands;
-
-	if (ft_strcmp(toklist->tokens[*i], "<") == 0)
-	{
-		if (++(*i) < toklist->token_count)	// check if there's a token after operator
-			ft_add_redirection(data, toklist->tokens[*i], 0); // 0 for input
-	}
-	else if (ft_strcmp(toklist->tokens[*i], ">") == 0)
-	{
-		if (++(*i) < toklist->token_count)	// check if there's a token after operator
-			ft_add_redirection(data, toklist->tokens[*i], 1); // 1 for output
-	}
-	else if (ft_strcmp(toklist->tokens[*i], ">>") == 0)
-	{
-		if (++(*i) < toklist->token_count)	// check if there's a token after operator
-			ft_add_redirection(data, toklist->tokens[*i], 2); // 2 for append
-	}
-	else if (ft_strcmp(toklist->tokens[*i], "<<") == 0)
-	{
-		if (++(*i) < toklist->token_count)	// check if there's a token after operator
-			ft_add_redirection(data, toklist->tokens[*i], 3); // 3 for here-doc
-	}
-}
 
 void	ft_sortloop(t_data *data, int i, int j)
 {

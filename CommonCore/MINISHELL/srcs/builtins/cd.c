@@ -44,17 +44,16 @@ void	ft_cd(t_data *cur)
 		}
 	}
 	else if (!ft_strcmp(cur->commands->args[0], ".."))
-	{
 		target_dir = "..";
-	}
 	else if (!ft_strcmp(cur->commands->args[0], "-"))
 	{
 		oldpwd_env = find_env_value(cur->env, "OLDPWD");
-		if (!oldpwd_env)
+		if (!oldpwd_env || ft_strlen(oldpwd_env) == 0)
 		{
 			printf_and_free("OLDPWD not set\n", oldpwd);
 			return ;
 		}
+		printf("%s\n", oldpwd_env);
 		target_dir = oldpwd_env;
 	}
 	else if (cur->commands->args[0][0] == '$')
@@ -69,11 +68,7 @@ void	ft_cd(t_data *cur)
 		}
 	}
 	else
-	{
-		// Move to the specified directory
 		target_dir = cur->commands->args[0];
-	}
-
 	// Perform the directory change
 	if (chdir(target_dir) != 0)
 	{
@@ -90,8 +85,8 @@ void	ft_cd(t_data *cur)
 	}
 
 	// Update OLDPWD and PWD environment variables
-	update_env_variable(cur->env, "OLDPWD", oldpwd);
-	update_env_variable(cur->env, "PWD", newpwd);
+	update_or_add_env_variable(&cur->env, "OLDPWD", oldpwd);
+	update_or_add_env_variable(&cur->env, "PWD", newpwd);
 
 	// Debug: Print the new directory after changing
 	printf("New PWD: %s\n", newpwd);
@@ -100,111 +95,3 @@ void	ft_cd(t_data *cur)
 	free(oldpwd);
 	free(newpwd);
 }
-
-/*
-void	ft_cd(t_data *cur)
-{
-
-	char	*home;
-	char	*oldpwd;
-	char	*newpwd;
-	char	*oldpwd_env;
-printf("before current dir\n");
-
-
-	current = data->commands;
-	oldpwd = get_current_directory();
-	if (!oldpwd)
-	{
-		perror("getcwd");
-		return ;
-	}
-printf("oldpwd = %s \n after current dir \n", oldpwd);
-
-	home = find_env_value(cur->env, "HOME");
-	
-	printf("print env_ home : %s\n", home);
-	
-	if (cur->commands->args[1])
-	{
-		printf_and_free("Too many args for cd command\n", oldpwd);
-		return ;
-	}
-	if (!cur->commands->args[0])
-	{ // No arguments, move to home directory
-		if (!home)
-		{
-			printf("home dir fail: %s\n", home);
-
-			printf_and_free("Home directory not set\n", oldpwd);
-			return ;
-		}
-
-		printf("home dir : %s\n", home);
-
-		if (chdir(home) != 0)
-		{ // Moving to home directory
-			perror_and_free("cd", oldpwd);
-			return ;
-		}
-	}
-	
-
-	else if (!ft_strcmp(cur->commands->args[0], ".."))
-	{ // Argument is "..", move one directory up
-		char	*cur_dir = get_current_directory();
-		printf("current dir before cd .. : %s\n", cur_dir);
-		free(cur_dir);
-		
-		
-		if (chdir("..") != 0)
-		{ // Moving one directory up
-			perror_and_free("cd", oldpwd);
-			return ;
-		}
-
-		cur_dir = get_current_directory();
-		printf("after cd ..; %s\n", cur_dir);
-		update_env_variable(cur->env, "PWD", cur_dir);
-		free(cur_dir);
-
-	}
-	else if (!ft_strcmp(cur->commands->args[0], "-"))
-	{ // Argument is "-", move to previous directory
-		oldpwd_env = find_env_value(cur->env, "OLDPWD");
-		if (!oldpwd_env)
-		{
-			printf_and_free("OLDPWD not set\n", oldpwd);
-			return ;
-		}
-		if (chdir(oldpwd_env) != 0)
-		{ // Moving to previous directory
-			perror_and_free("cd", oldpwd);
-			return ;
-		}
-		else
-			printf("%s\n", oldpwd_env);
-				// Print the directory after changing to it
-	}
-	else
-	{ // Move to the specified directory
-		if (chdir(cur->commands->args[0]) != 0)
-		{ // Moving to the specified directory
-			perror_and_free("cd", oldpwd);
-			return ;
-		}
-	}
-	// If we moved successfully, update OLDPWD and PWD
-	update_env_variable(cur->env, "OLDPWD", oldpwd);
-	newpwd = get_current_directory(); // Get the new current directory
-	if (!newpwd)
-	{
-		perror_and_free("getcwd", oldpwd);
-		return ;
-	}
-	update_env_variable(cur->env, "PWD", newpwd);
-	free(oldpwd); // Free the old PWD
-	free(newpwd);
-		// Free the new PWD string allocated by get_current_directory()
-}
-*/

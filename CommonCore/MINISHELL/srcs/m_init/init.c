@@ -20,14 +20,12 @@ t_data	*init_minishell(char **env)
 		free(data->commands);
 		free(data->toklist);
 		free(data->env);
-		//free(data->redirects);
 		free(data);
 		printf("Freed data and all sub-elements due to failure\n");
 		return (NULL);
 	}
 	init_env(env, &data->env);
 	init_commands(data);
-	//init_redirections(data);
 	data->toklist->tokens = NULL;
 	data->state.last_exit_status = 0;
 	return (data);
