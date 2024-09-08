@@ -156,9 +156,9 @@ void free_command(t_command *command);
 
 //#########################   m_lexer   ########################
 //synt_checks.c
-int	synt_errors_check(t_token_list *toklist);
+int	has_synt_errors(t_token_list *toklist);
 int is_consecutive(t_token_list *toklist, int i);
-int	check_quotes(t_token_list *toklist);
+int	has_quotes(t_token_list *toklist);
 int	is_valid_env_variable(const char *var);
 int	ft_check_syntax(t_token_list *toklist);
 

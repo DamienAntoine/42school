@@ -106,7 +106,7 @@ int	main(int argc, char **argv, char **env)
 				data->commands = malloc(sizeof(t_command));
 				init_commands(data);
 			}
-			if (synt_errors_check(data->toklist) == 0)
+			if (has_synt_errors(data->toklist) == 0)
 			{
 				ft_sort_tokens(data);
 				printcommands(data);
