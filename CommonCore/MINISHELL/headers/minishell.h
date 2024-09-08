@@ -22,6 +22,7 @@
 # define ERTOKEN -104
 # define ERQUOTE -105
 # define ERVARN -106
+
 typedef struct s_state
 {
 	int	last_exit_status;
@@ -173,7 +174,8 @@ t_redirection *ft_create_redirection(char *file, int type);
 void	ft_sort_tokens(t_data *data);
 void	ft_sortloop(t_data *data, int i, int j);
 void	ft_sortredirect(t_data *data, int *i);
-void	ft_sortpipes(t_data *data);
+//void	ft_sortpipes(t_data *data);
+void	ft_sortpipes(t_command *commands);
 
 
 //t_command	*ft_sort_tokens(t_token_list *toklist, t_command *table);

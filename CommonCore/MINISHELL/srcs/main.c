@@ -144,7 +144,7 @@ int	main(int argc, char **argv, char **env)
 				printcommands(data);
 				execute_command(data);
 			}
-			
+
 		}
 	}
 	return (0);

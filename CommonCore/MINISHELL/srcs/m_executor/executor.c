@@ -45,13 +45,13 @@ void send_command(t_data *data) {
     t_command *cmdtable = data->commands;
     if (!cmdtable || !cmdtable->cmds) {
         ft_putstr_fd("No command provided\n", STDERR_FILENO);
-        free(envp);
+        free_split(envp);
         return;
     }
 
     if (is_builtin(cmdtable->cmds)) {
         execute_builtin(cmdtable, data); // Execute built-in commands directly
-        free(envp);
+        free_split(envp);
         return;
     }
 
@@ -84,7 +84,7 @@ void send_command(t_data *data) {
         perror("fork");  // Handle fork failure
     }
 
-    free(envp); // Free environment pointer array
+    free_split(envp); // Free environment pointer array
 }
 
 

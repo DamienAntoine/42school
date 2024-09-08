@@ -1,13 +1,14 @@
 #include "../../headers/minishell.h"
 
-void	ft_sortpipes(t_data *data)
+void	ft_sortpipes(t_command *commands)
 {
-	t_command *current = data->commands;
+	t_command *current;
+
+	current = commands;
 	current->next = malloc(sizeof(t_command));	// if pipe, new command so alloc next struct node
 	if (!current->next)
 		return;
-	current = current->next;					// move to next node
-	memset(current, 0, sizeof(t_command));		// init new node
+	memset(current->next, 0, sizeof(t_command));		// init new node
 }
 
 void	ft_sortredirect(t_data *data, int *i)
@@ -47,30 +48,24 @@ void	ft_sortloop(t_data *data, int i, int j)
 		return;
 	while (i < toklist->token_count)
 	{
-		if (ft_strcmp(toklist->tokens[i], " ") == 0)
-			i++;
-
 		// Handle pipes
 		if (ft_strcmp(toklist->tokens[i], "|") == 0)
 		{
 			current->args[j] = NULL;
-			ft_sortpipes(data); // Now using data instead of returning anything
+			ft_sortpipes(current);
 			j = 0;
 			current = current->next;
 			current->args = malloc(sizeof(char *) * (toklist->token_count + 1));
 			if (!current->args)
-				return;
+				return ;
 			i++;
 		}
-
 		// Handle redirection
-		else if (ft_strcmp(toklist->tokens[i], "<") == 0 || 
-				 ft_strcmp(toklist->tokens[i], ">") == 0 || 
-				 ft_strcmp(toklist->tokens[i], ">>") == 0 || 
+		else if (ft_strcmp(toklist->tokens[i], "<") == 0 ||
+				 ft_strcmp(toklist->tokens[i], ">") == 0 ||
+				 ft_strcmp(toklist->tokens[i], ">>") == 0 ||
 				 ft_strcmp(toklist->tokens[i], "<<") == 0)
-		{
 			ft_sortredirect(data, &i);
-		}
 		// Handle normal command tokens
 		else if (ft_strlen(toklist->tokens[i]) > 0 && !ft_isspace(toklist->tokens[i][0]))
 		{
