@@ -106,8 +106,9 @@ int	main(int argc, char **argv, char **env)
 				data->commands = malloc(sizeof(t_command));
 				init_commands(data);
 			}
-			if (has_synt_errors(data->toklist) == 0)
+			if (!has_synt_errors(data->toklist))
 			{
+				printf("passed the syntax error check\n");
 				ft_sort_tokens(data);
 				printcommands(data);
 				execute_command(data);
