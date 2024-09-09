@@ -88,10 +88,10 @@ void	free_minishell(t_data *data)
 	{
 		free_env_list(data->env);
 	}
-	// if (data->redirects)
-	// {
-	//		free_redirections(data->redirects);
-	// }
+	if (data->redirects)
+	{
+		free_redirections(data->redirects);
+	}
 	free(data);
 	data = NULL;
 }

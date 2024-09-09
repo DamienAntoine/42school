@@ -1,6 +1,6 @@
 #include "../headers/minishell.h"
 
-void ignore_sigquit() 
+void ignore_sigquit()
 {
     struct sigaction sa;
     sa.sa_handler = SIG_IGN; // Ignore SIGQUIT
@@ -11,10 +11,10 @@ void ignore_sigquit()
         perror("Failed to ignore SIGQUIT");
 }
 
-void setup_terminal() 
+void setup_terminal()
 {
     struct termios tio;
-    if (tcgetattr(STDIN_FILENO, &tio) != 0) 
+    if (tcgetattr(STDIN_FILENO, &tio) != 0)
 	{
         perror("Failed to get terminal attributes");
         return;
