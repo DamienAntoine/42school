@@ -54,7 +54,8 @@ void	printcommands(t_data *data) // debugging function
 		}
 		cmd = cmd->next;
 	}
-	printf("*****************************\n\n");
+	printf("this is right before the execute command\n");
+	printf("*****************************\n");
 }
 
 

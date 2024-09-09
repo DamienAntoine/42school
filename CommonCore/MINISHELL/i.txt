@@ -1,0 +1,19 @@
+skj i.txt
+[35mMSL> [0m
+**********Debugging**********
+#Input received: 
+
+[35mMSL> [0m
+**********Debugging**********
+#Input received: 
+
+[35mMSL> [0m
+**********Debugging**********
+#Input received: 
+
+[35mMSL> [0m
+**********Debugging**********
+#Input received: 
+
+[35mMSL> [0m
+Minishell Terminated (ctrl+d)
