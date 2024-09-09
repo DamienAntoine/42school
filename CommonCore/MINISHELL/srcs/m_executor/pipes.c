@@ -22,34 +22,46 @@ void	handle_pipe(t_data *data)
 			perror("fork error");
 			exit(EXIT_FAILURE);
 		}
-		//this will be true for childs (fork() returns 0 to child processes)
-		if (pid == 0)
+		if (pid == 0) //this will be true for childs (fork() returns 0 to child processes)
 		{
+			printf("Child process (PID: %d):\n", getpid());	//debug
+			// redirects stdin if previous_fd valid
 			if (previous_fd != -1)
 			{
 				dup2(previous_fd, STDIN_FILENO);
 				close(previous_fd);
 			}
+			else
+				printf("No previous_fd to redirect\n");
+			// redirects stdout if next command
 			if (cmdtable->next)
-				dup2(fd[1], STDOUT_FILENO);// dup2: duplicate a file descriptor. this (should) redirect the output from before the pipe to the command after the pipe
+				dup2(fd[1], STDOUT_FILENO);
+			else
+				printf("no more pipes\n");	//debug
 			close(fd[0]);
 			close(fd[1]);
 			data->commands = data->commands->next;
-			execute_command(data);//send the child back to execute function, and execute the new command (after the pipe), while also checking if theres another pipe or a redirection
-			free_minishell(data);//free child because killing
-			exit(0);//kill the child
+			execute_command(data);
+			free_minishell(data);
+			printf("Terminating Child process (PID: %d):\n\n", getpid());	//debug
+			exit(0); // kill child
 		}
-		//and this will be true for parent (main process)
-		else
+		else // parent
 		{
-			close(fd[1]); // close parent pipe (write)
+			printf("In parent process:\n");
+			printf("Closing fd[1] = %d\n", fd[1]);
+			close(fd[1]);
 			if (previous_fd != -1)
-				close(previous_fd);//close previous read
-			previous_fd = fd[0];//update previous read to current read
+				close(previous_fd);
+			previous_fd = fd[0];
 			cmdtable = cmdtable->next;
 		}
 	}
-	while (wait(NULL) > 0);
+	while (wait(NULL) > 0)
+		;
 	if (previous_fd != -1)
+	{
+		printf("Closing final previous_fd = %d\n", previous_fd);
 		close(previous_fd);
+	}
 }
