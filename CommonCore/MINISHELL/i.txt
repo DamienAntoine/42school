@@ -1,4 +1,4 @@
-skj i.txt
+skdj i.txt
 [35mMSL> [0m
 **********Debugging**********
 #Input received: 
@@ -9,11 +9,18 @@ skj i.txt
 
 [35mMSL> [0m
 **********Debugging**********
-#Input received: 
+#Input received: 
 
-[35mMSL> [0m
-**********Debugging**********
-#Input received: 
+#TOKENS
+
 
+#toklist tokens count: 1
+reset
+passed the syntax error check
+
+#COMMANDS
+cmd:
+this is right before the execute command
+*****************************
 [35mMSL> [0m
 Minishell Terminated (ctrl+d)
