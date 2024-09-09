@@ -36,7 +36,8 @@ void	handle_pipe(t_data *data)
 			close(fd[1]);
 			data->commands = data->commands->next;
 			execute_command(data);//send the child back to execute function, and execute the new command (after the pipe), while also checking if theres another pipe or a redirection
-			exit(0);//KILL THE CHILD
+			free_minishell(data);//free child because killing
+			exit(0);//kill the child
 		}
 		//and this will be true for parent (main process)
 		else
@@ -49,4 +50,6 @@ void	handle_pipe(t_data *data)
 		}
 	}
 	while (wait(NULL) > 0);
+	if (previous_fd != -1)
+		close(previous_fd);
 }
