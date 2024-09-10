@@ -192,6 +192,7 @@ int	execute_command(t_data *data)
 	cmdtable = data->commands;
 	if (cmdtable->next != NULL) // means theres a pipe
 	{
+        printf("process in execute command(pid: %d)\n", getpid());
 		handle_pipe(data);
 		// cmdtable = cmdtable->next;
 		// from what i understand: run first command, fork the process,

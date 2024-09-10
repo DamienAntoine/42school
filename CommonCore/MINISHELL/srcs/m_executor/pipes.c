@@ -7,7 +7,7 @@ void	handle_pipe(t_data *data)
 	int			fd[2];
 	int			previous_fd;
 
-	previous_fd = -1;
+	previous_fd = -1; //signals first iteration (but gets reset everytime a forked process loops ?)
 	// reset cmdtable to the start
 	cmdtable = data->commands;
 
@@ -32,6 +32,7 @@ void	handle_pipe(t_data *data)
 			printf("child created with pid %d\n", getpid());
 			if (previous_fd != -1)
 			{
+                printf("previous fd = -1 (pid: %d)\n", getpid());
 				dup2(previous_fd, STDIN_FILENO);
 				close(previous_fd);
 			}
