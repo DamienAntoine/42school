@@ -201,8 +201,20 @@ int	execute_command(t_data *data)
 
 	if (data->redirects)
 	{
-		handle_redirection(data);
-		send_command(data);
+		//handle_redirection(data);
+		/*
+			take commands->cmds ("ex.echo") 
+			read which redirection(data->redirection->type:0,1,2,3) 
+			if 0, do	
+			if 1, do
+			if 2, do
+			if 3, do
+
+			if there are many redirections
+
+			if there are many args
+		*/
+		//send_command(data);
 		return (data->state.last_exit_status);
 	}
 
