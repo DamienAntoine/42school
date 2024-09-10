@@ -90,10 +90,10 @@ void add_redirection(t_data *data, char *file, int type);
 
 //######################### m_executor ##########################
 //pipes.c
-void	handle_pipe(t_data *data);
+void	handle_pipe(t_data *data, pid_t parentpid);
 
 //executor.c
-int	execute_command(t_data *data);
+int	execute_command(t_data *data, pid_t parentpid);
 void	send_command(t_data *data);
 //redirection.c
 void	handle_redirection(t_data *data);

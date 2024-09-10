@@ -185,29 +185,28 @@ int	is_pipe(t_data *data)
 	return (0);
 }
 
-int	execute_command(t_data *data)
+int execute_command(t_data *data, pid_t parentpid)
 {
-	t_command	*cmdtable;
+    t_command *cmdtable;
 
-	cmdtable = data->commands;
-	if (cmdtable->next != NULL) // means theres a pipe
-	{
+    cmdtable = data->commands;
+
+    if (cmdtable->next != NULL) // means there's a pipe
+    {
         printf("process in execute command(pid: %d)\n", getpid());
-		handle_pipe(data);
-		// cmdtable = cmdtable->next;
-		// from what i understand: run first command, fork the process,
-		// fork will come back to execute_command at some point and check again if theres another pipe or a redirect
-		return (0);
-	}
+        handle_pipe(data, parentpid);
+        return (0);
+    }
 
-	if (data->redirects)
-	{
-		handle_redirection(data);
-		send_command(data);
-		return (data->state.last_exit_status);
-	}
+    if (data->redirects)
+    {
+        handle_redirection(data);
+        send_command(data);
+        return (data->state.last_exit_status);
+    }
 
-	// no pipe, just check command syntax and execute
-	send_command(data);
-	return (data->state.last_exit_status);
+    // no pipe, just check command syntax and execute
+    send_command(data);
+    return (data->state.last_exit_status);
 }
+
