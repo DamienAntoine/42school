@@ -54,8 +54,7 @@ void	printcommands(t_data *data) // debugging function
 		}
 		cmd = cmd->next;
 	}
-	printf("this is right before the execute command\n");
-	printf("*****************************\n");
+
 }
 
 
@@ -107,12 +106,32 @@ int	main(int argc, char **argv, char **env)
 				data->commands = malloc(sizeof(t_command));
 				init_commands(data);
 			}
+			if (data->redirects)
+			{
+				printf("second loop?");
+				free_redirections(data->redirects);
+			}
 			if (!has_synt_errors(data->toklist))
 			{
 				printf("passed the syntax error check\n");
 				ft_sort_tokens(data);
+				if (data->redirects){
+					t_redirection *tmp;
+					tmp = data->redirects;
+					
+					printf("\n\nredirection file: %s\n", tmp->file);
+					printf("redirection type: %d\n", tmp->type);
+					//tmp = tmp->next;
+					
+				}
 				printcommands(data);
+				printf("this is right before the execute command\n");
+				printf("*****************************\n");
 				execute_command(data);
+				if (data->redirects)
+					{printf("end of main");
+					free_redirections(data->redirects);}
+				
 			}
 
 		}

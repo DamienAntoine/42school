@@ -1,55 +1,50 @@
 #include "../../headers/minishell.h"
 
-void handle_redirection(t_data *data) 
+void open_redirection(t_data *data) 
 {
     t_redirection *redir = data->redirects;
     int fd;
 
-    while (redir != NULL) 
-	{
-        if (redir->type == 0) 
-		{  // Input
-            fd = open(redir->file, O_RDONLY);
-            if (fd == -1) 
-			{
-                perror("open");
-                exit(EXIT_FAILURE);
-            }
+    if (redir->type == 0) 
+    {  // Input
+        fd = open(redir->file, O_RDONLY);
+    }
+	else if (redir->type == 1) 
+	{  // Output
+        fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    } 
+	else if (redir->type == 2) 
+	{  // Append
+        fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+    } 
+//	else if (redir->type == 3) 
+//	{  // Here-doc
+           // Here-doc logic needs to be implemented
+//    } 
+	if (fd < 0)
+    {
+        perror("open");
+        return(-1);
+    }
+    return fd;
+}
+
+void    setup_ridirection(t_redirection *redir)
+{
+    int fd;
+    while (redir)
+    {
+        if (redir->type == 0)
+        {
+            fd = open_redirection(redir->file, 0);
             dup2(fd, STDIN_FILENO);
-            close(fd);
         }
-		else if (redir->type == 1) 
-		{  // Output
-            fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-            if (fd == -1) 
-			{
-                perror("open");
-                exit(EXIT_FAILURE);
-            }
+        else if (redir->type == 1 || redir->type == 2)
+        {
+            fd = open_redirection(redir->file, redir->type);
             dup2(fd, STDOUT_FILENO);
-            close(fd);
-        } 
-		else if (redir->type == 2) 
-		{  // Append
-            fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-            if (fd == -1) 
-			{
-                perror("open");
-                exit(EXIT_FAILURE);
-            }
-            dup2(fd, STDOUT_FILENO);
-            close(fd);
-        } 
-		else if (redir->type == 3) 
-		{  // Here-doc
-            // Here-doc logic needs to be implemented
-        } 
-		else 
-		{
-            fprintf(stderr, "Unknown redirection type\n");
-            exit(EXIT_FAILURE);
         }
-        redir = redir->next;  // Move to the next element in the list
+        redir = redir->next;
     }
 }
 
