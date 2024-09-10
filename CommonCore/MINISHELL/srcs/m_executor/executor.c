@@ -91,10 +91,6 @@ void send_command(t_data *data)
     }
 	else
         perror("fork");  // Handle fork failure
-<<<<<<< HEAD
-
-=======
->>>>>>> 9a19328a3013689f6a852d2f9923b230d2756bf2
     free_split(envp); // Free environment pointer array
 }
 
