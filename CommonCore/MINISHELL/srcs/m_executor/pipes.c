@@ -1,242 +1,80 @@
 #include "../../headers/minishell.h"
 
-/*OLD HANDLE_PIPE (works but crashes with too many pipes)
-void	handle_pipe(t_data *data)
+void	handle_pipe(t_data *data, int num_commands)
 {
 	t_command	*cmdtable;
+	int			pipes[num_commands - 1][2];
 	pid_t		pid;
-	int			fd[2];
-	int			previous_fd;
+	int			status;
+	int			i;
+	int			j;
 
-	previous_fd = -1; //signals first iteration (but gets reset everytime a forked process loops ?)
-	// reset cmdtable to the start
 	cmdtable = data->commands;
 
-	while (cmdtable)
+	// create pipes
+	i = 0;
+	while (i < num_commands)
 	{
-		if (cmdtable->next)
+		if (pipe(pipes[i]) == -1)
 		{
-			if (pipe(fd) == -1)
-			{
-				perror("pipe error");
-				exit(EXIT_FAILURE);
-			}
-		}
-		pid = fork();//create child
-		if (pid == -1)//error value of fork
-		{
-			perror("fork error");
+			perror("pipe");
 			exit(EXIT_FAILURE);
 		}
-		if (pid == 0) // child
-		{
-			printf("child created with pid %d\n", getpid());
-			if (previous_fd != -1)
-			{
-                printf("previous fd = -1 (pid: %d)\n", getpid());
-				dup2(previous_fd, STDIN_FILENO);
-				close(previous_fd);
-			}
-			if (cmdtable->next)
-			{
-				dup2(fd[1], STDOUT_FILENO);
-			}
-			close(fd[0]);
-			close(fd[1]);
-			data->commands = data->commands->next;
-			execute_command(data);
-			free_minishell(data);
-			exit(0);
-		}
-		else // parent
-		{
-			if (cmdtable->next)
-				close(fd[1]);
-			if (previous_fd != -1)
-				close(previous_fd);
-			previous_fd = fd[0];
-			cmdtable = cmdtable->next;
-		}
+		i++;
 	}
-	while (wait(NULL) > 0)
-		;
-	if (previous_fd != -1)
-		close(previous_fd);
-}
-*/
 
-//NEWER HANDLE_PIPE (almost works but some errors with valgrind and doesnt execute the commands)
-void	handle_pipe(t_data *data, pid_t parentpid)
-{
-	t_command	*cmdtable;
-	pid_t		pid;
-	int			fd[2];
-	int			previous_fd;
-    static int  counter; //debug
-
-	previous_fd = -1; //signals first iteration (but gets reset everytime a forked process loops ?)
-	// reset cmdtable to the start
-	cmdtable = data->commands;
-    pid = getpid();
-	while (cmdtable)
+	// creates fork for every command in the pipeline
+	i = 0;
+	while (i < num_commands)
 	{
-        counter++;
-        printf("%d\n", counter);
-		if (cmdtable->next)
+		if ((pid = fork()) == -1)
 		{
-			if (pipe(fd) == -1)
-			{
-				perror("pipe error");
-				exit(EXIT_FAILURE);
-			}
-		}
-        printf("process %d creates fork\n", getpid());
-		pid = fork();//create child
-		if (pid == -1)//error value of fork
-		{
-			perror("fork error");
+			perror("fork");
 			exit(EXIT_FAILURE);
 		}
-		if (pid == 0) // child
+		if (pid == 0) // child process
 		{
-			printf("child created with pid %d\n", getpid());
-            if (previous_fd == -1)
-                printf("previous fd = -1 (pid: %d)\n", getpid());
-			if (previous_fd != -1)
+			if (i > 0)// set input from previous pipe if not first command
+				dup2(pipes[i - 1][0], STDIN_FILENO);
+			if (i < num_commands - 1)// set output to next pipe if not last command
+				dup2(pipes[i][1], STDOUT_FILENO);
+
+			// close all pipes (child)
+			j = 0;
+			while(j < num_commands - 1)
 			{
-				dup2(previous_fd, STDIN_FILENO);
-				close(previous_fd);
+				close(pipes[j][0]);
+				close(pipes[j][1]);
+				j++;
 			}
-			if (cmdtable->next)
-			{
-				dup2(fd[1], STDOUT_FILENO);
-			}
-			close(fd[0]);
-			close(fd[1]);
-			data->commands = cmdtable->next;
-			execute_command(data, parentpid);
-			free_minishell(data);
-			exit(0);
+
+			// exec cmd
+			data->commands = cmdtable; // pass the current command to execute
+			send_command(data);
+			exit(EXIT_FAILURE);        // kill childprocess if command fails
 		}
-		else // parent
-		{
-			if (cmdtable->next)
-				close(fd[1]);
-			if (previous_fd != -1)
-				close(previous_fd);
-			previous_fd = fd[0];
-			cmdtable = cmdtable->next;
-		}
+		cmdtable = cmdtable->next; // move to the next command
+		i++;
 	}
-	while (wait(NULL) > 0)
-		;
-	if (previous_fd != -1)
-		close(previous_fd);
+
+	// close all pipes (parent)
+	i = 0;
+	while (i < num_commands - 1)
+	{
+		close(pipes[i][0]);
+		close(pipes[i][1]);
+		i++;
+	}
+
+	// wait for childs to die
+	i = 0;
+	while (i < num_commands)
+	{
+		wait(&status);
+		if (WIFEXITED(status))
+			data->state.last_exit_status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+			printf("Command %d was killed by signal %d\n", i, WTERMSIG(status));
+		i++;
+	}
 }
-
-//newest version: doesnt seem to leak but crashes when trying to execute cmd
-/*void handle_pipe(t_data *data, pid_t parentpid)
-{
-    t_command *cmdtable;
-    pid_t pid;
-    int fd[2];
-    int previous_fd = -1;
-    static int counter;
-
-    cmdtable = data->commands;
-
-    while (cmdtable && cmdtable->next)
-    {
-        counter++;
-        printf("%d\n", counter);
-
-        // Reset previous_fd at the start of each iteration
-        previous_fd = -1;
-
-        // Create a pipe only if this is not the first command
-        if (cmdtable != data->commands)
-        {
-            if (pipe(fd) == -1)
-            {
-                perror("pipe error");
-                continue; // Skip to next command
-            }
-        }
-
-        printf("process %d creates fork\n", getpid());
-        pid = fork();
-
-        if (pid == -1)
-        {
-            perror("fork error");
-            continue; // Skip to next command
-        }
-
-        if (pid == 0) // child
-        {
-            printf("child created with pid %d\n", getpid());
-            
-            if (previous_fd != -1)
-            {
-                if (dup2(previous_fd, STDIN_FILENO) == -1)
-                {
-                    perror("dup2 stdin error");
-                    exit(EXIT_FAILURE);
-                }
-                close(previous_fd);
-            }
-
-            if (cmdtable->next)
-            {
-                if (dup2(fd[1], STDOUT_FILENO) == -1)
-                {
-                    perror("dup2 stdout error");
-                    exit(EXIT_FAILURE);
-                }
-                close(fd[0]);
-                close(fd[1]);
-            }
-            
-            data->commands = cmdtable->next;
-            execute_command(data, parentpid);
-            free_minishell(data);
-            exit(0);
-        }
-        else // parent
-        {
-            if (cmdtable->next && cmdtable != data->commands)
-            {
-                if (close(fd[0]) == -1 || close(fd[1]) == -1)
-                {
-                    perror("close error");
-                    continue; // Skip to next command
-                }
-            }
-
-            if (previous_fd != -1)
-            {
-                if (close(previous_fd) == -1)
-                {
-                    perror("close previous_fd error");
-                    continue; // Skip to next command
-                }
-            }
-
-            previous_fd = fd[0];
-            cmdtable = cmdtable->next;
-        }
-    }
-
-    // Wait for all child processes to finish
-    while (wait(NULL) > 0)
-        ;
-
-    if (previous_fd != -1)
-    {
-        if (close(previous_fd) == -1)
-        {
-            perror("close final previous_fd error");
-        }
-    }
-}*/
-

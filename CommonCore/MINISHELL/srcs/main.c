@@ -110,9 +110,9 @@ int	main(int argc, char **argv, char **env)
 			{
 				ft_sort_tokens(data);
 				printcommands(data);
-                pid_t   parentpid;
-                parentpid = getpid();
-				execute_command(data, parentpid);
+//                pid_t   parentpid;
+//                parentpid = getpid();
+				execute_command(data);
 			}
 
 		}

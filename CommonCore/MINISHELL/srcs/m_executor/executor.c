@@ -185,16 +185,31 @@ int	is_pipe(t_data *data)
 	return (0);
 }
 
-int execute_command(t_data *data, pid_t parentpid)
+int	ft_cmdsize(t_command *lst)
+{
+	size_t	size;
+
+	size = 0;
+	while (lst != NULL)
+	{
+		lst = lst->next;
+		size++;
+	}
+	return (size);
+}
+
+int execute_command(t_data *data)
 {
     t_command *cmdtable;
+	int num_commands;
 
-    cmdtable = data->commands;
+	num_commands = ft_cmdsize(data->commands);
+	cmdtable = data->commands;
 
     if (cmdtable->next != NULL) // means there's a pipe
     {
         printf("process in execute command(pid: %d)\n", getpid());
-        handle_pipe(data, parentpid);
+        handle_pipe(data, num_commands);
         return (0);
     }
 
