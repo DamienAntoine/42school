@@ -13,7 +13,7 @@ void	handle_pipe(t_data *data, int num_commands)
 
 	// create pipes
 	i = 0;
-	while (i < num_commands)
+	while (i < num_commands - 1)
 	{
 		if (pipe(pipes[i]) == -1)
 		{
@@ -51,6 +51,7 @@ void	handle_pipe(t_data *data, int num_commands)
 			// exec cmd
 			data->commands = cmdtable; // pass the current command to execute
 			send_command(data);
+			free_minishell(data);
 			exit(EXIT_FAILURE);        // kill childprocess if command fails
 		}
 		cmdtable = cmdtable->next; // move to the next command
@@ -73,8 +74,6 @@ void	handle_pipe(t_data *data, int num_commands)
 		wait(&status);
 		if (WIFEXITED(status))
 			data->state.last_exit_status = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-			printf("Command %d was killed by signal %d\n", i, WTERMSIG(status));
 		i++;
 	}
 }
