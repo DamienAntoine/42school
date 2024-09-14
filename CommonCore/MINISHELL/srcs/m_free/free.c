@@ -8,9 +8,15 @@ void	free_env_list(t_env *env)
 	{
 		temp = env->next;
 		if (env->type)
+		{
 			free(env->type);
+			env->type = NULL;
+		}
 		if (env->value)
+		{
 			free(env->value);
+			env->value = NULL;
+		}
 		free(env);
 		env = temp;
 	}
@@ -64,16 +70,23 @@ void	free_redirections(t_redirection *redirections)
 	{
 		temp = redirections;
 		redirections = redirections->next;
-		free(temp->file);
+		if (temp->file)
+		{
+			free(temp->file);
+			temp->file = NULL;
+		}
 		free(temp);
 	}
 }
 
 void	free_token_list(t_token_list *token_list)
 {
-	if (token_list->tokens)
-		free_split(token_list->tokens);
-	free(token_list);
+	if (token_list)
+	{
+		if (token_list->tokens)
+			free_split(token_list->tokens);
+		free(token_list);
+	}
 }
 
 void	free_minishell(t_data *data)

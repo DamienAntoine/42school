@@ -130,7 +130,7 @@ void add_redirection(t_data *data, char *file, int type)
         perror("Failed to allocate memory for new redirection");
         return;
     }
-	new_redir->file = strdup(file);
+	new_redir->file = ft_strdup(file);
     if (!new_redir->file) 
 	{
         free(new_redir);
