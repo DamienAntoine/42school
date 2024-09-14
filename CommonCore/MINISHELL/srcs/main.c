@@ -11,6 +11,7 @@ void ignore_sigquit()
         perror("Failed to ignore SIGQUIT");
 }
 
+
 void setup_terminal()
 {
     struct termios tio;
@@ -143,9 +144,8 @@ int	main(int argc, char **argv, char **env)
 				printf("*****************************\n");
 				execute_command(data);
 				if (data->redirects)
-					{printf("end of main");
+					{printf("end of main\n");
 					free_redirections(data->redirects);}
-				
 			}
 
 		}
