@@ -80,6 +80,7 @@ int	main(int argc, char **argv, char **env)
 	ignore_sigquit();
 	while (1)
 	{
+		//we use readline in the input.c 
 		//write(1, "\033[35mMSL> \033[0m", 14);
 
 		//THIS IS CRITICAL TO HANDLE AVOID STILL REACHABLE MEMORY
