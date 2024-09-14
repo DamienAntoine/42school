@@ -83,7 +83,8 @@ void	execute_builtin(t_command *cmdtable, t_data *data);
 char	*get_command_path(const char *cmd);
 char *get_full_input(void);
 void add_redirection(t_data *data, char *file, int type);
-
+void setup_redirection(t_redirection *redir);
+int handle_here_doc(t_redirection *redir);
 
 
 
@@ -95,7 +96,7 @@ void	handle_pipe(t_data *data);
 int	execute_command(t_data *data);
 void	send_command(t_data *data);
 //redirection.c
-void	open_redirection(t_data *data);
+int	open_redirection(t_redirection *redir);
 
 
 

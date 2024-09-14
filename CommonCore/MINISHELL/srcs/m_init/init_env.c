@@ -12,6 +12,7 @@ void	init_env(char **env, t_env **cur_env)
 
 	i = 0;
 	*cur_env = NULL;
+	last_node = NULL;
 	while (env[i])
 	{
 		temp = ft_split(env[i], '=');

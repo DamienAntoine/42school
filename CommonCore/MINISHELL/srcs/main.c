@@ -69,13 +69,18 @@ int	main(int argc, char **argv, char **env)
 		exit(0);
 	(void)argv;
 	data = init_minishell(env);
+	if (!data)
+	{
+		printf("failed to initialize minishell\n");
+		exit(EXIT_FAILURE);
+	}
 	setup_terminal();
 	signal(SIGINT, handle_sigint);   // handle ctrl+c
 	ignore_sigquit();
 	while (1)
 	{
 		write(1, "\033[35mMSL> \033[0m", 14);
-		data->redirects = NULL;
+	//	data->redirects = NULL;
 		input = get_full_input();
 		if (input == NULL) // ctrl + d
 		{
@@ -99,6 +104,7 @@ int	main(int argc, char **argv, char **env)
 				i++;
 			}
 			printf("\n#toklist tokens count: %d\n", data->toklist->token_count);
+
 			if (data->commands) // reset command struct
 			{
 				write(1, "reset\n", 6);
@@ -106,11 +112,11 @@ int	main(int argc, char **argv, char **env)
 				data->commands = malloc(sizeof(t_command));
 				init_commands(data);
 			}
-			if (data->redirects)
-			{
-				printf("second loop?");
-				free_redirections(data->redirects);
-			}
+			//if (data->redirects)
+			//{
+			//	printf("second loop?");
+			//	free_redirections(data->redirects);
+			//}
 			if (!has_synt_errors(data->toklist))
 			{
 				printf("passed the syntax error check\n");
@@ -136,5 +142,6 @@ int	main(int argc, char **argv, char **env)
 
 		}
 	}
+	free_minishell(data);
 	return (0);
 }

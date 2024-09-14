@@ -44,6 +44,7 @@ void send_command(t_data *data)
 {
     char **envp = env_list_to_array(data->env);
     t_command *cmdtable = data->commands;
+
     if (!cmdtable || !cmdtable->cmds)
 	{
         ft_putstr_fd("No command provided\n", STDERR_FILENO);
@@ -53,7 +54,29 @@ void send_command(t_data *data)
 
     if (is_builtin(cmdtable->cmds))
 	{
-        execute_builtin(cmdtable, data); // Execute built-in commands directly
+		if (data->redirects == NULL)
+		    execute_builtin(cmdtable, data); // Execute built-in commands directly
+		else
+		{
+            // Handle built-in commands with redirections by forking
+            pid_t pid = fork();
+            if (pid == 0)
+            {  // Child process
+                printf("Built-in command with redirection.\n");
+                setup_redirection(data->redirects);
+                execute_builtin(cmdtable, data);
+                exit(data->state.last_exit_status);
+            }
+            else if (pid > 0)
+            {  // Parent process
+                int status;
+                waitpid(pid, &status, 0);
+                if (WIFEXITED(status))
+                    data->state.last_exit_status = WEXITSTATUS(status);
+            }
+            else
+                perror("fork");  // Handle fork failure
+        }
         free_split(envp);
         return;
     }
@@ -61,6 +84,13 @@ void send_command(t_data *data)
     pid_t pid = fork();
     if (pid == 0)
 	{  // Child process
+		if (data->redirects != NULL)
+		{
+			printf("Redirections are present.\n");
+			setup_redirection(data->redirects);
+		}
+		else
+			printf("no redirections. \n");
         // Redirection setup should be added here if applicable
         char *cmd_path = NULL;
         if (cmdtable->cmds[0] == '/')
@@ -198,11 +228,11 @@ int	execute_command(t_data *data)
 		// fork will come back to execute_command at some point and check again if theres another pipe or a redirect
 		return (0);
 	}
-
+/*
 	if (data->redirects)
 	{
 		//handle_redirection(data);
-		/*
+
 			take commands->cmds ("ex.echo") 
 			read which redirection(data->redirection->type:0,1,2,3) 
 			if 0, do	
@@ -213,11 +243,11 @@ int	execute_command(t_data *data)
 			if there are many redirections
 
 			if there are many args
-		*/
+
 		//send_command(data);
 		return (data->state.last_exit_status);
 	}
-
+*/
 	// no pipe, just check command syntax and execute
 	send_command(data);
 	return (data->state.last_exit_status);
