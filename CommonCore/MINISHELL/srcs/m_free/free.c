@@ -7,8 +7,10 @@ void	free_env_list(t_env *env)
 	while (env != NULL)
 	{
 		temp = env->next;
-		free(env->type);
-		free(env->value);
+		if (env->type)
+			free(env->type);
+		if (env->value)
+			free(env->value);
 		free(env);
 		env = temp;
 	}

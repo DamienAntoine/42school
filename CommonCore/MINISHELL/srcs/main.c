@@ -80,7 +80,7 @@ int	main(int argc, char **argv, char **env)
 	while (1)
 	{
 		write(1, "\033[35mMSL> \033[0m", 14);
-	//	data->redirects = NULL;
+		data->redirects = NULL;
 		input = get_full_input();
 		if (input == NULL) // ctrl + d
 		{
@@ -142,6 +142,5 @@ int	main(int argc, char **argv, char **env)
 
 		}
 	}
-	free_minishell(data);
 	return (0);
 }
