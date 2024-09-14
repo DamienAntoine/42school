@@ -29,7 +29,7 @@ char	*ft_strtok(char *str, const char *delimiter)
 	int		in_single_quotes;
 
 	static char *last; 
-	last = NULL;
+
 	in_double_quotes = 0;
 	in_single_quotes = 0;
 	if (str == NULL)
@@ -101,14 +101,7 @@ char	**ft_tokenize(t_token_list *toklist, char *input)
 	token = ft_strtok(input, " \t\n");
 	while (token != NULL && i < MAX_ARGS - 1)
 	{
-		args[i] = ft_strdup(token);
-		if (!args[i])
-		{
-			free_split(args);
-			free(input);
-			return (NULL);
-		}
-		i++;
+		args[i++] = ft_strdup(token);
 		token = ft_strtok(NULL, " \t\n");
 	}
 	toklist->token_count = i;

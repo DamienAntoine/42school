@@ -12,7 +12,8 @@
 #include <sys/wait.h> //for waitpid, WIFEXITED, WEXITSTATUS
 #include <termios.h>
 #include <fcntl.h>
-
+#include <readline/readline.h>
+#include <readline/history.h>
 
 
 # define BUFFER_SIZE 1024

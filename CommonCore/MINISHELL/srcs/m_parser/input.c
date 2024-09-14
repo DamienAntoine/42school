@@ -27,9 +27,12 @@ char *get_full_input(void)
 	char *temp;
 	int unbalanced_quotes;
 
+	 write(1, "\033[35mMSL> \033[0m", 14);
+
 	while (1)
 	{
-		input = get_next_line(STDIN_FILENO);
+		input = readline("");
+		//input = get_next_line(STDIN_FILENO);
 		if (input == NULL) // Handle Ctrl+D
 		{
 			if (full_input)
