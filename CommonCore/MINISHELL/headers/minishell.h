@@ -39,8 +39,6 @@ typedef struct s_data
 	t_state			state;   //added for echo
 }	t_data;
 
-
-
 typedef struct s_env
 {
 	char	*type;
@@ -48,8 +46,6 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
-//maybe add a variable that counts the number of tokens in the input
-//and somehow separate the command from the flags and store the flags in another variable
 typedef struct s_command
 {
 	char					*cmds;				//command (ls, env, cd, ...)
@@ -57,22 +53,22 @@ typedef struct s_command
 	struct s_command		*next;				//pointer to next command if pipe (|)
 }	t_command;
 
-typedef struct s_redirection				//this struct is to be able to use multiple redirections in one command
+typedef struct s_redirection					//this struct is to be able to use multiple redirections in one command
 {
-	char					*file;			// file for redirection
-	int						type;			// 0 for input ("<"), 1 for output (">"), 2 for append (">>"), 3 for ("<<")
-	struct	s_redirection	*next;			// pointer to the next redirection
+	char					*file;				// file for redirection
+	int						type;				// 0 for input ("<"), 1 for output (">"), 2 for append (">>"), 3 for ("<<")
+	struct	s_redirection	*next;				// pointer to the next redirection
 }	t_redirection;
 
 typedef struct s_token_list
 {
-	char		**tokens;					//tokens created by the lexer
+	char		**tokens;
 	int			token_count;
 }	t_token_list;
 
 //####  need to be sorted later  ########################
 
-void	printcommands(t_data *data);
+void	printcommands(char *input, t_data *data);
 void	init_commands(t_data *data);
 char	*trim_input(char *input);
 void    ft_env(t_env *lst);
@@ -82,8 +78,8 @@ void	free_split(char **split);
 int		is_builtin(char *cmd);
 void	execute_builtin(t_command *cmdtable, t_data *data);
 char	*get_command_path(const char *cmd);
-char *get_full_input(void);
-void add_redirection(t_data *data, char *file, int type);
+char	*get_full_input(void);
+void	add_redirection(t_data *data, char *file, int type);
 
 
 

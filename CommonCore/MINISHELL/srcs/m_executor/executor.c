@@ -18,7 +18,6 @@ void	execute_builtin(t_command *cmdtable, t_data *data)
 		ft_cd(data);
 	else if (strcmp(cmdtable->cmds, "echo") == 0)
 		ft_echo(data);
-		//ft_echo(data->toklist, &(data->state), data->env);
 	else if (strcmp(cmdtable->cmds, "env") == 0)
 		ft_env(data->env);
 	else if (strcmp(cmdtable->cmds, "pwd") == 0)
@@ -42,35 +41,39 @@ void	execute_builtin(t_command *cmdtable, t_data *data)
 }
 void send_command(t_data *data)
 {
-    char **envp = env_list_to_array(data->env);
-    t_command *cmdtable = data->commands;
-    if (!cmdtable || !cmdtable->cmds)
-	{
-        ft_putstr_fd("No command provided\n", STDERR_FILENO);
-        free_split(envp);
-        return;
-    }
+	char		**envp = env_list_to_array(data->env);
+	t_command	*cmdtable = data->commands;
+	pid_t		pid;
+	char		*cmd_path;
+	int			status;
 
-    if (is_builtin(cmdtable->cmds))
+	if (!cmdtable || !cmdtable->cmds)
 	{
-        execute_builtin(cmdtable, data); // Execute built-in commands directly
-        free_split(envp);
-        return;
-    }
+		ft_putstr_fd("No command provided\n", STDERR_FILENO);
+		free_split(envp);
+		return;
+	}
 
-    pid_t pid = fork();
-    if (pid == 0)
+	if (is_builtin(cmdtable->cmds))
+	{
+		execute_builtin(cmdtable, data); // Execute built-in commands directly
+		free_split(envp);
+		return;
+	}
+
+	pid = fork();
+	if (pid == 0)
 	{  // Child process
-        // Redirection setup should be added here if applicable
-        char *cmd_path = NULL;
-        if (cmdtable->cmds[0] == '/')
-            cmd_path = ft_strdup(cmdtable->cmds);  // Use the absolute path directly
+		// Redirection setup should be added here if applicable
+		cmd_path = NULL;
+		if (cmdtable->cmds[0] == '/')
+			cmd_path = ft_strdup(cmdtable->cmds);  // Use the absolute path directly
 		else
-            cmd_path = get_command_path(cmdtable->cmds);  // Find the command in the PATH
+			cmd_path = get_command_path(cmdtable->cmds);  // Find the command in the PATH
 
-        if (cmd_path)
+		if (cmd_path)
 		{
-            execve(cmd_path, cmdtable->args, envp);
+			execve(cmd_path, cmdtable->args, envp);
             perror("execve"); // If execve fails
             free(cmd_path);
         }
@@ -84,7 +87,6 @@ void send_command(t_data *data)
     }
 	else if (pid > 0)
 	{  // Parent process
-        int status;
         waitpid(pid, &status, 0);
         if (WIFEXITED(status))
             data->state.last_exit_status = WEXITSTATUS(status);

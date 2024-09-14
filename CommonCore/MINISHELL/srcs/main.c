@@ -34,12 +34,26 @@ void	handle_sigint(int sig)
 
 
 
-void	printcommands(t_data *data) // debugging function
+void	printcommands(char *input, t_data *data) // debugging function
 {
-	t_command *cmd = data->commands;
-	int i = 0;
+	t_command		*cmd;
+	t_token_list	*token;
+	int				i;
 
-	printf("\n#COMMANDS\n");
+	cmd = data->commands;
+	token = data->toklist;
+
+	printf("\n**********Debugging**********\n");
+	printf("#Input received: %s\n", input);
+	printf("#TOKENS\n");
+
+	i = 0;
+	while (token->tokens[i])
+	{
+		printf("%s\n", token->tokens[i]);
+		i++;
+	}
+	printf("\n\n#COMMANDS\n");
 	while (cmd)
 	{
 		printf("cmd:");
@@ -56,8 +70,6 @@ void	printcommands(t_data *data) // debugging function
 	}
 	printf("*****************************\n\n");
 }
-
-
 
 int	main(int argc, char **argv, char **env)
 {
@@ -83,22 +95,9 @@ int	main(int argc, char **argv, char **env)
 			free_minishell(data);
 			return (0);
 		}
-		printf("\n**********Debugging**********\n");
-		printf("#Input received: %s\n", input);
 		data->toklist->tokens = ft_tokenize(data->toklist, input);
-		free(input);
 		if (data->toklist->tokens != NULL)
 		{
-			int i = 0;
-			t_token_list *token;
-			token = data->toklist;
-			printf("#TOKENS\n");
-			while (token->tokens[i])
-			{
-				printf("%s\n", token->tokens[i]);
-				i++;
-			}
-			printf("\n#toklist tokens count: %d\n", data->toklist->token_count);
 			if (data->commands) // reset command struct
 			{
 				write(1, "reset\n", 6);
@@ -109,12 +108,10 @@ int	main(int argc, char **argv, char **env)
 			if (has_synt_errors(data->toklist) == 0)
 			{
 				ft_sort_tokens(data);
-				printcommands(data);
-//                pid_t   parentpid;
-//                parentpid = getpid();
+				printcommands(input, data);
+				free(input);
 				execute_command(data);
 			}
-
 		}
 	}
 	return (0);
