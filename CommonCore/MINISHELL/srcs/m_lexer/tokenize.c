@@ -1,5 +1,5 @@
 #include "../../headers/minishell.h"
-
+/*  we don't use this
 size_t	ft_toklen(const char *str, const char *delim)
 {
 	size_t	len;
@@ -21,6 +21,7 @@ size_t	ft_toklen(const char *str, const char *delim)
 	}
 	return (len);
 }
+*/
 char	*ft_strtok(char *str, const char *delimiter)
 {
 	char	*start;
@@ -28,7 +29,8 @@ char	*ft_strtok(char *str, const char *delimiter)
 	int		in_double_quotes;
 	int		in_single_quotes;
 
-	static char *last; // Keeps track of next token
+	static char *last; 
+
 	in_double_quotes = 0;
 	in_single_quotes = 0;
 	if (str == NULL)

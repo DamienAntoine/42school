@@ -12,7 +12,8 @@
 #include <sys/wait.h> //for waitpid, WIFEXITED, WEXITSTATUS
 #include <termios.h>
 #include <fcntl.h>
-
+#include <readline/readline.h>
+#include <readline/history.h>
 
 
 # define BUFFER_SIZE 1024
@@ -78,8 +79,13 @@ void	free_split(char **split);
 int		is_builtin(char *cmd);
 void	execute_builtin(t_command *cmdtable, t_data *data);
 char	*get_command_path(const char *cmd);
-char	*get_full_input(void);
-void	add_redirection(t_data *data, char *file, int type);
+char *get_full_input(void);
+void add_redirection(t_data *data, char *file, int type);
+void setup_redirection(t_redirection *redir);
+int handle_here_doc(t_redirection *redir);
+char	*ft_strstr(const char *haystack, const char *needle);
+void ft_cat(t_data *data);
+void ft_grep(t_data *data);
 
 
 
@@ -92,7 +98,7 @@ void	handle_pipe(t_data *data, int num_commands);
 int		execute_command(t_data *data);
 void	send_command(t_data *data);
 //redirection.c
-void	handle_redirection(t_data *data);
+int	open_redirection(t_redirection *redir);
 
 
 

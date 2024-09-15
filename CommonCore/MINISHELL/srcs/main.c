@@ -11,6 +11,7 @@ void ignore_sigquit()
         perror("Failed to ignore SIGQUIT");
 }
 
+
 void setup_terminal()
 {
     struct termios tio;
@@ -68,7 +69,7 @@ void	printcommands(char *input, t_data *data) // debugging function
 		}
 		cmd = cmd->next;
 	}
-	printf("*****************************\n\n");
+	printf("\n*****************************\n\n");
 }
 
 int	main(int argc, char **argv, char **env)
@@ -81,12 +82,27 @@ int	main(int argc, char **argv, char **env)
 		exit(0);
 	(void)argv;
 	data = init_minishell(env);
+	if (!data)
+	{
+		printf("failed to initialize minishell\n");
+		exit(EXIT_FAILURE);
+	}
+
 	setup_terminal();
 	signal(SIGINT, handle_sigint);   // handle ctrl+c
 	ignore_sigquit();
 	while (1)
 	{
-		write(1, "\033[35mMSL> \033[0m", 14);
+		//we use readline in the input.c
+		//write(1, "\033[35mMSL> \033[0m", 14);
+
+		//THIS IS CRITICAL TO HANDLE AVOID STILL REACHABLE MEMORY
+		if (data->toklist->tokens)
+        {
+            free_split(data->toklist->tokens);
+            data->toklist->tokens = NULL;
+            data->toklist->token_count = 0;
+        }
 		data->redirects = NULL;
 		input = get_full_input();
 		if (input == NULL) // ctrl + d
@@ -105,14 +121,22 @@ int	main(int argc, char **argv, char **env)
 				data->commands = malloc(sizeof(t_command));
 				init_commands(data);
 			}
-			if (has_synt_errors(data->toklist) == 0)
+			//if (data->redirects)
+			//{
+			//	printf("second loop?");
+			//	free_redirections(data->redirects);
+			//}
+			if (!has_synt_errors(data->toklist))
 			{
 				ft_sort_tokens(data);
 				printcommands(input, data);
 				free(input);
 				execute_command(data);
+				if (data->redirects)
+					free_redirections(data->redirects);
 			}
 		}
 	}
+	free_minishell(data);
 	return (0);
 }

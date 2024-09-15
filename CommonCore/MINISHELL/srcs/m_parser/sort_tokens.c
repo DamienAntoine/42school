@@ -39,7 +39,10 @@ void	ft_sortloop(t_data *data, int i, int j)
 				 ft_strcmp(toklist->tokens[i], ">") == 0 ||
 				 ft_strcmp(toklist->tokens[i], ">>") == 0 ||
 				 ft_strcmp(toklist->tokens[i], "<<") == 0)
-			ft_sortredirect(data, &i);
+				 {
+					ft_sortredirect(data, &i);
+					continue ;
+				 }
 		// Handle normal command tokens
 		else if (ft_strlen(toklist->tokens[i]) > 0 && !ft_isspace(toklist->tokens[i][0]))
 		{

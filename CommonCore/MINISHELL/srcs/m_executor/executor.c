@@ -1,53 +1,46 @@
 #include "../../headers/minishell.h"
 
-int	is_builtin(char *cmd)
-{
-	if (ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "echo") == 0
-		|| ft_strcmp(cmd, "env") == 0 || ft_strcmp(cmd, "exit") == 0
-		|| ft_strcmp(cmd, "export") == 0 || ft_strcmp(cmd, "unset") == 0
-		|| ft_strcmp(cmd, "pwd") == 0)
-	{
-		return (1);
-	}
-	return (0);
-}
-
 void	execute_builtin(t_command *cmdtable, t_data *data)
 {
-	if (strcmp(cmdtable->cmds, "cd") == 0)
+	if (ft_strcmp(cmdtable->cmds, "cd") == 0)
 		ft_cd(data);
-	else if (strcmp(cmdtable->cmds, "echo") == 0)
+	else if (ft_strcmp(cmdtable->cmds, "echo") == 0)
 		ft_echo(data);
-	else if (strcmp(cmdtable->cmds, "env") == 0)
+		//ft_echo(data->toklist, &(data->state), data->env);
+	else if (ft_strcmp(cmdtable->cmds, "env") == 0)
 		ft_env(data->env);
-	else if (strcmp(cmdtable->cmds, "pwd") == 0)
+	else if (ft_strcmp(cmdtable->cmds, "pwd") == 0)
 		ft_pwd(data->env);
-	else if (strcmp(cmdtable->cmds, "unset") == 0)
+	else if (ft_strcmp(cmdtable->cmds, "unset") == 0)
 		handle_unset(&data->env, data->toklist->tokens);
-	else if (strcmp(cmdtable->cmds, "exit") == 0)
+	else if (ft_strcmp(cmdtable->cmds, "exit") == 0)
 	{
 		if (data->toklist->token_count == 1)
 			ft_exit(data, 0);
 		else
 			ft_exit(data, ft_atoi(data->toklist->tokens[1]));
 	}
-	else if (strcmp(cmdtable->cmds, "export") == 0)
+	else if (ft_strcmp(cmdtable->cmds, "export") == 0)
 	{
 		if (data->toklist->token_count == 1)
 			print_export(data->env, &(data->state));
 		else
 			handle_export(&data->env, data->toklist->tokens, &(data->state));
 	}
+	else if (ft_strcmp(cmdtable->cmds, "cat") == 0)
+		ft_cat(data);
+	else if (ft_strcmp(cmdtable->cmds, "grep") == 0)
+		ft_grep(data);
 }
+
 void send_command(t_data *data)
 {
-	char		**envp = env_list_to_array(data->env);
-	t_command	*cmdtable = data->commands;
+    char		**envp = env_list_to_array(data->env);
+    t_command	*cmdtable = data->commands;
 	pid_t		pid;
-	char		*cmd_path;
 	int			status;
 
-	if (!cmdtable || !cmdtable->cmds)
+    if (!cmdtable || !cmdtable->cmds)
 	{
 		ft_putstr_fd("No command provided\n", STDERR_FILENO);
 		free_split(envp);
@@ -56,18 +49,65 @@ void send_command(t_data *data)
 
 	if (is_builtin(cmdtable->cmds))
 	{
-		execute_builtin(cmdtable, data); // Execute built-in commands directly
-		free_split(envp);
-		return;
-	}
+		if (data->redirects == NULL)
+		    execute_builtin(cmdtable, data); // Execute built-in commands directly
+		else
+		{
+            // Handle built-in commands with redirections by forking
+            pid = fork();
+            if (pid == 0)
+            {  // Child process
+                printf("Built-in command with redirection.\n");
+                setup_redirection(data->redirects);
+                execute_builtin(cmdtable, data);
+                exit(data->state.last_exit_status);
+            }
+            else if (pid > 0)
+            {  // Parent process
+                waitpid(pid, &status, 0);
+                if (WIFEXITED(status))
+                    data->state.last_exit_status = WEXITSTATUS(status);
+            }
+            else
+                perror("fork");  // Handle fork failure
+        }
+        free_split(envp);
+        return;
+    }
+
 
 	pid = fork();
 	if (pid == 0)
 	{  // Child process
-		// Redirection setup should be added here if applicable
-		cmd_path = NULL;
-		if (cmdtable->cmds[0] == '/')
-			cmd_path = ft_strdup(cmdtable->cmds);  // Use the absolute path directly
+		if (data->redirects != NULL)
+		{
+            t_redirection *redir = data->redirects;
+            while (redir)
+            {
+                // Check if it is a here-doc redirection
+                if (redir->type == 3) // Assuming 3 represents the `<<` type
+                {
+                    int heredoc_fd = handle_here_doc(redir); // Get the file descriptor for heredoc
+                    if (heredoc_fd != -1)
+                    {
+                        // Redirect stdin to the output of the here-doc
+                        dup2(heredoc_fd, STDIN_FILENO);
+                        close(heredoc_fd); // Close after duplicating to stdin
+                    }
+                }
+                redir = redir->next;
+            }
+            // Now handle other redirections
+            setup_redirection(data->redirects);
+			//printf("Redirections are present.\n");
+			//setup_redirection(data->redirects);
+		}
+		else
+			printf("no redirections. \n");
+        // Redirection setup should be added here if applicable
+        char *cmd_path = NULL;
+        if (cmdtable->cmds[0] == '/')
+            cmd_path = ft_strdup(cmdtable->cmds);  // Use the absolute path directly
 		else
 			cmd_path = get_command_path(cmdtable->cmds);  // Find the command in the PATH
 
@@ -96,97 +136,6 @@ void send_command(t_data *data)
     free_split(envp); // Free environment pointer array
 }
 
-
-/*
-void	send_command(t_data *data)
-// need to change the parameters sent to builtins depenting on their needs
-{
-	char **envp = env_list_to_array(data->env);
-	t_command *cmdtable;
-	pid_t pid;
-
-	cmdtable = data->commands;
-	if (!cmdtable || !cmdtable->cmds)
-	{
-		ft_putstr_fd("No command provided\n", 2);
-		free(envp);
-		return ;
-	}
-
-	if (ft_strcmp(cmdtable->cmds, "cd") == 0)
-	{
-		ft_cd(data);
-		// check if argument is a folder (or should we check this inside the builtin file to make it more clear)
-	}
-
-	else if (ft_strcmp(cmdtable->cmds, "echo") == 0)
-		ft_echo(data);
-
-	else if (ft_strcmp(cmdtable->cmds, "env") == 0)
-		ft_env(data->env);
-
-	else if (ft_strcmp(cmdtable->cmds, "exit") == 0)
-	{
-		if (data->toklist->token_count == 1)
-			ft_exit(data, 0);
-		else
-			ft_exit(data, ft_atoi(data->toklist->tokens[1]));
-	}
-	else if (ft_strcmp(cmdtable->cmds, "export") == 0)
-	{
-		if (data->toklist->token_count == 1)
-			print_export(data->env, &(data->state));
-		else
-			handle_export(&data->env, data->toklist->tokens, &(data->state));
-		//	export_with_arg(&data->env, data->toklist->tokens[1]);
-	}
-
-	else if (ft_strcmp(cmdtable->cmds, "pwd") == 0)
-		ft_pwd(data->env);
-
-	else if (ft_strcmp(cmdtable->cmds, "unset") == 0)
-		handle_unset(&data->env, data->toklist->tokens);
-	// unset_env_var(&data->env, cmdtable->args[0]);
-
-	else
-	{
-		pid = fork();
-		if (pid == 0) // child
-		{
-			execve(cmdtable->cmds, cmdtable->args, envp);
-			perror("execve");
-			exit(EXIT_FAILURE);
-		}
-		else if (pid > 0)
-		{
-			int status;
-			waitpid(pid, &status, 0);
-			if (WIFEXITED(status))
-				data->state.last_exit_status = WEXITSTATUS(status);
-		}
-		else
-			perror("fork");
-	}
-	free(envp);
-}
-*/
-
-int	is_pipe(t_data *data)
-{
-	t_token_list	*toklist;
-	int				i;
-
-	toklist = data->toklist;
-	i = 0;
-	while (toklist->tokens[i])
-	{
-		if (ft_strcmp(toklist->tokens[i], "|") == 0)
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
 int	ft_cmdsize(t_command *lst)
 {
 	size_t	size;
@@ -210,18 +159,9 @@ int execute_command(t_data *data)
 
     if (cmdtable->next != NULL) // means there's a pipe
     {
-        printf("process in execute command(pid: %d)\n", getpid());
         handle_pipe(data, num_commands);
         return (0);
     }
-
-    if (data->redirects)
-    {
-        handle_redirection(data);
-        send_command(data);
-        return (data->state.last_exit_status);
-    }
-
     // no pipe, just check command syntax and execute
     send_command(data);
     return (data->state.last_exit_status);

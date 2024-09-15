@@ -11,6 +11,8 @@ void	init_env(char **env, t_env **cur_env)
 	t_env	*last_node;
 
 	i = 0;
+	new_node = NULL;
+	last_node = NULL;
 	*cur_env = NULL;
 	while (env[i])
 	{
@@ -27,17 +29,20 @@ void	init_env(char **env, t_env **cur_env)
 		{
 			perror("failed to allocate memory for new env var");
 			free_split(temp);
+			free_env_list(*cur_env);
 			exit(EXIT_FAILURE);
 		}
 		new_node->type = ft_strdup(temp[0]);
 		new_node->value = ft_strdup(temp[1]);
 		new_node->next = NULL;
+		
 		if (!new_node->type || !new_node->value)
 		{
 			free(new_node->type);
 			free(new_node->value);
 			free(new_node);
 			free_split(temp);
+			free_env_list(*cur_env);
 			exit(EXIT_FAILURE);
 		}
 		if (*cur_env == NULL)
