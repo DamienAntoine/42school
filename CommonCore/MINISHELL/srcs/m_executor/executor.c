@@ -49,24 +49,24 @@ void send_command(t_data *data)
 
 	if (is_builtin(cmdtable->cmds))
 	{
-		if (data->redirects == NULL)
-		    execute_builtin(cmdtable, data); // Execute built-in commands directly
-		else
+		if (data->redirects == NULL) //if no redirections
+			execute_builtin(cmdtable, data); //only execute the builtin
+		else //if redirections
 		{
-            // Handle built-in commands with redirections by forking
-            pid = fork();
-            if (pid == 0)
-            {  // Child process
-                printf("Built-in command with redirection.\n");
-                setup_redirection(data->redirects);
-                execute_builtin(cmdtable, data);
-                exit(data->state.last_exit_status);
-            }
-            else if (pid > 0)
-            {  // Parent process
-                waitpid(pid, &status, 0);
-                if (WIFEXITED(status))
-                    data->state.last_exit_status = WEXITSTATUS(status);
+			//fork process
+			pid = fork();
+			if (pid == 0)// Child process
+			{
+				printf("Built-in command with redirection.\n");
+				setup_redirection(data->redirects);
+				execute_builtin(cmdtable, data);
+				exit(data->state.last_exit_status);
+			}
+			else if (pid > 0)// Parent process
+			{
+				waitpid(pid, &status, 0);
+				if (WIFEXITED(status))
+					data->state.last_exit_status = WEXITSTATUS(status);
             }
             else
                 perror("fork");  // Handle fork failure
