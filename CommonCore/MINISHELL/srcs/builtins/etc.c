@@ -105,7 +105,7 @@ void ft_grep(t_data *data)
 void ft_cat(t_data *data)
 {
     int fd;
-    char buffer[1024];  // Buffer to read file contents
+    char buffer[BUFFER_SIZE];  // Buffer to read file contents
     ssize_t bytes_read;
     int i = 0;  // Start from the first argument (file names)
 
@@ -123,11 +123,20 @@ void ft_cat(t_data *data)
         fd = open(data->commands->args[i], O_RDONLY);  // Open file in read-only mode
         if (fd == -1)
         {
+            // Improved error message to show which file caused the error
+            ft_putstr_fd("cat: ", STDERR_FILENO);
+            ft_putstr_fd(data->commands->args[i], STDERR_FILENO);
+            perror(" ");
+            i++;
+            continue;
+        }
+/*
+        {
             perror("cat");
             i++;
             continue;
         }
-
+*/
         // Read the file content in chunks and print it to the output
         while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0)
         {
