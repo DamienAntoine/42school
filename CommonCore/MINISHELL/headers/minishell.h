@@ -86,6 +86,10 @@ char *get_full_input(void);
 void add_redirection(t_data *data, char *file, int type);
 void setup_redirection(t_redirection *redir);
 int handle_here_doc(t_redirection *redir);
+char	*ft_strstr(const char *haystack, const char *needle);
+void ft_cat(t_data *data);
+void ft_grep(t_data *data);
+
 
 
 

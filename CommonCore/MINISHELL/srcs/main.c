@@ -58,8 +58,6 @@ void	printcommands(t_data *data) // debugging function
 
 }
 
-
-
 int	main(int argc, char **argv, char **env)
 {
 	char	*input;
@@ -75,6 +73,7 @@ int	main(int argc, char **argv, char **env)
 		printf("failed to initialize minishell\n");
 		exit(EXIT_FAILURE);
 	}
+
 	setup_terminal();
 	signal(SIGINT, handle_sigint);   // handle ctrl+c
 	ignore_sigquit();

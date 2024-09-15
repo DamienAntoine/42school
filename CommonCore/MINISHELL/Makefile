@@ -6,7 +6,7 @@ LDFLAGS = -lreadline
 
 # main and builtins
 SRCS =  ./includes/gnl.c ./srcs/main.c ./srcs/builtins/cd.c ./srcs/builtins/echo.c ./srcs/builtins/env.c ./srcs/builtins/exit.c\
-		./srcs/builtins/export.c ./srcs/builtins/pwd.c ./srcs/builtins/unset.c\
+		./srcs/builtins/export.c ./srcs/builtins/pwd.c ./srcs/builtins/unset.c ./srcs/builtins/etc.c\
 
 # m_init
 SRCS += ./srcs/m_init/init.c ./srcs/m_init/init_env.c\

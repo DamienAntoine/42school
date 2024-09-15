@@ -162,6 +162,7 @@ char *get_full_input(void)
         return (NULL);
     }
 
+
     full_input = ft_strdup(input); // Duplicate input for further processing
     free(input);
 
@@ -176,6 +177,7 @@ char *get_full_input(void)
             free(temp);
             return (NULL);
         }
+		full_input = ft_strjoin(full_input, "\n");
         full_input = ft_strjoin(full_input, input); // Join input lines
         free(temp);
         free(input);
