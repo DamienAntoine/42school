@@ -111,7 +111,9 @@ void ft_cat(t_data *data)
 
     if (data->commands->args[0] == NULL)
     {
-        ft_putstr_fd("cat: missing file operand\n", STDERR_FILENO);
+        while ((bytes_read = read(STDIN_FILENO, buffer, sizeof(buffer))) > 0)
+            write(STDOUT_FILENO, buffer, bytes_read);
+        //ft_putstr_fd("cat: missing file operand\n", STDERR_FILENO);
         return;
     }
 

@@ -25,7 +25,7 @@ SRCS += ./srcs/m_lexer/synt_checks.c ./srcs/m_lexer/tokenize.c\
 SRCS += ./srcs/m_parser/sort_tokens.c ./srcs/m_parser/input.c\
 
 # utils
-SRCS += ./srcs/utils/utils_str.c ./srcs/utils/utils_error.c ./srcs/utils/utils_print.c
+SRCS += ./srcs/utils/utils_str.c ./srcs/utils/utils_error.c ./srcs/utils/utils_print.c ./srcs/utils/utils_checker.c
 
 
 

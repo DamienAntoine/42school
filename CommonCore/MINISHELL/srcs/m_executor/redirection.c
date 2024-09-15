@@ -35,13 +35,10 @@ int open_redirection(t_redirection *redir)
     return fd;
 }
 
-
 int handle_here_doc(t_redirection *redir)
 {
     char *delimiter = redir->file;
     char *line = NULL;
-    size_t len = 0;
-    ssize_t nread;
     int pipefd[2];
 
     if (pipe(pipefd) == -1)
@@ -50,25 +47,31 @@ int handle_here_doc(t_redirection *redir)
         return -1;
     }
 
-    printf("heredoc> ");
-    while ((nread = getline(&line, &len, stdin)) != -1)
+    while (1)
     {
-        // Remove newline character
-        if (line[nread - 1] == '\n')
-            line[nread - 1] = '\0';
-
-        if (strcmp(line, delimiter) == 0)
+        line = readline("heredoc> ");  // Prompt the user for input
+        if (line == NULL)  // Handle Ctrl+D
+        {
+            ft_putstr_fd("\n", STDERR_FILENO);
             break;
+        }
 
-        write(pipefd[1], line, strlen(line));
-        write(pipefd[1], "\n", 1);
-        printf("heredoc> ");
+        if (ft_strcmp(line, delimiter) == 0)  // Stop reading if the delimiter is reached
+        {
+            free(line);
+            break;
+        }
+
+        write(pipefd[1], line, ft_strlen(line));  // Write the line to the pipe
+        write(pipefd[1], "\n", 1);  // Add newline
+        free(line);
     }
-    free(line);
-    close(pipefd[1]); // Close write end after writing
 
-    return pipefd[0]; // Return read end for dup2
+    close(pipefd[1]); // Close the write end of the pipe
+
+    return pipefd[0]; // Return the read end of the pipe
 }
+
 
 /*
 Loops through all the redirections in a linked list and 

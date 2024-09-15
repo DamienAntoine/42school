@@ -1,59 +1,5 @@
 #include "../../headers/minishell.h"
 
-int	is_builtin(char *cmd)
-{
-	if (ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "echo") == 0
-		|| ft_strcmp(cmd, "env") == 0 || ft_strcmp(cmd, "exit") == 0
-		|| ft_strcmp(cmd, "export") == 0 || ft_strcmp(cmd, "unset") == 0
-		|| ft_strcmp(cmd, "pwd") == 0 || ft_strcmp(cmd, "cat") == 0
-		|| ft_strcmp(cmd, "grep") == 0)
-	{
-		return (1);
-	}
-	return (0);
-}
-/*
-void execute_cat(t_command *cmd) {
-    pid_t pid = fork();
-
-    if (pid == -1) {
-        perror("fork failed");
-        return;
-    }
-
-    if (pid == 0) {
-        // This is the child process
-        char *cat_path = "/bin/cat"; // Path to the `cat` command
-        execve(cat_path, cmd->args, NULL); // Execute the cat command
-        perror("execve failed"); // If execve fails
-        exit(EXIT_FAILURE);
-    } else {
-        // This is the parent process
-        waitpid(pid, NULL, 0); // Wait for the child process to finish
-    }
-}
-
-void execute_grep(t_command *cmd) {
-    pid_t pid = fork();
-
-    if (pid == -1) {
-        perror("fork failed");
-        return;
-    }
-
-    if (pid == 0) {
-        // This is the child process
-        char *grep_path = "/bin/grep"; // Path to the `grep` command
-        execve(grep_path, cmd->args, NULL); // Execute the grep command with arguments
-        perror("execve failed"); // If execve fails
-        exit(EXIT_FAILURE);
-    } else {
-        // This is the parent process
-        waitpid(pid, NULL, 0); // Wait for the child process to finish
-    }
-}
-*/
-
 void	execute_builtin(t_command *cmdtable, t_data *data)
 {
 	if (ft_strcmp(cmdtable->cmds, "cd") == 0)
@@ -86,6 +32,7 @@ void	execute_builtin(t_command *cmdtable, t_data *data)
 	else if (ft_strcmp(cmdtable->cmds, "grep") == 0)
 		ft_grep(data);
 }
+
 void send_command(t_data *data)
 {
     char **envp = env_list_to_array(data->env);
@@ -133,8 +80,26 @@ void send_command(t_data *data)
 	{  // Child process
 		if (data->redirects != NULL)
 		{
-			printf("Redirections are present.\n");
-			setup_redirection(data->redirects);
+            t_redirection *redir = data->redirects;
+            while (redir)
+            {
+                // Check if it is a here-doc redirection
+                if (redir->type == 3) // Assuming 3 represents the `<<` type
+                {
+                    int heredoc_fd = handle_here_doc(redir); // Get the file descriptor for heredoc
+                    if (heredoc_fd != -1)
+                    {
+                        // Redirect stdin to the output of the here-doc
+                        dup2(heredoc_fd, STDIN_FILENO);
+                        close(heredoc_fd); // Close after duplicating to stdin
+                    }
+                }
+                redir = redir->next;
+            }
+            // Now handle other redirections
+            setup_redirection(data->redirects);
+			//printf("Redirections are present.\n");
+			//setup_redirection(data->redirects);
 		}
 		else
 			printf("no redirections. \n");
@@ -172,21 +137,6 @@ void send_command(t_data *data)
 }
 
 
-int	is_pipe(t_data *data)
-{
-	t_token_list	*toklist;
-	int				i;
-
-	toklist = data->toklist;
-	i = 0;
-	while (toklist->tokens[i])
-	{
-		if (ft_strcmp(toklist->tokens[i], "|") == 0)
-			return (1);
-		i++;
-	}
-	return (0);
-}
 
 int	execute_command(t_data *data)
 {
