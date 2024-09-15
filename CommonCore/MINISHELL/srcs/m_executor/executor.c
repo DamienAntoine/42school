@@ -35,12 +35,12 @@ void	execute_builtin(t_command *cmdtable, t_data *data)
 
 void send_command(t_data *data)
 {
-    char		**envp = env_list_to_array(data->env);
-    t_command	*cmdtable = data->commands;
+	char		**envp = env_list_to_array(data->env);
+	t_command	*cmdtable = data->commands;
 	pid_t		pid;
 	int			status;
 
-    if (!cmdtable || !cmdtable->cmds)
+	if (!cmdtable || !cmdtable->cmds)
 	{
 		ft_putstr_fd("No command provided\n", STDERR_FILENO);
 		free_split(envp);
@@ -55,85 +55,84 @@ void send_command(t_data *data)
 		{
 			//fork process
 			pid = fork();
-			if (pid == 0)// Child process
+			if (pid == 0)//child
 			{
 				printf("Built-in command with redirection.\n");
 				setup_redirection(data->redirects);
 				execute_builtin(cmdtable, data);
 				exit(data->state.last_exit_status);
 			}
-			else if (pid > 0)// Parent process
+			else if (pid > 0)//parent
 			{
 				waitpid(pid, &status, 0);
 				if (WIFEXITED(status))
 					data->state.last_exit_status = WEXITSTATUS(status);
-            }
-            else
-                perror("fork");  // Handle fork failure
-        }
-        free_split(envp);
-        return;
-    }
+			}
+			else
+				perror("fork");//if fork failed
+		}
+		free_split(envp);
+		return;
+	}
 
+
+	t_redirection	*redir;
+	char			*cmd_path;
+	int				heredoc_fd;
 
 	pid = fork();
-	if (pid == 0)
-	{  // Child process
+	if (pid == 0)//child process
+	{
 		if (data->redirects != NULL)
 		{
-            t_redirection *redir = data->redirects;
-            while (redir)
-            {
-                // Check if it is a here-doc redirection
-                if (redir->type == 3) // Assuming 3 represents the `<<` type
-                {
-                    int heredoc_fd = handle_here_doc(redir); // Get the file descriptor for heredoc
-                    if (heredoc_fd != -1)
-                    {
-                        // Redirect stdin to the output of the here-doc
-                        dup2(heredoc_fd, STDIN_FILENO);
-                        close(heredoc_fd); // Close after duplicating to stdin
-                    }
-                }
-                redir = redir->next;
-            }
-            // Now handle other redirections
-            setup_redirection(data->redirects);
-			//printf("Redirections are present.\n");
-			//setup_redirection(data->redirects);
+			redir = data->redirects;
+			while (redir)
+			{
+				// check if it is a here-doc redirection
+				if (redir->type == 3) //3 = `<<` type
+				{
+					heredoc_fd = handle_here_doc(redir); //get the fd for heredoc
+					if (heredoc_fd != -1)
+					{
+						//redirect stdin to the output of the here-doc
+						dup2(heredoc_fd, STDIN_FILENO);
+						close(heredoc_fd); // Close after duplicating to stdin
+					}
+				}
+				redir = redir->next;
+			}
+			//handle other redirections
+			setup_redirection(data->redirects);
 		}
+		// Redirection setup should be added here if applicable
+		cmd_path = NULL;
+		if (cmdtable->cmds[0] == '/')
+			cmd_path = ft_strdup(cmdtable->cmds);//use absolute path
 		else
-			printf("no redirections. \n");
-        // Redirection setup should be added here if applicable
-        char *cmd_path = NULL;
-        if (cmdtable->cmds[0] == '/')
-            cmd_path = ft_strdup(cmdtable->cmds);  // Use the absolute path directly
-		else
-			cmd_path = get_command_path(cmdtable->cmds);  // Find the command in the PATH
-
+			cmd_path = get_command_path(cmdtable->cmds);//find command in PATH
 		if (cmd_path)
 		{
 			execve(cmd_path, cmdtable->args, envp);
-            perror("execve"); // If execve fails
-            free(cmd_path);
-        }
+			perror("execve");
+			free(cmd_path);
+		}
 		else
 		{
-            ft_putstr_fd("Command not found: ", STDERR_FILENO);
-            ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
-            ft_putstr_fd("\n", STDERR_FILENO);
-        }
-        exit(127); // Exit with command not found status
-    }
-	else if (pid > 0)
-	{  // Parent process
-        waitpid(pid, &status, 0);
-        if (WIFEXITED(status))
-            data->state.last_exit_status = WEXITSTATUS(status);
-    }
+			ft_putstr_fd("Command not found: ", STDERR_FILENO);
+			ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
+			ft_putstr_fd("\n", STDERR_FILENO);
+		}
+		exit(127);//Exit with command not found status
+	}
+	else if (pid > 0)//parent
+	{
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			data->state.last_exit_status = WEXITSTATUS(status);
+	}
 	else
-        perror("fork");  // Handle fork failure
-    free_split(envp); // Free environment pointer array
+		perror("fork");
+	free_split(envp);
 }
 
 int	ft_cmdsize(t_command *lst)
@@ -151,19 +150,19 @@ int	ft_cmdsize(t_command *lst)
 
 int execute_command(t_data *data)
 {
-    t_command *cmdtable;
-	int num_commands;
+	t_command	*cmdtable;
+	int			num_commands;
 
 	num_commands = ft_cmdsize(data->commands);
 	cmdtable = data->commands;
 
-    if (cmdtable->next != NULL) // means there's a pipe
-    {
-        handle_pipe(data, num_commands);
-        return (0);
-    }
-    // no pipe, just check command syntax and execute
-    send_command(data);
-    return (data->state.last_exit_status);
+	if (cmdtable->next != NULL) // means there's a pipe
+	{
+		handle_pipe(data, num_commands);
+		return (0);
+	}
+	// no pipe, just check command syntax and execute
+	send_command(data);
+	return (data->state.last_exit_status);
 }
 
