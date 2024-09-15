@@ -15,7 +15,7 @@ char	*get_command_path(const char *cmd)
 	while (*path)
 	{
 		// Find the next colon in PATH (or the end of the string)
-		next_colon = strchr(path, ':');
+		next_colon = ft_strchr(path, ':');
 		if (!next_colon)
 			next_colon = path + ft_strlen(path);
 
@@ -40,7 +40,12 @@ char	*get_command_path(const char *cmd)
 		full_path = NULL;
 
 		// Move to the next directory in PATH
-		path = *next_colon ? next_colon + 1 : next_colon;
+		if (*next_colon)
+    		path = next_colon + 1;
+		else
+    		path = next_colon;
+
+	
 	}
 	return (NULL);
 }
