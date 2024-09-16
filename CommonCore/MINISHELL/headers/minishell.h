@@ -87,6 +87,10 @@ int handle_here_doc(t_redirection *redir);
 char	*ft_strstr(const char *haystack, const char *needle);
 void ft_cat(t_data *data);
 void ft_grep(t_data *data);
+void ignore_sigquit();
+void setup_terminal();
+void	handle_sigint(int sig);
+
 
 
 
