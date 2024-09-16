@@ -81,8 +81,9 @@ void	reset_toklist(t_data *data)
 
 int	handle_input(t_data *data)
 {
-	char	*input = get_full_input();
+	char	*input;
 
+	input = get_full_input();
 	if (!input)
 	{
 		printf("\nMinishell Terminated (ctrl+d)\n");
@@ -110,8 +111,6 @@ int	main(int argc, char **argv, char **env)
 	if (argc > 1)
 		exit(0);
 	data = init_minishell(env);
-	if (!data)
-		return (EXIT_FAILURE);
 	setup_terminal();
 	signal(SIGINT, handle_sigint);
 	ignore_sigquit();

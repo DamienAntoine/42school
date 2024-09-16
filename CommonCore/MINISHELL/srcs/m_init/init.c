@@ -6,13 +6,13 @@ t_data	*init_minishell(char **env)
 
 	data = malloc(sizeof(t_data));
 	if (!data)
-		return (NULL);
+		exit(EXIT_FAILURE);
 	data->commands = malloc(sizeof(t_command));
 	if (!data->commands)
 	{
 		perror("Failed to allocate memory for commands");
 		free(data);
-		return NULL;
+		return (NULL);
 	}
 	data->toklist = malloc(sizeof(t_token_list));
 	printf("Allocated toklist: %p\n", data->toklist);
@@ -20,7 +20,7 @@ t_data	*init_minishell(char **env)
 		perror("Failed to allocate memory for toklist");
 		free(data->commands);
 		free(data);
-		return NULL;
+		return (NULL);
 	}
 	data->env = NULL;
 	data->redirects = NULL;
@@ -31,7 +31,7 @@ t_data	*init_minishell(char **env)
 		free(data->toklist);
 		free(data->commands);
 		free(data);
-		return NULL;
+		return (NULL);
 	}
 	init_commands(data);
 	data->toklist->tokens = NULL;

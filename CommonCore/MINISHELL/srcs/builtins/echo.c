@@ -1,56 +1,75 @@
 #include "../../headers/minishell.h"
-//syntax: echo <flag> <string>
-//echo prints the string given as input with a newline at the end
-//flag to implement : -n (prints the string without newline)
 
-
-// handle echo $?  for error status***************
-
-void ft_echo(t_data *data)
+// syntax: echo <flag> <string>
+void	handle_flags(t_data *data, int *i, int *n_flag)
 {
-    char    *env_type;
-    char    *env_value;
-    int     n_flag;
-    int     i;
+	while (data->commands->args[*i] &&
+	!ft_strcmp(data->commands->args[*i], "-n"))
+	{
+		*n_flag = 1;
+		(*i)++;
+	}
+}
 
-    n_flag = 0;
-    i = 0;  // Start at index 0 since args[0] is the first argument
+void	print_env_variable(char *arg, t_data *data)
+{
+	char	*env_type;
+	char	*env_value;
 
-    // Loop to handle the "-n" flag
-    while (data->commands->args[i] && !ft_strcmp(data->commands->args[i], "-n"))
-    {
-        n_flag = 1;
-        i++;
-    }
+	env_type = &arg[1];
+	env_value = find_env_value(data->env, env_type);
+	if (env_value)
+		ft_putstr_fd(env_value, 1);
+}
 
-    // Loop through the command arguments
-    while (data->commands->args[i])
-    {
-        // Handle the "$?" variable for exit status
-        if (!ft_strcmp(data->commands->args[i], "$?"))
-            ft_putnbr_fd(data->state.last_exit_status, 1);
-        // Handle environment variables
-        else if (data->commands->args[i][0] == '$')
-        {
-            env_type = &data->commands->args[i][1];
-            env_value = find_env_value(data->env, env_type);  // Use data->env to find the variable
-            if (env_value)
-                ft_putstr_fd(env_value, 1);
-        }
-        // Print regular arguments
-        else
-            ft_putstr_fd(data->commands->args[i], 1);
+void	print_escape(char *arg)
+{
+	int	j;
 
-        // Print space between arguments, but not after the last one
-        if (data->commands->args[i + 1])
-            ft_putchar_fd(' ', 1);
-        i++;
-    }
+	j = 0;
+	while (arg[j])
+	{
+		if (arg[j] == '\\' && arg[j + 1])
+		{
+			j++;
+			if (arg[j] == 'n')
+				ft_putchar_fd('\n', 1);
+			else if (arg[j] == 't')
+				ft_putchar_fd('\t', 1);
+			else if (arg[j] == '\\')
+				ft_putchar_fd('\\', 1);
+			else
+				ft_putchar_fd(arg[j], 1);
+		}
+		else
+			ft_putchar_fd(arg[j], 1);
+		j++;
+	}
+}
 
-    // Print newline unless the "-n" flag is present
-    if (!n_flag)
-        ft_putchar_fd('\n', 1);
+void	ft_echo(t_data *data)
+{
+	int		n_flag;
+	int		i;
+	char	*arg;
 
-    // Set the last exit status to 0 since echo typically succeeds
-    data->state.last_exit_status = 0;
+	n_flag = 0;
+	i = 0;
+	handle_flags(data, &i, &n_flag);
+	while (data->commands->args[i])
+	{
+		arg = data->commands->args[i];
+		if (!ft_strcmp(arg, "$?"))
+			ft_putnbr_fd(data->state.last_exit_status, 1);
+		else if (arg[0] == '$')
+			print_env_variable(arg, data);
+		else
+			print_escape(arg);
+		if (data->commands->args[i + 1])
+			ft_putchar_fd(' ', 1);
+		i++;
+	}
+	if (!n_flag)
+		ft_putchar_fd('\n', 1);
+	data->state.last_exit_status = 0;
 }
