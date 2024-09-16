@@ -2,60 +2,53 @@
 
 int	are_quotes_balanced(const char *input)
 {
-	int	single_quote;
-	int	double_quote;
+	int	i;
+	int	single_quotes;
+	int	double_quotes;
 
-	single_quote = 0;
-	double_quote = 0;
-	while (*input)
+	single_quotes = 0;
+	double_quotes = 0;
+	i = 0;
+	while (input[i])
 	{
-		if (*input == '\'' && double_quote % 2 == 0)
-			single_quote++;
-		else if (*input == '\"' && single_quote % 2 == 0)
-			double_quote++;
-		input++;
+		if (input[i] == '\'' && (i == 0 || input[i - 1] != '\\'))
+			single_quotes = !single_quotes;
+		else if (input[i] == '\"' && (i == 0 || input[i - 1] != '\\'))
+			double_quotes = !double_quotes;
+		i++;
 	}
-	return (single_quote % 2 == 0 && double_quote % 2 == 0);
+	return (single_quotes == 0 && double_quotes == 0);// return 1 if quotes are balanced
 }
 
-char *get_full_input(void)
+char	*get_full_input(void)
 {
-	char *input;
-	char *full_input;
-	char *temp;
-	int unbalanced_quotes;
+	char	*input;
+	char	*full_input;
+	char	*temp;
+	int		unbalanced_quotes;
 
 	full_input = NULL;
-	// Initial prompt
 	input = readline("\033[35mMSL> \033[0m");
-
-	if (input == NULL) // Handle Ctrl+D
-	{
-		if (full_input)
-			free(full_input);
+	if (input == NULL)
 		return (NULL);
-	}
-
-
-	full_input = ft_strdup(input); // Duplicate input for further processing
+	full_input = ft_strdup(input);
 	free(input);
-
-	// Check for unbalanced quotes and continue prompting if necessary
 	unbalanced_quotes = !are_quotes_balanced(full_input);
 	while (unbalanced_quotes)
 	{
-		temp = full_input;
-		input = readline("> "); // Secondary prompt for continued input
-		if (input == NULL) // Handle Ctrl+D
+		input = readline("> ");
+		if (input == NULL)
 		{
-			free(temp);
+			free(full_input);
 			return (NULL);
 		}
-		full_input = ft_strjoin(full_input, "\n");
-		full_input = ft_strjoin(full_input, input); // Join input lines
+		temp = full_input;
+		full_input = ft_strjoin(temp, "\n");
+		free(temp);
+		temp = full_input;
+		full_input = ft_strjoin(temp, input);
 		free(temp);
 		free(input);
-
 		unbalanced_quotes = !are_quotes_balanced(full_input);
 	}
 	return (full_input);

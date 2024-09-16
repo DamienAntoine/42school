@@ -22,14 +22,28 @@ void	print_env_variable(char *arg, t_data *data)
 		ft_putstr_fd(env_value, 1);
 }
 
+int	is_quote(char c)
+{
+	return (c == '\'' || c == '\"');
+}
+
 void	print_escape(char *arg)
 {
 	int	j;
+	int	inside_quotes;
 
 	j = 0;
+	inside_quotes = 0;
 	while (arg[j])
 	{
-		if (arg[j] == '\\' && arg[j + 1])
+		if (arg[j] == '\\' && is_quote(arg[j + 1]))
+		{
+			j++;
+			ft_putchar_fd(arg[j], 1);
+		}
+		else if (is_quote(arg[j]) && (j == 0 || arg[j - 1] != '\\'))
+			inside_quotes = !inside_quotes;
+		else if (arg[j] == '\\' && arg[j + 1] && !inside_quotes)
 		{
 			j++;
 			if (arg[j] == 'n')
