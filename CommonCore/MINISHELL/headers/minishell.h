@@ -69,7 +69,7 @@ typedef struct s_token_list
 
 //####  need to be sorted later  ########################
 
-void	printcommands(char *input, t_data *data);
+void	printcommands(t_data *data);
 void	init_commands(t_data *data);
 char	*trim_input(char *input);
 void    ft_env(t_env *lst);

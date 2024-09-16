@@ -33,9 +33,7 @@ void	handle_sigint(int sig)
 	ft_putstr_fd("\n\033[35mMSL> \033[0m", 1);
 }
 
-
-
-void	printcommands(char *input, t_data *data) // debugging function
+void	printcommands(t_data *data) // debugging function
 {
 	t_command		*cmd;
 	t_token_list	*token;
@@ -45,7 +43,6 @@ void	printcommands(char *input, t_data *data) // debugging function
 	token = data->toklist;
 
 	printf("\n**********Debugging**********\n");
-	printf("#Input received: %s\n", input);
 	printf("#TOKENS\n");
 
 	i = 0;
@@ -72,71 +69,67 @@ void	printcommands(char *input, t_data *data) // debugging function
 	printf("\n*****************************\n\n");
 }
 
+void	reset_toklist(t_data *data)
+{
+	if (data->toklist->tokens)
+	{
+		free_split(data->toklist->tokens);
+		data->toklist->tokens = NULL;
+		data->toklist->token_count = 0;
+	}
+}
+
+int	handle_input(t_data *data)
+{
+	char	*input = get_full_input();
+
+	if (!input)
+	{
+		printf("\nMinishell Terminated (ctrl+d)\n");
+		free_minishell(data);
+		return (0);
+	}
+	data->toklist->tokens = ft_tokenize(data->toklist, input);
+	printf("#Input received: %s\n", input);
+	free(input);
+	return (data->toklist->tokens != NULL); //returns 1 if tokenize worked and 0 if not
+}
+
+void	reset_command(t_data *data)
+{
+	free_command(data->commands);
+	data->commands = malloc(sizeof(t_command));
+	init_commands(data);
+}
+
 int	main(int argc, char **argv, char **env)
 {
-	char	*input;
 	t_data	*data;
 
-
+	(void)argv;
 	if (argc > 1)
 		exit(0);
-	(void)argv;
 	data = init_minishell(env);
 	if (!data)
-	{
-		printf("failed to initialize minishell\n");
-		exit(EXIT_FAILURE);
-	}
-
+		return (EXIT_FAILURE);
 	setup_terminal();
-	signal(SIGINT, handle_sigint);   // handle ctrl+c
+	signal(SIGINT, handle_sigint);
 	ignore_sigquit();
 	while (1)
 	{
-		//we use readline in the input.c
-		//write(1, "\033[35mMSL> \033[0m", 14);
-
-		//THIS IS CRITICAL TO HANDLE AVOID STILL REACHABLE MEMORY
-		if (data->toklist->tokens)
-        {
-            free_split(data->toklist->tokens);
-            data->toklist->tokens = NULL;
-            data->toklist->token_count = 0;
-        }
-		data->redirects = NULL;
-		input = get_full_input();
-		if (input == NULL) // ctrl + d
-		{
-			printf("\nMinishell Terminated (ctrl+d)\n");
-			free_minishell(data);
+		reset_toklist(data);
+		if (!handle_input(data))
 			return (0);
-		}
-		data->toklist->tokens = ft_tokenize(data->toklist, input);
-		if (data->toklist->tokens != NULL)
+		reset_command(data);
+		if (!has_synt_errors(data->toklist))
 		{
-			if (data->commands) // reset command struct
-			{
-				write(1, "reset\n", 6);
-				free_command(data->commands);
-				data->commands = malloc(sizeof(t_command));
-				init_commands(data);
-			}
-			//if (data->redirects)
-			//{
-			//	printf("second loop?");
-			//	free_redirections(data->redirects);
-			//}
-			if (!has_synt_errors(data->toklist))
-			{
-				ft_sort_tokens(data);
-				printcommands(input, data);
-				free(input);
-				execute_command(data);
-				if (data->redirects)
-					free_redirections(data->redirects);
-			}
+			ft_sort_tokens(data);
+			printcommands(data);//delete when everything is finished
+			execute_command(data);
+			if (data->redirects)
+				free_redirections(data->redirects);
 		}
 	}
-	free_minishell(data);
-	return (0);
+	return (free_minishell(data), 0);
 }
+
