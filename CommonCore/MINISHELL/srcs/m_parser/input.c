@@ -3,21 +3,31 @@
 int	are_quotes_balanced(const char *input)
 {
 	int	i;
-	int	single_quotes;
-	int	double_quotes;
 
-	single_quotes = 0;
-	double_quotes = 0;
 	i = 0;
+	int first_quote = 0; // 1 for single quote, 2 for double quote
 	while (input[i])
 	{
-		if (input[i] == '\'' && (i == 0 || input[i - 1] != '\\'))
-			single_quotes = !single_quotes;
-		else if (input[i] == '\"' && (i == 0 || input[i - 1] != '\\'))
-			double_quotes = !double_quotes;
+		if (first_quote == 0)
+		{
+			if (input[i] == '\'' && (input[i - 1] != '\\'))
+				first_quote = 1;
+			else if (input[i] == '\"' && (input[i - 1] != '\\'))
+				first_quote = 2;
+		}
+		else if (first_quote == 1)
+		{
+			if (input[i] == '\'' && (input[i - 1] != '\\'))
+				first_quote = 0;
+		}
+		else if (first_quote == 2)
+		{
+			if (input[i] == '\"' && (input[i - 1] != '\\'))
+				first_quote = 0;
+		}
 		i++;
 	}
-	return (single_quotes == 0 && double_quotes == 0);// return 1 if quotes are balanced
+	return (first_quote == 0);
 }
 
 char	*get_full_input(void)
@@ -36,7 +46,7 @@ char	*get_full_input(void)
 	unbalanced_quotes = !are_quotes_balanced(full_input);
 	while (unbalanced_quotes)
 	{
-		input = readline("> ");
+		input = readline("\033[35m> \033[0m");
 		if (input == NULL)
 		{
 			free(full_input);

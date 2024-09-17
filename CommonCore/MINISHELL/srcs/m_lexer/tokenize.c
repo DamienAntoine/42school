@@ -29,7 +29,7 @@ char	*ft_strtok(char *str, const char *delimiter)
 	int		in_double_quotes;
 	int		in_single_quotes;
 
-	static char *last; 
+	static char *last;
 
 	in_double_quotes = 0;
 	in_single_quotes = 0;

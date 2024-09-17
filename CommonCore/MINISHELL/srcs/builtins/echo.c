@@ -30,20 +30,11 @@ int	is_quote(char c)
 void	print_escape(char *arg)
 {
 	int	j;
-	int	inside_quotes;
 
 	j = 0;
-	inside_quotes = 0;
 	while (arg[j])
 	{
-		if (arg[j] == '\\' && is_quote(arg[j + 1]))
-		{
-			j++;
-			ft_putchar_fd(arg[j], 1);
-		}
-		else if (is_quote(arg[j]) && (j == 0 || arg[j - 1] != '\\'))
-			inside_quotes = !inside_quotes;
-		else if (arg[j] == '\\' && arg[j + 1] && !inside_quotes)
+		if (arg[j] == '\\' && arg[j + 1])
 		{
 			j++;
 			if (arg[j] == 'n')
@@ -52,6 +43,10 @@ void	print_escape(char *arg)
 				ft_putchar_fd('\t', 1);
 			else if (arg[j] == '\\')
 				ft_putchar_fd('\\', 1);
+			else if (arg[j] == '\'')
+				ft_putchar_fd('\'', 1);
+			else if (arg[j] == '\"')
+				ft_putchar_fd('\"', 1);
 			else
 				ft_putchar_fd(arg[j], 1);
 		}
