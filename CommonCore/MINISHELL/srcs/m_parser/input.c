@@ -61,5 +61,36 @@ char	*get_full_input(void)
 		free(input);
 		unbalanced_quotes = !are_quotes_balanced(full_input);
 	}
+	full_input = remove_balanced_quotes(full_input);
 	return (full_input);
+}
+
+char	*remove_balanced_quotes(const char *input)
+{
+	int	len;
+	int	i;
+	int	j;
+	int	single_quote;
+	int	double_quote;
+
+	len = ft_strlen(input);
+	char *result = malloc(len + 1);
+	if (!result)
+		return (NULL);
+	i = 0;
+	j = 0;
+	single_quote = 0;
+	double_quote = 0;
+	while (input[i])
+	{
+		if (input[i] == '\'' && double_quote % 2 == 0)
+			single_quote++;
+		else if (input[i] == '\"' && single_quote % 2 == 0)
+			double_quote++;
+		else
+			result[j++] = input[i];
+		i++;
+	}
+	result[j] = '\0';
+	return (result);
 }
