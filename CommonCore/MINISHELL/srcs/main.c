@@ -70,9 +70,12 @@ void	reset_command(t_data *data)
 	init_commands(data);
 }
 
+
+
 int	main(int argc, char **argv, char **env)
 {
 	t_data	*data;
+
 
 	(void)argv;
 	if (argc > 1)

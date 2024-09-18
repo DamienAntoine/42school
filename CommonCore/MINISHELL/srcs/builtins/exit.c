@@ -4,7 +4,7 @@
 
 void update_exit_status(t_data *data, long long status)
 {
-    if (status < LLONG_MIN || status > LLONG_MAX)
+    if (status < 0 || status > 255)
     {
         // Ensure the exit status is within the valid range of long long int
         status = 1; // Default to 1 on invalid status

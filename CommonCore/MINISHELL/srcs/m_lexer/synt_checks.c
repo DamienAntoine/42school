@@ -55,8 +55,8 @@ int	ft_check_syntax(t_token_list *toklist)
 				return (ERTOKEN);
 		}
 		//env var expansion
-		if (toklist->tokens[i][0] == '$' && !is_valid_env_variable(toklist->tokens[i] + 1))
-			return (ERVARN); // Syntax error: invalid environment variable
+	//	if (toklist->tokens[i][0] == '$' && !is_valid_env_variable(toklist->tokens[i] + 1))
+	//		return (ERVARN); // Syntax error: invalid environment variable
 
 		i++;
 	}
