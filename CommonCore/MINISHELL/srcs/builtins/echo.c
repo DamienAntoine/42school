@@ -43,17 +43,38 @@ void	print_quoted_arg(char *arg, t_data *data, char quote_type)
 	j = 0;
 	  while (arg[j])
     {
-        if (quote_type == '"' && arg[j] == '$')
+         if (quote_type == '"' && arg[j] == '$')
         {
             int k = j + 1;
-            while (arg[k] && (ft_isalnum(arg[k]) || arg[k] == '_'))
-                k++;
-            char *var_name = ft_substr(arg, j + 1, k - j - 1);
-            char *env_value = find_env_value(data->env, var_name);
-            if (env_value)
-                ft_putstr_fd(env_value, 1);
-            free(var_name);
-            j = k;
+            if (arg[k] == '?')
+            {
+                // Handle $?
+                char *status_str = ft_itoa(data->state.last_exit_status);
+                ft_putstr_fd(status_str, 1);
+                free(status_str);
+                j = k + 1; // Move past '?'
+            }
+            else
+            {
+                // Handle regular variable names
+                while (arg[k] && (ft_isalnum(arg[k]) || arg[k] == '_'))
+                    k++;
+                if (k > j + 1)
+                {
+                    char *var_name = ft_substr(arg, j + 1, k - j - 1);
+                    char *env_value = find_env_value(data->env, var_name);
+                    if (env_value)
+                        ft_putstr_fd(env_value, 1);
+                    free(var_name);
+                    j = k;
+                }
+                else
+                {
+                    // No valid variable name after '$', just print '$'
+                    ft_putchar_fd('$', 1);
+                    j++;
+                }
+            }
         }
         else
         {
