@@ -27,25 +27,31 @@ void	print_env_variable(char *arg, t_data *data)
 		ft_putstr_fd(env_value, 1);
 }
 
-void	print_quoted_arg(char *arg, t_data *data)
+void	print_quoted_arg(char *arg, t_data *data, char quote_type)
 {
-	char	quote_type;
 	int		j;
 
-	quote_type = arg[0];
-	j = 1;
-	while (arg[j] && arg[j] != quote_type)
-	{
-		if (quote_type == '"' && arg[j] == '$')
-		{
-			print_env_variable(&arg[j], data);
-			while (arg[j] && arg[j] != ' ' && arg[j] != quote_type)
-				j++;
-		}
-		else
-			ft_putchar_fd(arg[j], 1);
-		j++;
-	}
+	j = 0;
+	  while (arg[j])
+    {
+        if (quote_type == '"' && arg[j] == '$')
+        {
+            int k = j + 1;
+            while (arg[k] && (ft_isalnum(arg[k]) || arg[k] == '_'))
+                k++;
+            char *var_name = ft_substr(arg, j + 1, k - j - 1);
+            char *env_value = find_env_value(data->env, var_name);
+            if (env_value)
+                ft_putstr_fd(env_value, 1);
+            free(var_name);
+            j = k;
+        }
+        else
+        {
+            ft_putchar_fd(arg[j], 1);
+            j++;
+        }
+    }
 }
 
 
@@ -82,24 +88,26 @@ void	print_escape(char *arg)
 void	process_argument(char *arg, t_data *data)	//probably because of this function the program thinks the first character in double quotes is a quote,
 													//so (echo "abcdefa") will print bcdef
 {
-	char	*content;
+	char	quote_type;
 	char	*processed_arg;
 
 	if (is_quote(arg[0]))
 	{
-		if (arg[0] == '\'')
+		quote_type = arg[0];
+		processed_arg = remove_balanced_quotes(arg);
+		if (quote_type == '\'')
 		{
-			content = ft_strdup(arg + 1);
-			content[ft_strlen(content) - 1] = '\0';
-			print_escape(content);
-			free(content);
+		
+			print_escape(processed_arg);
+		//	free(content);
 		}
-		else if (arg[0] == '\"')
+		else if (quote_type == '\"')
 		{
-			processed_arg = remove_balanced_quotes(arg);
-			print_quoted_arg(processed_arg, data);
-			free(processed_arg);
+		//	processed_arg = remove_balanced_quotes(arg);
+			print_quoted_arg(processed_arg, data, quote_type);
+		//	free(content);
 		}
+		free(processed_arg);
 	}
 	else if (arg[0] == '$')
 		print_env_variable(arg, data);
