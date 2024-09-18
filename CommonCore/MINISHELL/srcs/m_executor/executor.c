@@ -15,10 +15,11 @@ void	execute_builtin(t_command *cmdtable, t_data *data)
 		handle_unset(&data->env, data->toklist->tokens);
 	else if (ft_strcmp(cmdtable->cmds, "exit") == 0)
 	{
-		if (data->toklist->token_count == 1)
+		ft_exit(data);
+	/* 	if (data->toklist->token_count == 1)
 			ft_exit(data, 0);
 		else
-			ft_exit(data, ft_atoi(data->toklist->tokens[1]));
+			ft_exit(data, ft_atoi(data->toklist->tokens[1])); */
 	}
 	else if (ft_strcmp(cmdtable->cmds, "export") == 0)
 	{
@@ -40,10 +41,11 @@ void send_command(t_data *data)
 	pid_t		pid;
 	int			status;
 
-	if (!cmdtable || !cmdtable->cmds)
+	if (!cmdtable || !cmdtable->cmds || !cmdtable->args[0])
 	{
 		ft_putstr_fd("No command provided\n", STDERR_FILENO);
 		free_split(envp);
+		data->state.last_exit_status = 127;
 		return;
 	}
 
@@ -60,22 +62,22 @@ void send_command(t_data *data)
 				printf("Built-in command with redirection.\n");
 				setup_redirection(data->redirects);
 				execute_builtin(cmdtable, data);
-				exit(EXIT_FAILURE);
+				exit(data->state.last_exit_status);
 			}
 			else if (pid > 0)//parent
 			{
 				waitpid(pid, &status, 0);
 				if (WIFEXITED(status))
-					update_exit_status(data, WEXITSTATUS(status));
+					set_exit_status(WEXITSTATUS(status), data);
 				else if (WIFSIGNALED(status))
-					update_exit_status(data, 128 + WTERMSIG(status));
+					set_exit_status(128 + WTERMSIG(status), data);
 				else
-					update_exit_status(data, status);
+					set_exit_status(status, data);
 			}
 			else
 			{
 				perror("fork");//if fork failed
-				update_exit_status(data, 1);
+				data->state.last_exit_status = 1;
 			}
 		}
 		free_split(envp);
@@ -135,10 +137,16 @@ void send_command(t_data *data)
 	{
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
-			data->state.last_exit_status = WEXITSTATUS(status);
+			set_exit_status(WEXITSTATUS(status), data);
+		else if (WIFSIGNALED(status))
+			set_exit_status(128 + WTERMSIG(status), data);
+		else
+			set_exit_status(status, data);
 	}
-	else
+	else{
 		perror("fork");
+		data->state.last_exit_status = 1;
+	}
 	free_split(envp);
 }
 
