@@ -74,118 +74,66 @@ char *remove_balanced_quotes(const char *input)
 
 int	are_quotes_balanced(const char *input)
 {
-	int	single_quote;
-	int	double_quote;
+	int	i;
 
-	single_quote = 0;
-	double_quote = 0;
-	while (*input)
+	i = 0;
+	int first_quote = 0; // 1 for single quote, 2 for double quote
+	while (input[i])
 	{
-		if (*input == '\'' && double_quote % 2 == 0)
-			single_quote++;
-		else if (*input == '\"' && single_quote % 2 == 0)
-			double_quote++;
-		input++;
+		if (first_quote == 0)
+		{
+			if (input[i] == '\'' && (input[i - 1] != '\\'))
+				first_quote = 1;
+			else if (input[i] == '\"' && (input[i - 1] != '\\'))
+				first_quote = 2;
+		}
+		else if (first_quote == 1)
+		{
+			if (input[i] == '\'' && (input[i - 1] != '\\'))
+				first_quote = 0;
+		}
+		else if (first_quote == 2)
+		{
+			if (input[i] == '\"' && (input[i - 1] != '\\'))
+				first_quote = 0;
+		}
+		i++;
 	}
-	return (single_quote % 2 == 0 && double_quote % 2 == 0);
+	return (first_quote == 0);
 }
 
-
-char *get_full_input(void)
+char	*get_full_input(void)
 {
-    char *input;
-    char *full_input;
-    size_t total_len = 0;
-    int unbalanced_quotes;
-
-    // Initial prompt
-    input = readline("\033[35mMSL> \033[0m");
-
-    if (input == NULL) // Handle Ctrl+D
-        return NULL;
-
-    total_len = ft_strlen(input);
-    full_input = ft_strdup(input); // Duplicate input for further processing
-    free(input);
-
-    // Check for unbalanced quotes and continue prompting if necessary
-    unbalanced_quotes = !are_quotes_balanced(full_input);
-    while (unbalanced_quotes)
-    {
-        input = readline("> "); // Secondary prompt for continued input
-
-        if (input == NULL) // Handle Ctrl+D
-        {
-            free(full_input);
-            return NULL;
-        }
-
-        // Reallocate space for concatenating newline and input
-        total_len += ft_strlen(input) + 1; // +1 for newline
-        full_input = realloc(full_input, total_len + 1); // +1 for null-terminator
-
-        if (!full_input)
-        {
-            free(input);
-            return NULL; // Handle allocation failure
-        }
-
-        // Concatenate newline and the new input
-        ft_strlcat(full_input, "\n", total_len + 1);
-        ft_strlcat(full_input, input, total_len + 1);
-
-        free(input);
-
-        unbalanced_quotes = !are_quotes_balanced(full_input);
-    }
-
-    // Remove balanced quotes before returning the full input
-    char *final_input = remove_balanced_quotes(full_input);  // Remove outer balanced quotes
-    free(full_input);
-
-    return final_input;
-}
-
-/* char *get_full_input(void)
-{
-	char *input;
-	char *full_input;
-	char *temp;
-	int unbalanced_quotes;
+	char	*input;
+	char	*full_input;
+	char	*temp;
+	int		unbalanced_quotes;
 
 	full_input = NULL;
-	// Initial prompt
 	input = readline("\033[35mMSL> \033[0m");
-
-	if (input == NULL) // Handle Ctrl+D
-	{
-		if (full_input)
-			free(full_input);
+	if (input == NULL)
 		return (NULL);
-	}
-
-
-	full_input = ft_strdup(input); // Duplicate input for further processing
+	full_input = ft_strdup(input);
 	free(input);
-
-	// Check for unbalanced quotes and continue prompting if necessary
 	unbalanced_quotes = !are_quotes_balanced(full_input);
 	while (unbalanced_quotes)
 	{
-		temp = full_input;
-		input = readline("> "); // Secondary prompt for continued input
-		if (input == NULL) // Handle Ctrl+D
+		input = readline("\033[35m> \033[0m");
+		if (input == NULL)
 		{
-			free(temp);
+			free(full_input);
 			return (NULL);
 		}
-		full_input = ft_strjoin(full_input, "\n");
-		full_input = ft_strjoin(full_input, input); // Join input lines
+		temp = full_input;
+		full_input = ft_strjoin(temp, "\n");
+		free(temp);
+		temp = full_input;
+		full_input = ft_strjoin(temp, input);
 		free(temp);
 		free(input);
-
 		unbalanced_quotes = !are_quotes_balanced(full_input);
 	}
+<<<<<<< HEAD
  
     // Remove balanced quotes before returning the full input
     temp = full_input;
@@ -195,3 +143,38 @@ char *get_full_input(void)
  
 	return (full_input);
 } */
+=======
+	full_input = remove_balanced_quotes(full_input);
+	return (full_input);
+}
+
+char	*remove_balanced_quotes(const char *input)
+{
+	int	len;
+	int	i;
+	int	j;
+	int	single_quote;
+	int	double_quote;
+
+	len = ft_strlen(input);
+	char *result = malloc(len + 1);
+	if (!result)
+		return (NULL);
+	i = 0;
+	j = 0;
+	single_quote = 0;
+	double_quote = 0;
+	while (input[i])
+	{
+		if (input[i] == '\'' && double_quote % 2 == 0)
+			single_quote++;
+		else if (input[i] == '\"' && single_quote % 2 == 0)
+			double_quote++;
+		else
+			result[j++] = input[i];
+		i++;
+	}
+	result[j] = '\0';
+	return (result);
+}
+>>>>>>> fb18306241e283602bca2004688fde48863ab953

@@ -1,9 +1,6 @@
 #include "../../headers/minishell.h"
 
 //maybe add max length,
-
-
-
 int	has_synt_errors(t_token_list *toklist)
 {
 	int	synt_result;
@@ -46,7 +43,6 @@ int	ft_check_syntax(t_token_list *toklist)
 			else if (is_consecutive(toklist, i) == 1)
 				return (ERCONS); // syntax error for consecutive pipes
 		}
-
 		//redir syntax
 		if (ft_strcmp(toklist->tokens[i], "<") == 0 || ft_strcmp(toklist->tokens[i], ">") == 0 || \
 		ft_strcmp(toklist->tokens[i], "<<") == 0 || ft_strcmp(toklist->tokens[i], ">>") == 0)
@@ -58,14 +54,6 @@ int	ft_check_syntax(t_token_list *toklist)
 			else if (is_consecutive(toklist, i) == 2)
 				return (ERTOKEN);
 		}
-
-		//quotes syntax
-		if ((ft_strcmp(toklist->tokens[i], "\'") == 0) || (ft_strcmp(toklist->tokens[i], "\"") == 0))
-		{
-			if (has_quotes(toklist) == 1)
-				return (ERQUOTE);
-		}
-
 		//env var expansion
 		if (toklist->tokens[i][0] == '$' && !is_valid_env_variable(toklist->tokens[i] + 1))
 			return (ERVARN); // Syntax error: invalid environment variable

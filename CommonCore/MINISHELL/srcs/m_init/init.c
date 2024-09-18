@@ -15,8 +15,8 @@ t_data	*init_minishell(char **env)
 		return (NULL);
 	}
 	data->toklist = malloc(sizeof(t_token_list));
-//	printf("Allocated toklist: %p\n", data->toklist);
-	if (!data->toklist) {
+	if (!data->toklist)
+	{
 		perror("Failed to allocate memory for toklist");
 		free(data->commands);
 		free(data);

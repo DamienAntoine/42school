@@ -22,6 +22,11 @@ void	print_env_variable(char *arg, t_data *data)
 		ft_putstr_fd(env_value, 1);
 }
 
+int	is_quote(char c)
+{
+	return (c == '\'' || c == '\"');
+}
+
 void	print_escape(char *arg)
 {
 	int	j;
@@ -38,6 +43,10 @@ void	print_escape(char *arg)
 				ft_putchar_fd('\t', 1);
 			else if (arg[j] == '\\')
 				ft_putchar_fd('\\', 1);
+			else if (arg[j] == '\'')
+				ft_putchar_fd('\'', 1);
+			else if (arg[j] == '\"')
+				ft_putchar_fd('\"', 1);
 			else
 				ft_putchar_fd(arg[j], 1);
 		}

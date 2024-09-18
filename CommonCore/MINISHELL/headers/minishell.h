@@ -69,6 +69,7 @@ typedef struct s_token_list
 
 //####  need to be sorted later  ########################
 
+char *remove_balanced_quotes(const char *input);
 int		are_quotes_balanced(const char *input);
 void	printcommands(t_data *data);
 void	init_commands(t_data *data);

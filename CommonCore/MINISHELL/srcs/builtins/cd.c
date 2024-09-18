@@ -23,7 +23,7 @@ void	ft_cd(t_data *cur)
 	}
 
 	// Debug: Print the current directory before changing
-	printf("Old PWD: %s\n", oldpwd);
+	//printf("Old PWD: %s\n", oldpwd);
 
 	// Check if too many arguments are passed
 	if (cur->commands->args[1])
@@ -34,7 +34,7 @@ void	ft_cd(t_data *cur)
 
 	// Determine the target directory
 	if (!cur->commands->args[0])
-	{ 
+	{
 		// No arguments, move to home directory
 		target_dir = find_env_value(cur->env, "HOME");
 		if (!target_dir)
@@ -89,7 +89,7 @@ void	ft_cd(t_data *cur)
 	update_or_add_env_variable(&cur->env, "PWD", newpwd);
 
 	// Debug: Print the new directory after changing
-	printf("New PWD: %s\n", newpwd);
+	//printf("New PWD: %s\n", newpwd);
 
 	// Clean up
 	free(oldpwd);
