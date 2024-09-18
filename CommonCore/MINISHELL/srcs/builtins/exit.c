@@ -2,6 +2,16 @@
 
 ///// MUST handle  LLONG_MIN    LLONG_MAX too.
 
+void update_exit_status(t_data *data, long long status)
+{
+    if (status < LLONG_MIN || status > LLONG_MAX)
+    {
+        // Ensure the exit status is within the valid range of long long int
+        status = 1; // Default to 1 on invalid status
+    }
+    data->state.last_exit_status = status;
+}
+
 void	ft_exit(t_data *data, int status)
 {
 	// Cleanup the environment
@@ -28,7 +38,7 @@ void	ft_exit(t_data *data, int status)
 		ft_putnbr_fd(status, STDERR_FILENO);
 		ft_putstr_fd("\n", STDERR_FILENO);
 	}
-	data->state.last_exit_status = status;
+	update_exit_status(data, status);
 	// Exit the shell process with the specified status
 	exit(status);
 }

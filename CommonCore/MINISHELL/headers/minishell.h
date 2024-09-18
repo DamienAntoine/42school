@@ -14,6 +14,7 @@
 #include <fcntl.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <limits.h>
 
 
 # define BUFFER_SIZE 1024
@@ -91,7 +92,7 @@ void ft_grep(t_data *data);
 void ignore_sigquit();
 void setup_terminal();
 void	handle_sigint(int sig);
-
+void update_exit_status(t_data *data, long long status);
 
 
 

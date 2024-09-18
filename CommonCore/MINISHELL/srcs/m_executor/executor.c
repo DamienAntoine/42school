@@ -60,16 +60,23 @@ void send_command(t_data *data)
 				printf("Built-in command with redirection.\n");
 				setup_redirection(data->redirects);
 				execute_builtin(cmdtable, data);
-				exit(data->state.last_exit_status);
+				exit(EXIT_FAILURE);
 			}
 			else if (pid > 0)//parent
 			{
 				waitpid(pid, &status, 0);
 				if (WIFEXITED(status))
-					data->state.last_exit_status = WEXITSTATUS(status);
+					update_exit_status(data, WEXITSTATUS(status));
+				else if (WIFSIGNALED(status))
+					update_exit_status(data, 128 + WTERMSIG(status));
+				else
+					update_exit_status(data, status);
 			}
 			else
+			{
 				perror("fork");//if fork failed
+				update_exit_status(data, 1);
+			}
 		}
 		free_split(envp);
 		return;
