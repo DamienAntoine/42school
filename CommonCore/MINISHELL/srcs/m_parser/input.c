@@ -35,7 +35,7 @@ char *remove_balanced_quotes(const char *input)
     return result;
 }
 */
-
+/*
 // Helper function to remove balanced quotes from a string
 char *remove_balanced_quotes(const char *input)
 {
@@ -70,7 +70,7 @@ char *remove_balanced_quotes(const char *input)
     result[j] = '\0';  // Null-terminate the result string
     return result;
 }  
-
+*/
 
 int	are_quotes_balanced(const char *input)
 {
