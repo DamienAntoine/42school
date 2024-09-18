@@ -20,50 +20,53 @@ void	print_env_variable(char *arg, t_data *data)
 {
 	char	*env_type;
 	char	*env_value;
+	char	*status_str;
 
-   if (arg[1] == '?' && (arg[2] == '\0' || arg[2] == ' ')) // Ensure it's only $?
-    {
-        // Convert last exit status to string and output it
-        char *status_str = ft_itoa(data->state.last_exit_status);
-        ft_putstr_fd(status_str, 1);
-        free(status_str);
-    }
-	else{
-	env_type = &arg[1];
-	env_value = find_env_value(data->env, env_type);
-	if (env_value)
-		ft_putstr_fd(env_value, 1);
+	if (arg[1] == '?' && (arg[2] == '\0' || arg[2] == ' '))
+		// Ensure it's only $?
+	{
+		status_str = ft_itoa(data->state.last_exit_status);
+		ft_putstr_fd(status_str, 1);
+		free(status_str);
+	}
+	else
+	{
+		env_type = &arg[1];
+		env_value = find_env_value(data->env, env_type);
+		if (env_value)
+			ft_putstr_fd(env_value, 1);
 	}
 }
 
 void	print_quoted_arg(char *arg, t_data *data, char quote_type)
 {
 	int		j;
+	int		k;
+	char	*var_name;
+	char	*env_value;
 
 	j = 0;
-	  while (arg[j])
-    {
-        if (quote_type == '"' && arg[j] == '$')
-        {
-            int k = j + 1;
-            while (arg[k] && (ft_isalnum(arg[k]) || arg[k] == '_'))
-                k++;
-            char *var_name = ft_substr(arg, j + 1, k - j - 1);
-            char *env_value = find_env_value(data->env, var_name);
-            if (env_value)
-                ft_putstr_fd(env_value, 1);
-            free(var_name);
-            j = k;
-        }
-        else
-        {
-            ft_putchar_fd(arg[j], 1);
-            j++;
-        }
-    }
+	while (arg[j])
+	{
+		if (quote_type == '"' && arg[j] == '$')
+		{
+			k = j + 1;
+			while (arg[k] && (ft_isalnum(arg[k]) || arg[k] == '_'))
+				k++;
+			var_name = ft_substr(arg, j + 1, k - j - 1);
+			env_value = find_env_value(data->env, var_name);
+			if (env_value)
+				ft_putstr_fd(env_value, 1);
+			free(var_name);
+			j = k;
+		}
+		else
+		{
+			ft_putchar_fd(arg[j], 1);
+			j++;
+		}
+	}
 }
-
-
 
 void	print_escape(char *arg)
 {
@@ -94,27 +97,23 @@ void	print_escape(char *arg)
 	}
 }
 
-void	process_argument(char *arg, t_data *data)	//probably because of this function the program thinks the first character in double quotes is a quote,
-													//so (echo "abcdefa") will print bcdef
+void	process_argument(char *arg, t_data *data)
+		// probably because of this function the program thinks the first character in double quotes is a quote,
+												// so (echo "abcdefa") will print bcdef
 {
-	char	quote_type;
-	char	*processed_arg;
+	char quote_type;
+	char *processed_arg;
 
 	if (is_quote(arg[0]))
 	{
 		quote_type = arg[0];
 		processed_arg = remove_balanced_quotes(arg);
 		if (quote_type == '\'')
-		{
-		
 			print_escape(processed_arg);
-		//	free(content);
-		}
 		else if (quote_type == '\"')
 		{
-		//	processed_arg = remove_balanced_quotes(arg);
+			processed_arg = remove_balanced_quotes(arg);
 			print_quoted_arg(processed_arg, data, quote_type);
-		//	free(content);
 		}
 		free(processed_arg);
 	}
