@@ -67,13 +67,6 @@ char	*ft_strtok(char *str, const char *delimiter)
 	}
 	else
 		last = NULL;
-	// Remove surrounding double quotes if the token was quoted
-	if ((*start == '"' && *(end - 1) == '"') || (*start == '\'' && *(end
-			- 1) == '\''))
-	{
-		start++;
-		*(end - 1) = '\0'; // Null-terminate after removing the closing quote
-	}
 	return (start);
 }
 
