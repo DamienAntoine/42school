@@ -21,10 +21,19 @@ void	print_env_variable(char *arg, t_data *data)
 	char	*env_type;
 	char	*env_value;
 
+   if (arg[1] == '?' && (arg[2] == '\0' || arg[2] == ' ')) // Ensure it's only $?
+    {
+        // Convert last exit status to string and output it
+        char *status_str = ft_itoa(data->state.last_exit_status);
+        ft_putstr_fd(status_str, 1);
+        free(status_str);
+    }
+	else{
 	env_type = &arg[1];
 	env_value = find_env_value(data->env, env_type);
 	if (env_value)
 		ft_putstr_fd(env_value, 1);
+	}
 }
 
 void	print_quoted_arg(char *arg, t_data *data, char quote_type)
