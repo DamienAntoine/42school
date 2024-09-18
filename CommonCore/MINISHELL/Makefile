@@ -13,7 +13,6 @@ SRCS += ./srcs/m_init/init.c ./srcs/m_init/init_env.c\
 
 # m_executor
 SRCS += ./srcs/m_executor/executor.c ./srcs/m_executor/pipes.c ./srcs/m_executor/redirection.c\
-		./srcs/m_executor/command.c\
 
 # m_free
 SRCS += ./srcs/m_free/free.c\
@@ -25,7 +24,9 @@ SRCS += ./srcs/m_lexer/synt_checks.c ./srcs/m_lexer/tokenize.c\
 SRCS += ./srcs/m_parser/sort_tokens.c ./srcs/m_parser/input.c\
 
 # utils
-SRCS += ./srcs/utils/utils_str.c ./srcs/utils/utils_error.c ./srcs/utils/utils_print.c ./srcs/utils/utils_checker.c
+SRCS += ./srcs/utils/utils_str.c ./srcs/utils/utils_error.c ./srcs/utils/utils_print.c ./srcs/utils/utils_checker.c\
+		./srcs/utils/terminal_signal.c ./srcs/utils/command_path.c ./srcs/utils/util_exe.c ./srcs/utils/util_pipe.c\
+		./srcs/utils/util_redir.c ./srcs/utils/util_token.c
 
 
 
