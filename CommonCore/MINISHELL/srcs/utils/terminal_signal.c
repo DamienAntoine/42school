@@ -25,10 +25,11 @@ void setup_terminal()
 
     if (tcsetattr(STDIN_FILENO, TCSANOW, &tio) != 0)
         perror("Failed to set terminal attributes");
-}
+} 
 
 void	handle_sigint(int sig)
 {
 	(void)sig;
 	ft_putstr_fd("\n\033[35mMSL> \033[0m", 1);
 }
+

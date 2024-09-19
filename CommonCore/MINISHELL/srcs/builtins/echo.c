@@ -16,28 +16,82 @@ int	is_quote(char c)
 	return (c == '\'' || c == '\"');
 }
 
+void print_env_variable(char *arg, t_data *data)
+{
+    int i = 1; // Start after the '$'
+    char *var_name;
+    char *var_value;
+
+    if (arg[i] == '\0')
+    {
+        // No variable name after '$', print '$'
+        ft_putchar_fd('$', 1);
+        return;
+    }
+
+    if (arg[i] == '?')
+    {
+        // Variable is '?'
+        var_name = ft_substr(arg, i, 1); // var_name = "?"
+        i++; // Move index past '?'
+    }
+    else
+    {
+        // Parse variable name: letters, digits, underscores
+        int start = i;
+        while (arg[i] && (ft_isalnum(arg[i]) || arg[i] == '_'))
+            i++;
+        var_name = ft_substr(arg, start, i - start);
+    }
+
+    // Now expand the variable
+    if (ft_strcmp(var_name, "?") == 0)
+    {
+        char *status_str = ft_itoa(data->state.last_exit_status);
+        ft_putstr_fd(status_str, 1);
+        free(status_str);
+    }
+    else
+    {
+        var_value = find_env_value(data->env, var_name);
+        if (var_value)
+            ft_putstr_fd(var_value, 1);
+    }
+
+    free(var_name);
+
+    // Now print the rest of the argument
+    if (arg[i] != '\0')
+    {
+        ft_putstr_fd(&arg[i], 1);
+    }
+}
+
+/*
 void	print_env_variable(char *arg, t_data *data)
 {
 	char	*env_type;
 	char	*env_value;
 	char	*status_str;
 
-	if (arg[1] == '?' && (arg[2] == '\0' || arg[2] == ' '))
-	// Ensure it's only $?
-	{
-		status_str = ft_itoa(data->state.last_exit_status);
-		ft_putstr_fd(status_str, 1);
-		free(status_str);
-	}
-	else
-	{
-		env_type = &arg[1];
-		env_value = find_env_value(data->env, env_type);
-		if (env_value)
-			ft_putstr_fd(env_value, 1);
+
+	if (arg[1] == '\0')
+		ft_putchar_fd('$', 1);
+   	else if (arg[1] == '?' && (arg[2] == '\0' || arg[2] == ' ')) // Ensure it's only $?
+    {
+        // Convert last exit status to string and output it
+        char *status_str = ft_itoa(data->state.last_exit_status);
+        ft_putstr_fd(status_str, 1);
+        free(status_str);
+    }
+	else{
+	env_type = &arg[1];
+	env_value = find_env_value(data->env, env_type);
+	if (env_value)
+		ft_putstr_fd(env_value, 1);
 	}
 }
-
+ */
 void	print_quoted_arg(char *arg, t_data *data, char quote_type)
 {
 	int		j;

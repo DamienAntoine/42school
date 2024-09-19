@@ -2,35 +2,73 @@
 
 ///// MUST handle  LLONG_MIN    LLONG_MAX too.
 
-void update_exit_status(t_data *data, long long status)
+
+void set_exit_status(long status, t_data *data)
 {
-    if (status < LLONG_MIN || status > LLONG_MAX)
+    long normalized_status;
+    if (status >= 0)
+    {
+        normalized_status = status % 256;
+    }
+    else
+    {
+        long modulo = status % 256;
+        normalized_status = 256 + modulo;
+        if (modulo == 0)
+            normalized_status = 0; // Handle cases where modulo is 0
+    }
+    data->state.last_exit_status = (int)normalized_status;
+}
+
+
+/* void update_exit_status(t_data *data, long long status)
+{
+    if (status < 0 || status > 255)
     {
         // Ensure the exit status is within the valid range of long long int
         status = 1; // Default to 1 on invalid status
     }
     data->state.last_exit_status = status;
 }
-
-void	ft_exit(t_data *data, int status)
+ */
+void	ft_exit(t_data *data)
 {
-	// Cleanup the environment
-	if (data->env)
-		free_env_list(data->env);
+	char *status_str = data->commands->args[0];
+	char	*endptr;
+	errno = 0;
+	long status = strtol(status_str, &endptr, 10); //ft_strtol needed+++++++++
 
-	// Cleanup commands and their components
-	if (data->commands)
-		free_command(data->commands);
+	if (data->commands->args[0] && !data->commands->args[1])
+	{
+		if (errno != 0 || *endptr != '\0')
+		{
+			ft_putstr_fd("exit: numeric argument required\n", STDERR_FILENO);
+			set_exit_status(2, data); // exit hello hardcode non numeric
+		}
+		else
+			set_exit_status(status, data);
+	}
+	else if (data->commands->args[1])
+	{
+		if (ft_isdigit(status_str[0]))
+		{
+			ft_putstr_fd("exit: too many arguments\n", STDERR_FILENO);
+			set_exit_status(1, data);
+		}
 
-	// Cleanup redirections (if separate from commands)
-	// Note: This assumes redirections are not part of commands
-	if (data->redirects)
-		free_redirections(data->redirects);
+		else
+		{
+            ft_putstr_fd("exit: numeric argument required\n", STDERR_FILENO);
+            set_exit_status(2, data); // Non-numeric first argument, exit with status 2
+        }
 
-	// Cleanup token list
-	if (data->toklist)
-		free_token_list(data->toklist);
+	}
+	else
+		set_exit_status(data->state.last_exit_status, data);
 
+
+	free_minishell(data);
+	/*
 	// Optionally print the exit status
 	if (status != 0)
 	{
@@ -38,7 +76,8 @@ void	ft_exit(t_data *data, int status)
 		ft_putnbr_fd(status, STDERR_FILENO);
 		ft_putstr_fd("\n", STDERR_FILENO);
 	}
-	update_exit_status(data, status);
+	set_exit_status(status, data);
+	*/
 	// Exit the shell process with the specified status
-	exit(status);
+	exit(data->state.last_exit_status);
 }

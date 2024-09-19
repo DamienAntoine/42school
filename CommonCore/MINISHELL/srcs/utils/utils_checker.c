@@ -35,7 +35,7 @@ int	is_valid_env_variable(const char *var) //only checks if env var has valid sy
 
 	i = 0;
 	if (var == NULL || var[0] == '\0')
-		return (0);
+		return (1);
 	if (var[0] == '?' && var[1] == '\0')
 		return (1);
 	if (!ft_isalnum(var[0]) && var[0] != '_')
