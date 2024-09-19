@@ -16,82 +16,6 @@ int	is_quote(char c)
 	return (c == '\'' || c == '\"');
 }
 
-void print_env_variable(char *arg, t_data *data)
-{
-    int i = 1; // Start after the '$'
-    char *var_name;
-    char *var_value;
-
-    if (arg[i] == '\0')
-    {
-        // No variable name after '$', print '$'
-        ft_putchar_fd('$', 1);
-        return;
-    }
-
-    if (arg[i] == '?')
-    {
-        // Variable is '?'
-        var_name = ft_substr(arg, i, 1); // var_name = "?"
-        i++; // Move index past '?'
-    }
-    else
-    {
-        // Parse variable name: letters, digits, underscores
-        int start = i;
-        while (arg[i] && (ft_isalnum(arg[i]) || arg[i] == '_'))
-            i++;
-        var_name = ft_substr(arg, start, i - start);
-    }
-
-    // Now expand the variable
-    if (ft_strcmp(var_name, "?") == 0)
-    {
-        char *status_str = ft_itoa(data->state.last_exit_status);
-        ft_putstr_fd(status_str, 1);
-        free(status_str);
-    }
-    else
-    {
-        var_value = find_env_value(data->env, var_name);
-        if (var_value)
-            ft_putstr_fd(var_value, 1);
-    }
-
-    free(var_name);
-
-    // Now print the rest of the argument
-    if (arg[i] != '\0')
-    {
-        ft_putstr_fd(&arg[i], 1);
-    }
-}
-
-/*
-void	print_env_variable(char *arg, t_data *data)
-{
-	char	*env_type;
-	char	*env_value;
-	char	*status_str;
-
-
-	if (arg[1] == '\0')
-		ft_putchar_fd('$', 1);
-   	else if (arg[1] == '?' && (arg[2] == '\0' || arg[2] == ' ')) // Ensure it's only $?
-    {
-        // Convert last exit status to string and output it
-        char *status_str = ft_itoa(data->state.last_exit_status);
-        ft_putstr_fd(status_str, 1);
-        free(status_str);
-    }
-	else{
-	env_type = &arg[1];
-	env_value = find_env_value(data->env, env_type);
-	if (env_value)
-		ft_putstr_fd(env_value, 1);
-	}
-}
- */
 void	print_quoted_arg(char *arg, t_data *data, char quote_type)
 {
 	int		j;
@@ -170,31 +94,199 @@ void	print_escape(char *arg)
 	}
 }
 
-void	process_argument(char *arg, t_data *data)
-// probably because of this function the program thinks the first character in double quotes is a quote,
-// so (echo "abcdefa") will print bcdef
+char	*ft_strcat(char *dest, const char *src)
 {
-	char quote_type;
-	char *processed_arg;
+	int	i;
+	int	j;
 
-	if (is_quote(arg[0]))
+	i = 0;
+	while (dest[i] != '\0')
+		i++;
+	j = 0;
+	while (src[j] != '\0')
 	{
-		quote_type = arg[0];
-		processed_arg = remove_balanced_quotes(arg);
-		if (quote_type == '\'')
-			print_escape(processed_arg);
-		else if (quote_type == '\"')
-		{
-			processed_arg = remove_balanced_quotes(arg);
-			print_quoted_arg(processed_arg, data, quote_type);
-		}
-		free(processed_arg);
+		dest[i] = src[j];
+		i++;
+		j++;
 	}
-	else if (arg[0] == '$')
-		print_env_variable(arg, data);
-	else
-		print_escape(arg);
+	dest[i] = '\0';
+	return (dest);
 }
+
+char	*expand_variable(const char *var_name, t_data *data)
+{
+	char	*value;
+
+	if (strcmp(var_name, "$") == 0)
+		return (strdup(""));
+	value = find_env_value(data->env, var_name);
+	if (value)
+	{
+		return (strdup(value));
+	}
+	else
+		return (strdup(""));
+}
+
+char	*process_double_quotes(const char *str, t_data *data)
+{
+	char	*result;
+	char	*temp;
+	int		start;
+	int		i;
+	char	*expanded_var;
+	char	*status_str;
+
+	result = malloc(ft_strlen(str) + 1);
+	if (!result)
+		return (NULL);
+	result[0] = '\0';
+	temp = NULL;
+	i = 0;
+	start = 0;
+	while (str[i])
+	{
+		if (str[i] == '$')
+		{
+			if (i > start)
+			{
+				temp = ft_substr(str, start, i - start);
+				ft_strcat(result, temp);
+				free(temp);
+			}
+			start = i + 1;
+			if (str[start] == '?' && (!str[start + 1] || !isalnum(str[start + 1])) )
+			{
+				status_str = ft_itoa(data->state.last_exit_status);
+				ft_strcat(result, status_str);
+				free(status_str);
+				i += 2;
+				start = i;
+				continue ;
+			}
+
+			while (str[i] && (isalnum(str[i]) || str[i] == '_'))
+            	i++;
+            temp = ft_substr(str, start, i - start);
+            if (temp && temp[0] != '\0')
+            {
+                expanded_var = expand_variable(temp, data);
+                ft_strcat(result, expanded_var);
+                free(expanded_var);
+            }
+            free(temp);
+            start = i;
+        }
+        i++;
+    }
+	if (start < i)
+	{
+		temp = ft_substr(str, start, i - start);
+		ft_strcat(result, temp);
+		free(temp);
+	}
+	return (result);
+}
+
+
+int	is_in_single_quote(const char *arg, int position)
+{
+	int	i;
+	int	single_quotes;
+
+	i = 0;
+	single_quotes = 0;
+	while (i < position)
+	{
+		if (arg[i] == '\'')
+			single_quotes++;
+		i++;
+	}
+	return (single_quotes % 2 != 0);
+}
+
+void	process_argument(char *arg, t_data *data)
+{
+	char	*processed_arg;
+	char	*temp;
+	char	*quote_buffer;
+	int		i;
+	int		start;
+	char	quote_type;
+	char	*expanded_content;
+
+	processed_arg = malloc(ft_strlen(arg) + 1);
+	if (!processed_arg)
+		return ;
+	processed_arg[0] = '\0';
+	quote_buffer = NULL;
+	i = 0;
+	start = 0;
+	while (arg[i])
+	{
+		if (is_quote(arg[i]))
+		{
+			quote_type = arg[i];
+			if (i > start)
+			{
+				temp = ft_substr(arg, start, i - start);
+				if (quote_type == '\'')
+					ft_strcat(processed_arg, temp);
+				else
+				{
+					expanded_content = process_double_quotes(temp, data);
+					ft_strcat(processed_arg, expanded_content);
+					free(expanded_content);
+				}
+				free(temp);
+			}
+			i++;
+			start = i;
+			quote_buffer = malloc(ft_strlen(arg) + 1);
+			if (!quote_buffer)
+			{
+				free(processed_arg);
+				return ;
+			}
+			quote_buffer[0] = '\0';
+			while (arg[i] && arg[i] != quote_type)
+			{
+				temp = ft_substr(arg, i, 1);
+				ft_strcat(quote_buffer, temp);
+				free(temp);
+				i++;
+			}
+			if (quote_type == '\'')
+				ft_strcat(processed_arg, quote_buffer);
+			else if (quote_type == '\"')
+			{
+				expanded_content = process_double_quotes(quote_buffer, data);
+				ft_strcat(processed_arg, expanded_content);
+				free(expanded_content);
+			}
+			free(quote_buffer);
+			start = ++i;
+		}
+		else
+			i++;
+	}
+	if (start < i)
+	{
+		temp = ft_substr(arg, start, i - start);
+		if (is_in_single_quote(arg, start))
+			ft_strcat(processed_arg, temp);
+		else
+		{
+			expanded_content = process_double_quotes(temp, data);
+			ft_strcat(processed_arg, expanded_content);
+			free(expanded_content);
+		}
+		free(temp);
+	}
+	print_escape(processed_arg);
+	free(processed_arg);
+}
+
 
 void	ft_echo(t_data *data)
 {
