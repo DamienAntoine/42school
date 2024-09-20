@@ -148,6 +148,7 @@ char	*process_double_quotes(const char *str, t_data *data)
 	{
 		if (str[i] == '$')
 		{
+			printf("i - start : %d\n", i - start);
 			if (i > start)
 			{
 				temp = ft_substr(str, start, i - start);
@@ -215,6 +216,7 @@ void	process_argument(char *arg, t_data *data)
 	char	quote_type;
 	char	*expanded_content;
 
+	ft_putstr_fd("test\n", 1);
 	processed_arg = malloc(ft_strlen(arg) + 1);
 	if (!processed_arg)
 		return ;
@@ -270,19 +272,17 @@ void	process_argument(char *arg, t_data *data)
 		else
 			i++;
 	}
-	if (start < i)
+	temp = ft_substr(arg, start, i - start);
+	if (is_in_single_quote(arg, start))
+		ft_strcat(processed_arg, temp);
+	else
 	{
-		temp = ft_substr(arg, start, i - start);
-		if (is_in_single_quote(arg, start))
-			ft_strcat(processed_arg, temp);
-		else
-		{
-			expanded_content = process_double_quotes(temp, data);
-			ft_strcat(processed_arg, expanded_content);
-			free(expanded_content);
-		}
-		free(temp);
+		expanded_content = process_double_quotes(temp, data);
+		ft_strcat(processed_arg, expanded_content);
+		free(expanded_content);
 	}
+	free(temp);
+
 	print_escape(processed_arg);
 	free(processed_arg);
 }

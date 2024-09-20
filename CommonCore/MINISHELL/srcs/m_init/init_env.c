@@ -35,7 +35,7 @@ void	init_env(char **env, t_env **cur_env)
 		new_node->type = ft_strdup(temp[0]);
 		new_node->value = ft_strdup(temp[1]);
 		new_node->next = NULL;
-		
+
 		if (!new_node->type || !new_node->value)
 		{
 			free(new_node->type);
@@ -55,12 +55,33 @@ void	init_env(char **env, t_env **cur_env)
 	}
 }
 
-void update_or_add_env_variable(t_env **env_list, const char *name, const char *value) 
+void print_env_variable(const char *arg, t_data *data)
+{
+    if (strcmp(arg, "$?") == 0)
+    {
+        // Print the last exit status
+        printf("%d", data->state.last_exit_status);
+    }
+    else
+    {
+        // Remove the `$` prefix
+        const char *var_name = arg + 1; // Skip the `$`
+
+        // Get the value of the environment variable
+        char *value = find_env_value(data->env, var_name);
+        if (value)
+        {
+            printf("%s", value); // Print the value if found
+        }
+    }
+}
+
+void update_or_add_env_variable(t_env **env_list, const char *name, const char *value)
 {
     t_env	*env;
 	t_env	*new_node;
 	env = *env_list;
-    while (env != NULL) 
+    while (env != NULL)
 	{
         if (ft_strcmp(env->type, name) == 0) {
             free(env->value); // Free the old value
@@ -71,7 +92,7 @@ void update_or_add_env_variable(t_env **env_list, const char *name, const char *
     }
     // If not found, append a new node
     new_node = malloc(sizeof(t_env));
-    if (new_node) 
+    if (new_node)
 	{
         new_node->type = ft_strdup(name);
         new_node->value = ft_strdup(value);
@@ -81,15 +102,17 @@ void update_or_add_env_variable(t_env **env_list, const char *name, const char *
 }
 
 
-char	*find_env_value(t_env *env, const char *name)
+char *find_env_value(t_env *env, const char *name)
 {
-	// printf("fell into find_env_value function\n");
-	while (env != NULL)
-	{
-		//	printf("checking variable: %s\n", env->type);
-		if (!ft_strcmp(env->type, name))
-			return (env->value);
-		env = env->next;
-	}
-	return (NULL); // Return NULL if the variable is not found
+    if (!env || !name)
+        return NULL;  // Ensure env is valid
+
+    while (env != NULL) {
+        if (!ft_strcmp(env->type, name))
+            return env->value; // Make sure this value is dynamically allocated
+        env = env->next;
+    }
+    return NULL;
 }
+
+

@@ -15,49 +15,19 @@
 
 size_t	ft_strlcat(char *dest, const char *src, size_t size)
 {
-	size_t	i;
+	size_t i;
 	size_t	j;
-	char	*ptr_src;
 
-	ptr_src = (char *)src;
 	i = 0;
-	while (i < size && *dest)
-	{
-		dest++;
-		i++;
-	}
-	if (i == size)
-		return (i + ft_strlen(src));
 	j = 0;
-	while (ptr_src[j])
+	while (i < size && dest[i])
+		i++;
+	while (j < size - i - 1 && src[j])
 	{
-		if (j < size - i - 1)
-			*dest++ = ptr_src[j];
+		dest[i + j] = src[j];
 		j++;
 	}
-	*dest = 0;
-	return (j + i);
+	if (i < size)
+		dest[i + j] = '\0';
+	return (i + j);
 }
-/*
-#include <stdio.h>
-int	main(void)
-{
-	char *dest;
-	const char *src = " World";
-	size_t size = 12;
-	size_t res;
-
-	dest = (char *)malloc(sizeof(char) * (ft_strlen("Hello") + size + 1));
-	if (dest == NULL)
-		return (1);
-
-	strcpy(dest, "Hello");
-	res = ft_strlcat(dest, src, size);
-
-	printf("Return value: %zu\n", res);
-	printf("Concatenated str: %s\n", dest);
-
-	free(dest);
-	return (0);
-}
-*/
