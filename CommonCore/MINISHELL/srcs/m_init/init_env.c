@@ -105,11 +105,11 @@ void update_or_add_env_variable(t_env **env_list, const char *name, const char *
 char *find_env_value(t_env *env, const char *name)
 {
     if (!env || !name)
-        return NULL;  // Ensure env is valid
+        return NULL;
 
     while (env != NULL) {
         if (!ft_strcmp(env->type, name))
-            return env->value; // Make sure this value is dynamically allocated
+            return env->value;
         env = env->next;
     }
     return NULL;
