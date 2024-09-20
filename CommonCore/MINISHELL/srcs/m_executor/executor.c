@@ -5,7 +5,7 @@ void	execute_builtin(t_command *cmdtable, t_data *data)
 	if (ft_strcmp(cmdtable->cmds, "cd") == 0)
 		ft_cd(data);
 	else if (ft_strcmp(cmdtable->cmds, "echo") == 0)
-		ft_echo(data, data->commands->args);
+		ft_echo(data);
 		//ft_echo(data->toklist, &(data->state), data->env);
 	else if (ft_strcmp(cmdtable->cmds, "env") == 0)
 		ft_env(data->env);

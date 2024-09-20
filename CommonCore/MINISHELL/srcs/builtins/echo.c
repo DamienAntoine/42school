@@ -117,15 +117,14 @@ char	*expand_variable(const char *var_name, t_data *data)
 {
 	char	*value;
 
-	if (strcmp(var_name, "$") == 0)
-		return (strdup(""));
+	if (ft_strcmp(var_name, "$") == 0)
+		return (ft_strdup(""));
 	value = find_env_value(data->env, var_name);
+	printf("env value %s\nenv name %s\n", value, var_name);
 	if (value)
-	{
-		return (strdup(value));
-	}
+		return (ft_strdup(value));
 	else
-		return (strdup(""));
+		return (ft_strdup(""));
 }
 
 char	*process_double_quotes(const char *str, t_data *data)
@@ -146,16 +145,20 @@ char	*process_double_quotes(const char *str, t_data *data)
 	start = 0;
 	while (str[i])
 	{
-		if (str[i] == '$')
+		if (str[i] == '$')//echo 123$PWD: i=3
 		{
-			printf("i - start : %d\n", i - start);
-			if (i > start)
+			if (i > start)//put everything before $ in temp
 			{
 				temp = ft_substr(str, start, i - start);
 				ft_strcat(result, temp);
 				free(temp);
 			}
-			start = i + 1;
+
+			i++;//skip $
+			start = i;//start = first char after $
+			printf("i - start : %d\n", i - start);
+			printf("i : %d\n", i);
+			printf("start : %d\n", start);
 			if (str[start] == '?' && (!str[start + 1] || !isalnum(str[start + 1])) )
 			{
 				status_str = ft_itoa(data->state.last_exit_status);
@@ -165,17 +168,21 @@ char	*process_double_quotes(const char *str, t_data *data)
 				start = i;
 				continue ;
 			}
-
 			while (str[i] && (isalnum(str[i]) || str[i] == '_'))
             	i++;
-            temp = ft_substr(str, start, i - start);
+            temp = ft_substr(str, start, i);//extract env var name into temp
+			printf("temp content: %s\n", temp);
+
             if (temp && temp[0] != '\0')
             {
                 expanded_var = expand_variable(temp, data);
+				printf("%s\n", expanded_var);
                 ft_strcat(result, expanded_var);
                 free(expanded_var);
             }
+			printf("crash1: %s, %p\n", temp, temp);
             free(temp);
+			printf("crash2\n");
             start = i;
         }
         i++;
@@ -277,6 +284,7 @@ void	process_argument(char *arg, t_data *data)
 		ft_strcat(processed_arg, temp);
 	else
 	{
+		printf("temp before process: '%s'\n", temp);
 		expanded_content = process_double_quotes(temp, data);
 		ft_strcat(processed_arg, expanded_content);
 		free(expanded_content);
