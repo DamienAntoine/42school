@@ -28,7 +28,10 @@ void	ft_cd(t_data *cur)
 	// Check if too many arguments are passed
 	if (cur->commands->args[1])
 	{
-		printf_and_free("Too many args for cd command\n", oldpwd);
+		errno = EINVAL;
+		ft_putstr_fd(" too many arguments\n", STDERR_FILENO);
+		free(oldpwd);
+		cur->state.last_exit_status = 1;
 		return ;
 	}
 
@@ -40,6 +43,7 @@ void	ft_cd(t_data *cur)
 		if (!target_dir)
 		{
 			printf_and_free("Home directory not set\n", oldpwd);
+			cur->state.last_exit_status = 1;
 			return ;
 		}
 	}
@@ -51,6 +55,7 @@ void	ft_cd(t_data *cur)
 		if (!oldpwd_env || ft_strlen(oldpwd_env) == 0)
 		{
 			printf_and_free("OLDPWD not set\n", oldpwd);
+			cur->state.last_exit_status = 1;
 			return ;
 		}
 		printf("%s\n", oldpwd_env);
@@ -64,6 +69,7 @@ void	ft_cd(t_data *cur)
 		{
 			printf("cd: %s: No such environment variable\n", &cur->commands->args[0][1]);
 			free(oldpwd);
+			cur->state.last_exit_status = 1;
 			return;
 		}
 	}
@@ -73,6 +79,7 @@ void	ft_cd(t_data *cur)
 	if (chdir(target_dir) != 0)
 	{
 		perror_and_free("cd", oldpwd);
+		cur->state.last_exit_status = 1;
 		return ;
 	}
 
@@ -81,6 +88,7 @@ void	ft_cd(t_data *cur)
 	if (!newpwd)
 	{
 		perror_and_free("getcwd", oldpwd);
+		cur->state.last_exit_status = 1;
 		return ;
 	}
 
