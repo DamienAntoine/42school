@@ -140,9 +140,9 @@ static void export_with_arg(t_env **env_list, char *arg, t_data *data)
 
 int is_valid_arg(const char *arg)
 {
-    int i = 0;
+    int i;
+    i = 0;
 
-    // Empty string is invalid
     if (!arg || !arg[0])
         return (0);
 
@@ -175,20 +175,14 @@ void    handle_export(t_data *data)
         {
             if (!is_valid_arg(data->commands->args[i]))
             {
-                // Print the error message for invalid identifiers
                 ft_putstr_fd("export: `", STDERR_FILENO);
                 ft_putstr_fd(data->commands->args[i], STDERR_FILENO);
                 ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
-
-                // Set the exit status to 1
                 data->state.last_exit_status = 1;
                 exit(data->state.last_exit_status);
             }
             else
-            {
                     export_with_arg(&data->env, data->commands->args[i], data);
-            }
-
             i++;
         }
     }
