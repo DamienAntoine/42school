@@ -126,6 +126,57 @@ char	*expand_variable(const char *var_name, t_data *data)
 		return (ft_strdup(""));
 }
 
+size_t	estimate_buffer_size(const char *str, t_data *data)
+{
+	size_t	size;
+	int		i;
+	int		start;
+	char	*var_name;
+	char	*expanded_var;
+
+	size = ft_strlen(str) + 1;
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '$')
+		{
+			i++;
+			if (str[i] == '?') // for $? exit status
+			{
+				size += 11;
+				// maximum size of an int converted to string (plus sign and null byte)
+				i++;
+			}
+			else
+			{
+				start = i;
+				while (str[i] && (isalnum(str[i]) || str[i] == '_'))
+					i++;
+				var_name = ft_substr(str, start, i - start);
+				expanded_var = expand_variable(var_name, data);
+				size += ft_strlen(expanded_var);
+				free(var_name);
+				free(expanded_var);
+			}
+		}
+		else
+			i++;
+	}
+	return (size);
+}
+
+void	ft_strlcat_char(char *dst, char c, size_t dstsize)
+{
+	size_t	dst_len;
+
+	dst_len = ft_strlen(dst);
+	if (dst_len + 1 < dstsize)
+	{
+		dst[dst_len] = c;
+		dst[dst_len + 1] = '\0';
+	}
+}
+
 char	*process_double_quotes(const char *str, t_data *data)
 {
 	char	*result;
@@ -135,9 +186,9 @@ char	*process_double_quotes(const char *str, t_data *data)
 	char	*expanded_var;
 	char	*status_str;
 	size_t	buffer_size;
-	size_t	curr_len;
 
-	buffer_size = ft_strlen(str) + 1; // Initial size assumption (may expand)
+	// calculate buffer size to avoid realloc function
+	buffer_size = estimate_buffer_size(str, data);
 	result = malloc(buffer_size);
 	if (!result)
 		return (NULL);
@@ -148,52 +199,57 @@ char	*process_double_quotes(const char *str, t_data *data)
 	{
 		if (str[i] == '$')
 		{
-			if (i > start) // Append everything before '$' to result
+			if (i > start) // put everything thats before $ inside result string
 			{
 				temp = ft_substr(str, start, i - start);
-				curr_len = ft_strlen(result) + ft_strlen(temp) + 1;
-				if (curr_len > buffer_size) // Resize if needed
-				{
-					buffer_size = curr_len;
-					result = realloc(result, buffer_size);
-				}
 				ft_strlcat(result, temp, buffer_size);
 				free(temp);
 			}
-			i++; // Move past '$'
+
+			i++; // skip '$'
 			start = i;
 
-			// Handle $? for exit status
+
+			// handle $?
 			if (str[start] == '?' && (!str[start + 1] || !isalnum(str[start + 1])))
 			{
 				status_str = ft_itoa(data->state.last_exit_status);
-				curr_len = ft_strlen(result) + ft_strlen(status_str) + 1;
-				if (curr_len > buffer_size)
-				{
-					buffer_size = curr_len;
-					result = realloc(result, buffer_size);
-				}
 				ft_strlcat(result, status_str, buffer_size);
 				free(status_str);
 				i++;
 				start = i;
+				continue ;
+			}
+			else if (str[start] == '?' && isalnum(str[start + 1])) // handle $?HELLO)
+			{
+				status_str = ft_itoa(data->state.last_exit_status);
+				ft_strlcat(result, status_str, buffer_size);
+				free(status_str);
+				i++;
+				// append characters after $?
+				while (isalnum(str[i]) || str[i] == '_')
+				{
+					ft_strlcat_char(result, str[i], buffer_size);
+					i++;
+				}
+				start = i;
 				continue;
 			}
 
-			// Handle environment variables
+
+			if (!str[start] || !(isalnum(str[start]) || str[start] == '_'))//print $ if not followed by anything
+			{
+				ft_strlcat(result, "$", buffer_size);
+				start = i;
+				continue ;
+			}
+			// env variables
 			while (str[i] && (isalnum(str[i]) || str[i] == '_'))
 				i++;
 			temp = ft_substr(str, start, i - start);
-
 			if (temp && temp[0] != '\0')
 			{
 				expanded_var = expand_variable(temp, data);
-				curr_len = ft_strlen(result) + ft_strlen(expanded_var) + 1;
-				if (curr_len > buffer_size)
-				{
-					buffer_size = curr_len;
-					result = realloc(result, buffer_size);
-				}
 				ft_strlcat(result, expanded_var, buffer_size);
 				free(expanded_var);
 			}
@@ -202,22 +258,14 @@ char	*process_double_quotes(const char *str, t_data *data)
 		}
 		i++;
 	}
-	if (start < i) // Append remaining part after the last '$'
+	if (start < i) // append remaining part after the last '$'
 	{
 		temp = ft_substr(str, start, i - start);
-		curr_len = ft_strlen(result) + ft_strlen(temp) + 1;
-		if (curr_len > buffer_size)
-		{
-			buffer_size = curr_len;
-			result = realloc(result, buffer_size);
-		}
 		ft_strlcat(result, temp, buffer_size);
 		free(temp);
 	}
 	return (result);
 }
-
-
 
 int	is_in_single_quote(const char *arg, int position)
 {
@@ -252,7 +300,6 @@ void	process_argument(char *arg, t_data *data)
 	if (!processed_arg)
 		return ;
 	processed_arg[0] = '\0';
-
 	quote_buffer = NULL;
 	i = 0;
 	start = 0;
@@ -275,7 +322,8 @@ void	process_argument(char *arg, t_data *data)
 				else
 				{
 					expanded_content = process_double_quotes(temp, data);
-					curr_len = ft_strlen(processed_arg) + ft_strlen(expanded_content) + 1;
+					curr_len = ft_strlen(processed_arg)
+						+ ft_strlen(expanded_content) + 1;
 					if (curr_len > buffer_size)
 					{
 						buffer_size = curr_len;
@@ -288,7 +336,6 @@ void	process_argument(char *arg, t_data *data)
 			}
 			i++;
 			start = i;
-
 			quote_buffer = malloc(ft_strlen(arg) + 1);
 			if (!quote_buffer)
 			{
@@ -296,7 +343,6 @@ void	process_argument(char *arg, t_data *data)
 				return ;
 			}
 			quote_buffer[0] = '\0';
-
 			while (arg[i] && arg[i] != quote_type)
 			{
 				temp = ft_substr(arg, i, 1);
@@ -310,7 +356,6 @@ void	process_argument(char *arg, t_data *data)
 				free(temp);
 				i++;
 			}
-
 			curr_len = ft_strlen(processed_arg) + ft_strlen(quote_buffer) + 1;
 			if (curr_len > buffer_size)
 			{
@@ -322,7 +367,8 @@ void	process_argument(char *arg, t_data *data)
 			else if (quote_type == '\"')
 			{
 				expanded_content = process_double_quotes(quote_buffer, data);
-				curr_len = ft_strlen(processed_arg) + ft_strlen(expanded_content) + 1;
+				curr_len = ft_strlen(processed_arg)
+					+ ft_strlen(expanded_content) + 1;
 				if (curr_len > buffer_size)
 				{
 					buffer_size = curr_len;
@@ -361,12 +407,9 @@ void	process_argument(char *arg, t_data *data)
 		free(expanded_content);
 	}
 	free(temp);
-
 	print_escape(processed_arg);
 	free(processed_arg);
 }
-
-
 
 void	ft_echo(t_data *data)
 {
