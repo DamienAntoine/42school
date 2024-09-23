@@ -42,7 +42,7 @@ static t_env *clone_node(t_env *node) {
     return new_node;
 }
 
-void print_export(t_env *env_list, t_state *state) {
+void print_export(t_env *env_list, t_data *data) {
     t_env *current = env_list;
     t_env *sorted_list = NULL;
     t_env *new_node;
@@ -76,10 +76,10 @@ void print_export(t_env *env_list, t_state *state) {
         sorted_list = sorted_list->next;
         free(current);  // Free the cloned node
     }
-    state->last_exit_status = 0;
+    data->state.last_exit_status = 0;
 }
 
-static void export_with_arg(t_env **env_list, char *arg, t_state *state)
+static void export_with_arg(t_env **env_list, char *arg, t_data *data)
 {   
     char *name = ft_strtok(arg, "=");
     char *new_value = ft_strtok(NULL, "");
@@ -100,10 +100,10 @@ static void export_with_arg(t_env **env_list, char *arg, t_state *state)
         (*current)->value = ft_strdup(new_value);
         if ((*current)->value == NULL) {
             perror("Memory allocation failed for value");
-            state->last_exit_status = 1;  // Indicate failure
+            data->state.last_exit_status  = 1;  // Indicate failure
             return;
         }
-        state->last_exit_status = 0;  // Indicate success
+        data->state.last_exit_status = 0;  // Indicate success
     } 
     else 
     {
@@ -111,7 +111,7 @@ static void export_with_arg(t_env **env_list, char *arg, t_state *state)
         t_env *new_node = malloc(sizeof(t_env));
         if (!new_node) {
             perror("Failed to allocate memory for new environment variable");
-            state->last_exit_status = 1;  // Indicate failure
+            data->state.last_exit_status = 1;  // Indicate failure
             return;
         }
         new_node->type = ft_strdup(name);
@@ -122,54 +122,69 @@ static void export_with_arg(t_env **env_list, char *arg, t_state *state)
             free(new_node->type);  // Clean up in case of partial failure
             free(new_node->value);
             free(new_node);
-            state->last_exit_status = 1;  // Indicate failure
+            data->state.last_exit_status =  1;  // Indicate failure
             return;
         }
 
         *current = new_node;  // Append the new node at the end of the list
-        state->last_exit_status = 0;  // Indicate success
+        data->state.last_exit_status =  0;  // Indicate success
     }
 }
-/*
-static void export_with_arg(t_env **env_list, char *arg)
-{   
-    char    *name = ft_strtok(arg, "=");
-    char    *new_value = ft_strtok(NULL, "");
 
-    if (new_value == NULL)
-        new_value = "";  // Ensure new_value is not NULL
 
-    // Find the end of the list or the existing variable to update
-    t_env **current = env_list;
-    while (*current && ft_strcmp((*current)->type, name) != 0) {
-        current = &(*current)->next;
+int is_valid_arg(const char *arg)
+{
+    int i = 0;
+
+    // Empty string is invalid
+    if (!arg || !arg[0])
+        return (0);
+
+    // The first character must be a letter or underscore
+    if (!ft_isalpha(arg[0]) && arg[0] != '_')
+        return (0);
+
+    // Traverse the rest of the string
+    while (arg[i] && arg[i] != '=')
+    {
+        // Valid characters are letters, digits, and underscores
+        if (!ft_isalnum(arg[i]) && arg[i] != '_')
+            return (0);
+        i++;
     }
 
-    if (*current) {
-        // Update existing variable
-        free((*current)->value);
-        (*current)->value = ft_strdup(new_value);
-    } else {
-        // Append new variable at the end
-        t_env *new_node = malloc(sizeof(t_env));
-        if (!new_node) {
-            perror("Failed to allocate memory for new environment variable");
-            return;
-        }
-        new_node->type = ft_strdup(name);
-        new_node->value = ft_strdup(new_value);
-        new_node->next = NULL;
-
-        *current = new_node;  // Append the new node at the end of the list
-    }
+    return (1);  // Valid identifier
 }
-*/
 
-
-void    handle_export(t_env **lst, char **args, t_state *state)
+void    handle_export(t_data *data)
 {
     int i;
     i = 1;
-    while (args[i])
-        export_with_arg(lst, args[i++], state);
+
+    if (data->toklist->token_count == 1)
+        print_export(data->env, data);
+    else
+    {
+        while (data->commands->args[i])
+        {
+            if (!is_valid_arg(data->commands->args[i]))
+            {
+                // Print the error message for invalid identifiers
+                ft_putstr_fd("export: `", STDERR_FILENO);
+                ft_putstr_fd(data->commands->args[i], STDERR_FILENO);
+                ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+
+                // Set the exit status to 1
+                data->state.last_exit_status = 1;
+                return ;
+            }
+            else
+            {
+            
+                    export_with_arg(&data->env, data->commands->args[i], data);
+            }
+
+            i++;
+        }
+    }
 }

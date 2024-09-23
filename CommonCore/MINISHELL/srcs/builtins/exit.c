@@ -33,14 +33,12 @@ void set_exit_status(long status, t_data *data)
  */
 void	ft_exit(t_data *data)
 {
-	char *status_str = data->commands->args[0];
-	char	*endptr;
-	errno = 0;
-	long status = strtol(status_str, &endptr, 10); //ft_strtol needed+++++++++
+	char *status_str = remove_balanced_quotes(data->commands->args[0]);
+	int status = ft_atoi(status_str); //ft_strtol needed+++++++++
 
 	if (data->commands->args[0] && !data->commands->args[1])
 	{
-		if (errno != 0 || *endptr != '\0')
+		if (ft_isalpha(status_str[0]))
 		{
 			ft_putstr_fd("exit: numeric argument required\n", STDERR_FILENO);
 			set_exit_status(2, data); // exit hello hardcode non numeric

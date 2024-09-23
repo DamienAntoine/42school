@@ -23,10 +23,11 @@ void	execute_builtin(t_command *cmdtable, t_data *data)
 	}
 	else if (ft_strcmp(cmdtable->cmds, "export") == 0)
 	{
-		if (data->toklist->token_count == 1)
+		handle_export(data);
+/* 		if (data->toklist->token_count == 1)
 			print_export(data->env, &(data->state));
 		else
-			handle_export(&data->env, data->toklist->tokens, &(data->state));
+			handle_export(&data->env, data->toklist->tokens, &(data->state)); */
 	}
 	else if (ft_strcmp(cmdtable->cmds, "cat") == 0)
 		ft_cat(data);
