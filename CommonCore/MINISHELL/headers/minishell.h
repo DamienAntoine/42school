@@ -70,6 +70,9 @@ typedef struct s_token_list
 
 //####  need to be sorted later  ########################
 
+void	ft_strlcat_char(char *dst, char c, size_t dstsize);
+char	*expand_variable(const char *var_name, t_data *data);
+size_t	estimate_buffer_size(const char *str, t_data *data);
 void print_env_variable(const char *arg, t_data *data);
 char *remove_balanced_quotes(const char *input);
 int		are_quotes_balanced(const char *input);
@@ -177,7 +180,7 @@ int	is_valid_env_variable(const char *var);
 int	ft_check_syntax(t_token_list *toklist);
 
 //tokenize.c
-char	**ft_tokenize(t_token_list *toklist, char *input);
+char	**ft_tokenize(t_data *data, char *input);
 char	*ft_strtok(char *str, const char *delimiter);
 size_t ft_toklen(const char *str, const char *delim);
 

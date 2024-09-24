@@ -6,13 +6,13 @@
 void set_exit_status(long status, t_data *data)
 {
     long normalized_status;
+    long modulo;
+
     if (status >= 0)
-    {
         normalized_status = status % 256;
-    }
     else
     {
-        long modulo = status % 256;
+        modulo = status % 256;
         normalized_status = 256 + modulo;
         if (modulo == 0)
             normalized_status = 0; // Handle cases where modulo is 0

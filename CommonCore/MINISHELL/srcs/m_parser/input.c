@@ -99,7 +99,7 @@ int	are_quotes_balanced(const char *input)
 		}
 		i++;
 	}
-	return (first_quote == 0);
+	return (first_quote);
 }
 
 char	*get_full_input(void)

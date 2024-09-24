@@ -65,34 +65,7 @@ void	print_quoted_arg(char *arg, t_data *data, char quote_type)
 	}
 }
 
-void	print_escape(char *arg)
-{
-	int	j;
 
-	j = 0;
-	while (arg[j])
-	{
-		if (arg[j] == '\\' && arg[j + 1])
-		{
-			j++;
-			if (arg[j] == 'n')
-				ft_putchar_fd('\n', 1);
-			else if (arg[j] == 't')
-				ft_putchar_fd('\t', 1);
-			else if (arg[j] == '\\')
-				ft_putchar_fd('\\', 1);
-			else if (arg[j] == '\'')
-				ft_putchar_fd('\'', 1);
-			else if (arg[j] == '\"')
-				ft_putchar_fd('\"', 1);
-			else
-				ft_putchar_fd(arg[j], 1);
-		}
-		else
-			ft_putchar_fd(arg[j], 1);
-		j++;
-	}
-}
 
 char	*ft_strcat(char *dest, const char *src)
 {
@@ -243,8 +216,9 @@ char	*process_double_quotes(const char *str, t_data *data)
 				start = i;
 				continue ;
 			}
+
 			// env variables
-			while (str[i] && (isalnum(str[i]) || str[i] == '_'))
+			while (str[i] && (isalnum(str[i]) || str[i] == '_' || str[i] == '=' || str[i] == ':'))
 				i++;
 			temp = ft_substr(str, start, i - start);
 			if (temp && temp[0] != '\0')
@@ -283,7 +257,7 @@ int	is_in_single_quote(const char *arg, int position)
 	return (single_quotes % 2 != 0);
 }
 
-void	process_argument(char *arg, t_data *data)
+/*void	process_argument(char *arg, t_data *data)
 {
 	char	*processed_arg;
 	char	*temp;
@@ -409,6 +383,35 @@ void	process_argument(char *arg, t_data *data)
 	free(temp);
 	print_escape(processed_arg);
 	free(processed_arg);
+}*/
+
+void	print_escape(char *arg)
+{
+	int	j;
+
+	j = 0;
+	while (arg[j])
+	{
+		if (arg[j] == '\\' && arg[j + 1])
+		{
+			j++;
+			if (arg[j] == 'n')
+				ft_putchar_fd('\n', 1);
+			else if (arg[j] == 't')
+				ft_putchar_fd('\t', 1);
+			else if (arg[j] == '\\')
+				ft_putchar_fd('\\', 1);
+			else if (arg[j] == '\'')
+				ft_putchar_fd('\'', 1);
+			else if (arg[j] == '\"')
+				ft_putchar_fd('\"', 1);
+			else
+				ft_putchar_fd(arg[j], 1);
+		}
+		else
+			ft_putchar_fd(arg[j], 1);
+		j++;
+	}
 }
 
 void	ft_echo(t_data *data)
@@ -423,7 +426,8 @@ void	ft_echo(t_data *data)
 	while (data->commands->args[i])
 	{
 		arg = data->commands->args[i];
-		process_argument(arg, data);
+		//process_argument(arg, data);
+        print_escape(arg);
 		if (data->commands->args[i + 1])
 			ft_putchar_fd(' ', 1);
 		i++;

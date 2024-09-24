@@ -58,7 +58,7 @@ int	handle_input(t_data *data)
 		free_minishell(data);
 		return (0);
 	}
-	data->toklist->tokens = ft_tokenize(data->toklist, input);
+	data->toklist->tokens = ft_tokenize(data, input);
 	free(input);
 	return (data->toklist->tokens != NULL); //returns 1 if tokenize worked and 0 if not
 }
@@ -93,7 +93,7 @@ int	main(int argc, char **argv, char **env)
 		if (!has_synt_errors(data->toklist))
 		{
 			ft_sort_tokens(data);
-			//printcommands(data);//delete when everything is finished
+			printcommands(data);//delete when everything is finished
 			execute_command(data);
 
 			if (data->redirects)

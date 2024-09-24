@@ -216,7 +216,7 @@ void	send_command(t_data *data)
 
 		if (cmd_path)
 		{
-			execve(cmd_path, full_args, envp);//current error here: arguments are not recognized by non-builtin commands
+			execve(cmd_path, full_args, envp);
 			perror("execve");
 		}
 		else

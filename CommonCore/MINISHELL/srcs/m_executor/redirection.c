@@ -7,6 +7,7 @@ int open_redirection(t_redirection *redir)
 {
     int fd;
 
+    fd = -1;
     if (redir->type == 0) 
     {  // Input
         fd = open(redir->file, O_RDONLY);
