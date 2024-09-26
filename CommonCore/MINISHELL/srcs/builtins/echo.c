@@ -11,11 +11,6 @@ void	handle_flags(t_data *data, int *i, int *n_flag)
 	}
 }
 
-int	is_quote(char c)
-{
-	return (c == '\'' || c == '\"');
-}
-
 void	print_quoted_arg(char *arg, t_data *data, char quote_type)
 {
 	int		j;
@@ -86,19 +81,6 @@ char	*ft_strcat(char *dest, const char *src)
 	return (dest);
 }
 
-char	*expand_variable(const char *var_name, t_data *data)
-{
-	char	*value;
-
-	if (ft_strcmp(var_name, "$") == 0)
-		return (ft_strdup(""));
-	value = find_env_value(data->env, var_name);
-	if (value)
-		return (ft_strdup(value));
-	else
-		return (ft_strdup(""));
-}
-
 size_t	estimate_buffer_size(const char *str, t_data *data)
 {
 	size_t	size;
@@ -150,96 +132,7 @@ void	ft_strlcat_char(char *dst, char c, size_t dstsize)
 	}
 }
 
-char	*process_double_quotes(const char *str, t_data *data)
-{
-	char	*result;
-	char	*temp;
-	int		start;
-	int		i;
-	char	*expanded_var;
-	char	*status_str;
-	size_t	buffer_size;
 
-	// calculate buffer size to avoid realloc function
-	buffer_size = estimate_buffer_size(str, data);
-	result = malloc(buffer_size);
-	if (!result)
-		return (NULL);
-	result[0] = '\0';
-	i = 0;
-	start = 0;
-	while (str[i])
-	{
-		if (str[i] == '$')
-		{
-			if (i > start) // put everything thats before $ inside result string
-			{
-				temp = ft_substr(str, start, i - start);
-				ft_strlcat(result, temp, buffer_size);
-				free(temp);
-			}
-
-			i++; // skip '$'
-			start = i;
-
-
-			// handle $?
-			if (str[start] == '?' && (!str[start + 1] || !isalnum(str[start + 1])))
-			{
-				status_str = ft_itoa(data->state.last_exit_status);
-				ft_strlcat(result, status_str, buffer_size);
-				free(status_str);
-				i++;
-				start = i;
-				continue ;
-			}
-			else if (str[start] == '?' && isalnum(str[start + 1])) // handle $?HELLO)
-			{
-				status_str = ft_itoa(data->state.last_exit_status);
-				ft_strlcat(result, status_str, buffer_size);
-				free(status_str);
-				i++;
-				// append characters after $?
-				while (isalnum(str[i]) || str[i] == '_')
-				{
-					ft_strlcat_char(result, str[i], buffer_size);
-					i++;
-				}
-				start = i;
-				continue;
-			}
-
-
-			if (!str[start] || !(isalnum(str[start]) || str[start] == '_'))//print $ if not followed by anything
-			{
-				ft_strlcat(result, "$", buffer_size);
-				start = i;
-				continue ;
-			}
-
-			// env variables
-			while (str[i] && (isalnum(str[i]) || str[i] == '_' || str[i] == '=' || str[i] == ':'))
-				i++;
-			temp = ft_substr(str, start, i - start);
-			if (temp && temp[0] != '\0')
-			{
-				expanded_var = expand_variable(temp, data);
-				ft_strlcat(result, expanded_var, buffer_size);
-				free(expanded_var);
-			}
-			free(temp);
-			start = i;
-		}
-		i++;
-	}
-	if (start < i) // append remaining part after the last '$'
-	{
-		temp = ft_substr(str, start, i - start);
-		ft_strlcat(result, temp, buffer_size);
-		free(temp);
-	}
-	return (result);
-}
 
 int	is_in_single_quote(const char *arg, int position)
 {

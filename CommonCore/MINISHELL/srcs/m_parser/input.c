@@ -1,6 +1,6 @@
 #include "../../headers/minishell.h"
 
-/* 
+/*
 
 // Helper function to remove only outer balanced quotes and preserve inner content (newlines, etc.)
 char *remove_balanced_quotes(const char *input)
@@ -13,7 +13,7 @@ char *remove_balanced_quotes(const char *input)
 
 //    int single_quote = 0, double_quote = 0;
     int i = 0, j = 0;
-    
+
     char *result = malloc(len + 1); // Allocate memory for the result string
 
     // Check if the first and last characters are matching quotes
@@ -69,7 +69,7 @@ char *remove_balanced_quotes(const char *input)
 
     result[j] = '\0';  // Null-terminate the result string
     return result;
-}  
+}
 */
 
 int	are_quotes_balanced(const char *input)
@@ -99,7 +99,7 @@ int	are_quotes_balanced(const char *input)
 		}
 		i++;
 	}
-	return (first_quote);
+	return (first_quote == 0);
 }
 
 char	*get_full_input(void)

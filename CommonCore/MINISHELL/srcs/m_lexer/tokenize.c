@@ -1,26 +1,37 @@
 #include "../../headers/minishell.h"
 
-//here expand env variables if they are not inside singlequotes
-//handle $ and $?
-//handle quotes
-//so echo only prints every arguments it gets literally and doesnt do any more checks, and we can use the expanded variabled in other things easier too
+// Expand environment variables if they are not inside single quotes
+// Handle $ and $? expansions inside double quotes
+// This version only prints arguments literally in echo, allowing the expanded variables to be used elsewhere
 
-int    handle_quotes(const char *str, t_data *data)
+int	is_quote(char c)
 {
-    int i;
-
-    i = 0;
-    if (are_quotes_balanced(str) == 2)//balanced double quotes
-    {
-        remove_balanced_quotes(str);
-        return (0);
-    }
-    if (are_quotes_balanced(str) == 1)//balanced single quotes
-        return (1);
-    return (0);
+	return (c == '\'' || c == '\"');
 }
 
-char	*process_tokens(const char *str, t_data *data)
+char *expand_variable(const char *var_name, t_data *data)
+{
+	char	*value;
+
+	printf("Trying to expand variable: %s\n", var_name); // Debug print
+	if (ft_strcmp(var_name, "$") == 0)
+		return (ft_strdup(""));
+
+	value = find_env_value(data->env, var_name);
+	if (value)
+	{
+		printf("Found value: %s\n", value); // Debug print
+		return (ft_strdup(value));
+	}
+	else
+	{
+		printf("Variable not found in environment\n"); // Debug print
+		return (ft_strdup(""));
+	}
+}
+
+
+char	*process_env_token(const char *str, t_data *data, int in_single_quotes)
 {
 	char	*result;
 	char	*temp;
@@ -30,7 +41,7 @@ char	*process_tokens(const char *str, t_data *data)
 	char	*status_str;
 	size_t	buffer_size;
 
-	// calculate buffer size to avoid realloc function
+	// Calculate buffer size to avoid realloc
 	buffer_size = estimate_buffer_size(str, data);
 	result = malloc(buffer_size);
 	if (!result)
@@ -40,19 +51,18 @@ char	*process_tokens(const char *str, t_data *data)
 	start = 0;
 	while (str[i])
 	{
-		if (str[i] == '$')
+		if (str[i] == '$' && in_single_quotes == 0) // Skip expansion if inside single quotes
 		{
-			if (i > start) // put everything thats before $ inside result string
+			if (i > start)
 			{
 				temp = ft_substr(str, start, i - start);
 				ft_strlcat(result, temp, buffer_size);
 				free(temp);
 			}
-			i++; // skip '$'
+			i++;
 			start = i;
 
-
-			// handle $?
+			// Handle $?
 			if (str[start] == '?' && (!str[start + 1] || !isalnum(str[start + 1])))
 			{
 				status_str = ft_itoa(data->state.last_exit_status);
@@ -60,34 +70,11 @@ char	*process_tokens(const char *str, t_data *data)
 				free(status_str);
 				i++;
 				start = i;
-				continue ;
-			}
-			else if (str[start] == '?' && isalnum(str[start + 1])) // handle $?HELLO)
-			{
-				status_str = ft_itoa(data->state.last_exit_status);
-				ft_strlcat(result, status_str, buffer_size);
-				free(status_str);
-				i++;
-				// append characters after $?
-				while (isalnum(str[i]) || str[i] == '_')
-				{
-					ft_strlcat_char(result, str[i], buffer_size);
-					i++;
-				}
-				start = i;
 				continue;
 			}
 
-
-			if (!str[start] || !(isalnum(str[start]) || str[start] == '_'))//print $ if not followed by anything
-			{
-				ft_strlcat(result, "$", buffer_size);
-				start = i;
-				continue ;
-			}
-
-			// env variables
-			while (str[i] && (isalnum(str[i]) || str[i] == '_' || str[i] == '=' || str[i] == ':'))
+			// Env variables
+			while (str[i] && (isalnum(str[i]) || str[i] == '_'))
 				i++;
 			temp = ft_substr(str, start, i - start);
 			if (temp && temp[0] != '\0')
@@ -101,123 +88,117 @@ char	*process_tokens(const char *str, t_data *data)
 		}
 		i++;
 	}
-	if (start < i) // append remaining part after the last '$'
+	if (start < i)
 	{
 		temp = ft_substr(str, start, i - start);
 		ft_strlcat(result, temp, buffer_size);
 		free(temp);
 	}
-	return (result);
+	return result;
+}
+
+
+char *handle_quotes(const char *str, t_data *data)
+{
+	char *expanded_str;
+
+	if (are_quotes_balanced(str) == 2) // double quotes
+		expanded_str = process_env_token(str, data, 0);
+	else if (are_quotes_balanced(str) == 1) // single quotes, no expansion
+		expanded_str = process_env_token(str, data, 1);
+	else
+		expanded_str = ft_strdup(str); // return original string
+
+	return (expanded_str);
 }
 
 char	*ft_strtok(char *str, const char *delimiter)
 {
-	char	*start;
-	char	*end;
-	int		in_double_quotes;
-	int		in_single_quotes;
-
 	static char *last;
+	char *start, *end;
+	int	in_double_quotes = 0, in_single_quotes = 0;
 
-	in_double_quotes = 0;
-	in_single_quotes = 0;
 	if (str == NULL)
 		str = last;
 	if (str == NULL || *str == '\0')
 		return (NULL);
-	// Skip leading delimiters
+
 	while (*str && ft_strchr(delimiter, *str))
 		str++;
 	if (*str == '\0')
-	{
-		last = NULL;
 		return (NULL);
-	}
+
 	start = str;
 	while (*str)
 	{
 		if (*str == '"' && !in_single_quotes)
 			in_double_quotes = !in_double_quotes;
-				// Toggle in_double_quotes when encountering a double quote
 		else if (*str == '\'' && !in_double_quotes)
 			in_single_quotes = !in_single_quotes;
-				// Toggle in_single_quotes when encountering a single quote
-		else if (ft_strchr(delimiter, *str) && !in_double_quotes
-			&& !in_single_quotes)
-			break ;
+		else if (ft_strchr(delimiter, *str) && !in_double_quotes && !in_single_quotes)
+			break;
 		str++;
 	}
-	end = str; // End points to the current position of str
+	end = str;
 	if (*end != '\0')
-	{
-		*end = '\0';    // Null-terminate the current token
-		last = end + 1; // Set the last pointer to the start of the next token
-	}
-	else
-		last = NULL;
+		*end++ = '\0';
+	last = end;
 	return (start);
 }
 
-// lexer takes the whole command line and splits every word into a token to store them into token_list->tokens.
-// example : ls -l = token 1 is "ls", token 2 is "-l"
-char	**ft_tokenize(t_data *data, char *input)
+char **ft_tokenize(t_data *data, char *input)
 {
-    int		        i;
-    char            *processed_input;
-	char	        **args;
-	char	        *token;
-    t_token_list    *toklist;
+	char			**args;
+	char			*processed_input;
+	char			*token;
+	char			*expanded;
+	int				i;
+	t_token_list	*toklist;
 
-    toklist = data->toklist;
-    processed_input = malloc(ft_strlen(input) + 1);
-    if (!processed_input)
-        return (NULL);
+	toklist = data->toklist;
 	processed_input = trim_input(input);
-    if (process_quotes(input, data) == 1)//balanced single quotes, dont expand
-    {
-        i = 0;
-        while (input[i])
-        {
-            if (input[i] == '\'' && are_quotes_balanced(input == 1))
-                i++;
-            
-        }
-    }
-    else//balanced double quotes found and removed, expand env
-    {
-        processed_input = process_tokens(processed_input, data);
-	    if (processed_input == NULL || *processed_input == '\0')
-        {
-            free(input);
-            toklist->token_count = 0;
-            return (NULL);
-        }
-    }
+	if (!processed_input)
+		return (NULL);
 	args = malloc(MAX_ARGS * sizeof(char *));
 	if (!args)
 	{
 		free(input);
 		return (NULL);
 	}
+
 	i = 0;
-	token = ft_strtok(input, " \t\n");
-	while (token != NULL && i < MAX_ARGS - 1)
+	token = ft_strtok(processed_input, " \t\n");
+	while (token && i < MAX_ARGS - 1)
 	{
 		args[i++] = ft_strdup(token);
 		token = ft_strtok(NULL, " \t\n");
 	}
-	toklist->token_count = i;
 	args[i] = NULL;
-	free(input);
+	toklist->token_count = i;//update tokencount
+
+	// handle quotes and variable expansion
+	i = 0;
+	while (args[i])
+	{
+		printf("arg before handlequote: %s\n", args[i]);
+		expanded = handle_quotes(args[i], data); // replace with expanded value (it finds the value but doesnt replace the token)
+
+		free(args[i]); // free old string
+		args[i] = expanded; // assign the expanded string to args[i] (not working ?)
+
+		printf("arg after handlequote: %s\n", args[i]);
+		i++;
+	}
 	return (args);
 }
+
 
 char	*trim_input(char *input)
 {
 	char	*trimmed_input;
 
 	trimmed_input = ft_strtrim(input, " \t\n\r");
-	if (trimmed_input == NULL || *trimmed_input == '\0')
+	if (!trimmed_input || *trimmed_input == '\0')
 	{
 		free(trimmed_input);
 		return (NULL);
