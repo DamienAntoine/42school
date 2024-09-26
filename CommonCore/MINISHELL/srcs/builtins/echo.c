@@ -11,57 +11,6 @@ void	handle_flags(t_data *data, int *i, int *n_flag)
 	}
 }
 
-void	print_quoted_arg(char *arg, t_data *data, char quote_type)
-{
-	int		j;
-	int		k;
-	char	*var_name;
-	char	*env_value;
-	char	*status_str;
-
-	j = 0;
-	while (arg[j])
-	{
-		if (quote_type == '"' && arg[j] == '$')
-		{
-			k = j + 1;
-			if (arg[k] == '?')
-			{
-				status_str = ft_itoa(data->state.last_exit_status);
-				ft_putstr_fd(status_str, 1);
-				free(status_str);
-				j = k + 1; // Move past '?'
-			}
-			else
-			{
-				while (arg[k] && (ft_isalnum(arg[k]) || arg[k] == '_'))
-					k++;
-				if (k > j + 1)
-				{
-					var_name = ft_substr(arg, j + 1, k - j - 1);
-					env_value = find_env_value(data->env, var_name);
-					if (env_value)
-						ft_putstr_fd(env_value, 1);
-					free(var_name);
-					j = k;
-				}
-				else
-				{
-					ft_putchar_fd('$', 1);
-					j++;
-				}
-			}
-		}
-		else
-		{
-			ft_putchar_fd(arg[j], 1);
-			j++;
-		}
-	}
-}
-
-
-
 char	*ft_strcat(char *dest, const char *src)
 {
 	int	i;
@@ -79,45 +28,6 @@ char	*ft_strcat(char *dest, const char *src)
 	}
 	dest[i] = '\0';
 	return (dest);
-}
-
-size_t	estimate_buffer_size(const char *str, t_data *data)
-{
-	size_t	size;
-	int		i;
-	int		start;
-	char	*var_name;
-	char	*expanded_var;
-
-	size = ft_strlen(str) + 1;
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '$')
-		{
-			i++;
-			if (str[i] == '?') // for $? exit status
-			{
-				size += 11;
-				// maximum size of an int converted to string (plus sign and null byte)
-				i++;
-			}
-			else
-			{
-				start = i;
-				while (str[i] && (isalnum(str[i]) || str[i] == '_'))
-					i++;
-				var_name = ft_substr(str, start, i - start);
-				expanded_var = expand_variable(var_name, data);
-				size += ft_strlen(expanded_var);
-				free(var_name);
-				free(expanded_var);
-			}
-		}
-		else
-			i++;
-	}
-	return (size);
 }
 
 void	ft_strlcat_char(char *dst, char c, size_t dstsize)

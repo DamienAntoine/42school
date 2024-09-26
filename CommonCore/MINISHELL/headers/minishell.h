@@ -70,7 +70,7 @@ typedef struct s_token_list
 
 //####  need to be sorted later  ########################
 
-char	*process_env_token(const char *str, t_data *data, int in_single_quotes);
+char	*process_env_token(const char *str, t_data *data);
 void	ft_strlcat_char(char *dst, char c, size_t dstsize);
 char	*expand_variable(const char *var_name, t_data *data);
 size_t	estimate_buffer_size(const char *str, t_data *data);
