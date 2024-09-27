@@ -93,7 +93,7 @@ int	main(int argc, char **argv, char **env)
 		if (!has_synt_errors(data->toklist))
 		{
 			ft_sort_tokens(data);
-			printcommands(data);//delete when everything is finished
+			//printcommands(data);//delete when everything is finished
 			execute_command(data);
 
 			if (data->redirects)

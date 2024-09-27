@@ -9,21 +9,15 @@ char	*expand_variable(const char *var_name, t_data *data)
 {
 	char	*value;
 
-	printf("Trying to expand variable: %s\n", var_name); // Debug print
 	if (ft_strcmp(var_name, "$") == 0)
 		return (ft_strdup(""));
 	value = find_env_value(data->env, var_name);
 	if (value)
-	{
-		printf("Found value: %s\n", value); // Debug print
 		return (ft_strdup(value));
-	}
 	else
-	{
-		printf("Variable not found in environment\n"); // Debug print
 		return (ft_strdup(""));
-	}
 }
+
 
 size_t	estimate_buffer_size(const char *str, t_data *data)
 {
@@ -52,7 +46,6 @@ size_t	estimate_buffer_size(const char *str, t_data *data)
 				while (str[i] && (isalnum(str[i]) || str[i] == '_'))
 					i++;
 				var_name = ft_substr(str, start, i - start);
-				printf("calling expand variable: \n");
 				expanded_var = expand_variable(var_name, data);
 				size += ft_strlen(expanded_var);
 				free(var_name);
@@ -135,7 +128,7 @@ char	*process_env_token(const char *str, t_data *data)
 			}
 
 			// Expand environment variables
-			while (str[i] && (isalnum(str[i]) || str[i] == '_'))
+			while (str[i] && (isalnum(str[i]) || str[i] == '_' || str[i] == '=' || str[i] == ';'))
 				i++;
 			temp = ft_substr(str, start, i - start);
 			if (temp && temp[0] != '\0')
@@ -156,7 +149,6 @@ char	*process_env_token(const char *str, t_data *data)
 		ft_strlcat(result, temp, buffer_size);
 		free(temp);
 	}
-	printf("result in processenv: %s\n", result);
 	return (result);
 }
 
