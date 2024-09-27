@@ -80,7 +80,7 @@ void print_export(t_env *env_list, t_data *data) {
 }
 
 static void export_with_arg(t_env **env_list, char *arg, t_data *data)
-{   
+{
     char *name = ft_strtok(arg, "=");
     char *new_value = ft_strtok(NULL, "");
 
@@ -93,7 +93,7 @@ static void export_with_arg(t_env **env_list, char *arg, t_data *data)
         current = &(*current)->next;
     }
 
-    if (*current) 
+    if (*current)
     {
         // Update existing variable
         free((*current)->value);
@@ -104,8 +104,8 @@ static void export_with_arg(t_env **env_list, char *arg, t_data *data)
             return;
         }
         data->state.last_exit_status = 0;  // Indicate success
-    } 
-    else 
+    }
+    else
     {
         // Append new variable at the end
         t_env *new_node = malloc(sizeof(t_env));
@@ -159,7 +159,7 @@ int is_valid_arg(const char *arg)
 void    handle_export(t_data *data)
 {
     int i;
-    i = 1;
+    i = 0;
 
     if (data->toklist->token_count == 1)
         print_export(data->env, data);
@@ -176,11 +176,10 @@ void    handle_export(t_data *data)
 
                 // Set the exit status to 1
                 data->state.last_exit_status = 1;
-                return ;
+                exit(data->state.last_exit_status);
             }
             else
             {
-            
                     export_with_arg(&data->env, data->commands->args[i], data);
             }
 
