@@ -128,7 +128,7 @@ char	*process_env_token(const char *str, t_data *data)
 			}
 
 			// Expand environment variables
-			while (str[i] && (isalnum(str[i]) || str[i] == '_' || str[i] == '=' || str[i] == ';'))
+			while (str[i] && (ft_isalnum(str[i]) || str[i] == '_' || str[i] == '=' || str[i] == ';'))
 				i++;
 			temp = ft_substr(str, start, i - start);
 			if (temp && temp[0] != '\0')

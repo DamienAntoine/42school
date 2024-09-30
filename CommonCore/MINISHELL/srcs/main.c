@@ -58,6 +58,11 @@ int	handle_input(t_data *data)
 		free_minishell(data);
 		return (0);
 	}
+	if (input[0] == '\0' || input[0] == '\n')
+	{
+		free(input);
+		return (1);
+	}
 	data->toklist->tokens = ft_tokenize(data, input);
 	free(input);
 	return (data->toklist->tokens != NULL); //returns 1 if tokenize worked and 0 if not

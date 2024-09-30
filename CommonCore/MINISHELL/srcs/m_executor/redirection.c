@@ -30,9 +30,7 @@ int open_redirection(t_redirection *redir)
 //        return -1;
 //    }
 	if (fd < 0)
-    {
         perror("open");
-    }
     return fd;
 }
 
@@ -83,7 +81,9 @@ send_command function before calling execve.
 
 void setup_redirection(t_redirection *redir)
 {
-    int fd_in = -1, fd_out = -1, fd_append = -1;
+    int fd_in = -1;
+    int fd_out = -1;
+    int fd_append = -1;
     t_redirection *current = redir;
 
     // Traverse the redirection list to find the last redirection for each type
