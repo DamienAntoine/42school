@@ -86,7 +86,7 @@ void print_export(t_env *env_list, t_data *data) {
 
 
 static void export_with_arg(t_env **env_list, char *arg, t_data *data)
-{   
+{
     char *name = ft_strtok(arg, "=");
     char *new_value = ft_strtok(NULL, "");
 
@@ -99,7 +99,7 @@ static void export_with_arg(t_env **env_list, char *arg, t_data *data)
         current = &(*current)->next;
     }
 
-    if (*current) 
+    if (*current)
     {
         // Update existing variable
         free((*current)->value);
@@ -110,8 +110,8 @@ static void export_with_arg(t_env **env_list, char *arg, t_data *data)
             return;
         }
         data->state.last_exit_status = 0;  // Indicate success
-    } 
-    else 
+    }
+    else
     {
         // Append new variable at the end
         t_env *new_node = malloc(sizeof(t_env));
@@ -182,6 +182,10 @@ void    handle_export(t_data *data)
                 exit(data->state.last_exit_status);
             }
             else
+<<<<<<< HEAD
+=======
+            {
+>>>>>>> f8dd7cac5ce2c98ad54a3b84d941395e43b056eb
                     export_with_arg(&data->env, data->commands->args[i], data);
             i++;
         }

@@ -3,7 +3,7 @@
 void	handle_pipe(t_data *data, int num_commands)
 {
 	t_command	*cmdtable;
-	int			pipes[num_commands - 1][2];
+	int			pipes[num_commands - 1][2];//-1 because theres always -1 pipes for the number of commands
 	pid_t		pid;
 	int			status;
 	int			i;
@@ -34,17 +34,18 @@ void	handle_pipe(t_data *data, int num_commands)
 		}
 		if (pid == 0) // child process
 		{
-			if (i > 0)// set input from previous pipe if not first command
-				dup2(pipes[i - 1][0], STDIN_FILENO);
-			if (i < num_commands - 1)// set output to next pipe if not last command
-				dup2(pipes[i][1], STDOUT_FILENO);
-
-			// close all pipes (child)
+			if (i > 0)// if not first command
+				dup2(pipes[i - 1][0], STDIN_FILENO);//set input from previous pipe
+			if (i < num_commands - 1)//if not last command
+				dup2(pipes[i][1], STDOUT_FILENO);//set output to next pipe
+			// close all pipes except the ones used
 			j = 0;
-			while(j < num_commands - 1)
+			while (j < num_commands - 1)
 			{
-				close(pipes[j][0]);
-				close(pipes[j][1]);
+				if (j != i - 1) // don't close the read end of the previous pipe if needed
+					close(pipes[j][0]);
+				if (j != i) // don't close the write end of the current pipe if needed
+					close(pipes[j][1]);
 				j++;
 			}
 

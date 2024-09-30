@@ -1,35 +1,232 @@
 #include "../../headers/minishell.h"
-/*  we don't use this
-size_t	ft_toklen(const char *str, const char *delim)
-{
-	size_t	len;
-	int		i;
 
-	len = 0;
-	if (str == NULL || delim == NULL)
-		return (0);
-	while (str[len])
-	{
-		i = 0;
-		while (delim[i])
-		{
-			if (str[len] == delim[i])
-				return (len);
-			i++;
-		}
-		len++;
-	}
-	return (len);
+int	is_quote(char c)
+{
+	return (c == '\'' || c == '\"');
 }
-*/
+
+char	*expand_variable(const char *var_name, t_data *data)
+{
+	char	*value;
+
+	if (ft_strcmp(var_name, "$") == 0)
+		return (ft_strdup(""));
+	value = find_env_value(data->env, var_name);
+	if (value)
+		return (ft_strdup(value));
+	else
+		return (ft_strdup(""));
+}
+
+
+size_t	estimate_buffer_size(const char *str, t_data *data)
+{
+	size_t	size;
+	int		i;
+	int		start;
+	char	*var_name;
+	char	*expanded_var;
+
+	size = ft_strlen(str) + 1;
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '$')
+		{
+			i++;
+			if (str[i] == '?') // for $? exit status
+			{
+				size += 11;
+				// maximum size of an int converted to string (plus sign and null byte)
+				i++;
+			}
+			else
+			{
+				start = i;
+				while (str[i] && (isalnum(str[i]) || str[i] == '_'))
+					i++;
+				var_name = ft_substr(str, start, i - start);
+				expanded_var = expand_variable(var_name, data);
+				size += ft_strlen(expanded_var);
+				free(var_name);
+				free(expanded_var);
+			}
+		}
+		else
+			i++;
+	}
+	return (size);
+}
+
+char	*process_env_token(const char *str, t_data *data)
+{
+	char	*result;
+	char	*temp;
+	int		start;
+	int		i;
+	char	*expanded_var;
+	char	*status_str;
+	size_t	buffer_size;
+	int		in_single_quotes;
+	int		in_double_quotes;
+
+	in_single_quotes = 0;
+	in_double_quotes = 0;
+	buffer_size = estimate_buffer_size(str, data);
+	result = malloc(buffer_size);
+	if (!result)
+		return (NULL);
+	result[0] = '\0';
+	i = 0;
+	start = 0;
+	while (str[i])
+	{
+		// Toggle single quotes
+		if (str[i] == '\'' && !in_double_quotes)
+		{
+			in_single_quotes = !in_single_quotes;
+			i++;
+			continue ;
+		}
+		// Toggle double quotes
+		if (str[i] == '\"')
+		{
+			in_double_quotes = !in_double_quotes;
+			i++;
+			continue ;
+		}
+
+		if (str[i] == '$')
+		{
+			// expand variables outside single quotes
+			if (in_single_quotes && !in_double_quotes)
+			{
+				ft_strlcat(result, "$", buffer_size);
+				i++;
+				start = i;
+				continue;
+			}
+
+			if (i > start)
+			{
+				temp = ft_substr(str, start, i - start);
+				ft_strlcat(result, temp, buffer_size);
+				free(temp);
+			}
+			i++;
+			start = i;
+
+			// Handle $?
+			if (str[start] == '?' && (!str[start + 1] || !isalnum(str[start + 1])))
+			{
+				status_str = ft_itoa(data->state.last_exit_status);
+				ft_strlcat(result, status_str, buffer_size);
+				free(status_str);
+				i++;
+				start = i;
+				continue ;
+			}
+
+			// Expand environment variables
+			while (str[i] && (isalnum(str[i]) || str[i] == '_' || str[i] == '=' || str[i] == ';'))
+				i++;
+			temp = ft_substr(str, start, i - start);
+			if (temp && temp[0] != '\0')
+			{
+				expanded_var = expand_variable(temp, data);
+				ft_strlcat(result, expanded_var, buffer_size);
+				free(expanded_var);
+			}
+			free(temp);
+			start = i;
+		}
+		else
+			i++;
+	}
+	if (start < i)
+	{
+		temp = ft_substr(str, start, i - start);
+		ft_strlcat(result, temp, buffer_size);
+		free(temp);
+	}
+	return (result);
+}
+
+
+int quotes_check(const char *input)
+{
+	int	i;
+	int	in_single_quotes;
+	int	in_double_quotes;
+
+	i = 0;
+	in_single_quotes = 0;
+	in_double_quotes = 0;
+	while (input[i])
+	{
+		// toggle single quotes only if not in double quotes
+		if (input[i] == '\'' && !in_double_quotes)
+			in_single_quotes = !in_single_quotes;
+		// toggle double quotes
+		else if (input[i] == '\"')
+			in_double_quotes = !in_double_quotes;
+
+		if (input[i] == '$')
+		{
+			// double quotes: expand
+			if (in_double_quotes)
+				return (0);
+			// single quotes: do not expand
+			if (in_single_quotes)
+				return (1);
+		}
+		i++;
+	}
+	return 0; // Return 0 if no '$' is found in single quotes
+}
+
+char *handle_quotes(const char *str, t_data *data)
+{
+	char	*expanded_str;
+	char	*new_str;
+	int		quote_type;
+	size_t	len;
+
+	quote_type = quotes_check(str);
+	// if in single quotes, return
+	if (quote_type == 1)
+		return (ft_strdup(str));
+
+	expanded_str = process_env_token(str, data);
+
+	// Check if the expanded string has balanced quotes
+	len = ft_strlen(expanded_str);
+	if (len > 1 && expanded_str[0] == '\'' && expanded_str[len - 1] == '\'')
+	{
+		// remove quotes (create new str without quotes)
+		new_str = ft_substr(expanded_str, 1, len - 2); // Exclude the first and last character
+		free(expanded_str); // free old str
+		return (new_str); // return new str
+	}
+	else if (len > 1 && expanded_str[0] == '\"' && expanded_str[len - 1] == '\"')
+	{
+		// Same for double quotes
+		new_str = ft_substr(expanded_str, 1, len - 2);
+		free(expanded_str);
+		return (new_str);
+	}
+
+	return (expanded_str); // If no quotes to remove, return the expanded string
+}
+
+
 char	*ft_strtok(char *str, const char *delimiter)
 {
-	char	*start;
-	char	*end;
-	int		in_double_quotes;
-	int		in_single_quotes;
-
-	static char *last;
+	static char	*last;
+	int			in_single_quotes;
+	int			in_double_quotes;
+	char		*end;
+	char		*start;
 
 	in_double_quotes = 0;
 	in_single_quotes = 0;
@@ -37,54 +234,42 @@ char	*ft_strtok(char *str, const char *delimiter)
 		str = last;
 	if (str == NULL || *str == '\0')
 		return (NULL);
-	// Skip leading delimiters
 	while (*str && ft_strchr(delimiter, *str))
 		str++;
 	if (*str == '\0')
-	{
-		last = NULL;
 		return (NULL);
-	}
 	start = str;
 	while (*str)
 	{
 		if (*str == '"' && !in_single_quotes)
 			in_double_quotes = !in_double_quotes;
-				// Toggle in_double_quotes when encountering a double quote
 		else if (*str == '\'' && !in_double_quotes)
 			in_single_quotes = !in_single_quotes;
-				// Toggle in_single_quotes when encountering a single quote
 		else if (ft_strchr(delimiter, *str) && !in_double_quotes
 			&& !in_single_quotes)
 			break ;
 		str++;
 	}
-	end = str; // End points to the current position of str
+	end = str;
 	if (*end != '\0')
-	{
-		*end = '\0';    // Null-terminate the current token
-		last = end + 1; // Set the last pointer to the start of the next token
-	}
-	else
-		last = NULL;
+		*end++ = '\0';
+	last = end;
 	return (start);
 }
 
-// lexer takes the whole command line and splits every word into a token to store them into token_list->tokens.
-// example : ls -l = token 1 is "ls", token 2 is "-l"
-char	**ft_tokenize(t_token_list *toklist, char *input)
+char	**ft_tokenize(t_data *data, char *input)
 {
-	char	**args;
-	int		i;
-	char	*token;
+	char			**args;
+	char			*processed_input;
+	char			*token;
+	char			*expanded;
+	int				i;
+	t_token_list	*toklist;
 
-	input = trim_input(input);
-	if (input == NULL || *input == '\0')
-	{
-		free(input);
-		toklist->token_count = 0;
+	toklist = data->toklist;
+	processed_input = trim_input(input);
+	if (!processed_input)
 		return (NULL);
-	}
 	args = malloc(MAX_ARGS * sizeof(char *));
 	if (!args)
 	{
@@ -92,15 +277,23 @@ char	**ft_tokenize(t_token_list *toklist, char *input)
 		return (NULL);
 	}
 	i = 0;
-	token = ft_strtok(input, " \t\n");
-	while (token != NULL && i < MAX_ARGS - 1)
+	token = ft_strtok(processed_input, " \t\n");
+	while (token && i < MAX_ARGS - 1)
 	{
 		args[i++] = ft_strdup(token);
 		token = ft_strtok(NULL, " \t\n");
 	}
-	toklist->token_count = i;
 	args[i] = NULL;
-	free(input);
+	toklist->token_count = i; // update tokencount
+	// handle quotes and variable expansion
+	i = 0;
+	while (args[i])
+	{
+		expanded = handle_quotes(args[i], data);// find expanded value and remove the quotes
+		free(args[i]);
+		args[i] = expanded;// assign the expanded string to args[i]
+		i++;
+	}
 	return (args);
 }
 
@@ -109,7 +302,7 @@ char	*trim_input(char *input)
 	char	*trimmed_input;
 
 	trimmed_input = ft_strtrim(input, " \t\n\r");
-	if (trimmed_input == NULL || *trimmed_input == '\0')
+	if (!trimmed_input || *trimmed_input == '\0')
 	{
 		free(trimmed_input);
 		return (NULL);

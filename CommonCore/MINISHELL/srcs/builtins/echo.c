@@ -11,89 +11,6 @@ void	handle_flags(t_data *data, int *i, int *n_flag)
 	}
 }
 
-int	is_quote(char c)
-{
-	return (c == '\'' || c == '\"');
-}
-
-void	print_quoted_arg(char *arg, t_data *data, char quote_type)
-{
-	int		j;
-	int		k;
-	char	*var_name;
-	char	*env_value;
-	char	*status_str;
-
-	j = 0;
-	while (arg[j])
-	{
-		if (quote_type == '"' && arg[j] == '$')
-		{
-			k = j + 1;
-			if (arg[k] == '?')
-			{
-				status_str = ft_itoa(data->state.last_exit_status);
-				ft_putstr_fd(status_str, 1);
-				free(status_str);
-				j = k + 1; // Move past '?'
-			}
-			else
-			{
-				while (arg[k] && (ft_isalnum(arg[k]) || arg[k] == '_'))
-					k++;
-				if (k > j + 1)
-				{
-					var_name = ft_substr(arg, j + 1, k - j - 1);
-					env_value = find_env_value(data->env, var_name);
-					if (env_value)
-						ft_putstr_fd(env_value, 1);
-					free(var_name);
-					j = k;
-				}
-				else
-				{
-					ft_putchar_fd('$', 1);
-					j++;
-				}
-			}
-		}
-		else
-		{
-			ft_putchar_fd(arg[j], 1);
-			j++;
-		}
-	}
-}
-
-void	print_escape(char *arg)
-{
-	int	j;
-
-	j = 0;
-	while (arg[j])
-	{
-		if (arg[j] == '\\' && arg[j + 1])
-		{
-			j++;
-			if (arg[j] == 'n')
-				ft_putchar_fd('\n', 1);
-			else if (arg[j] == 't')
-				ft_putchar_fd('\t', 1);
-			else if (arg[j] == '\\')
-				ft_putchar_fd('\\', 1);
-			else if (arg[j] == '\'')
-				ft_putchar_fd('\'', 1);
-			else if (arg[j] == '\"')
-				ft_putchar_fd('\"', 1);
-			else
-				ft_putchar_fd(arg[j], 1);
-		}
-		else
-			ft_putchar_fd(arg[j], 1);
-		j++;
-	}
-}
-
 char	*ft_strcat(char *dest, const char *src)
 {
 	int	i;
@@ -113,58 +30,6 @@ char	*ft_strcat(char *dest, const char *src)
 	return (dest);
 }
 
-char	*expand_variable(const char *var_name, t_data *data)
-{
-	char	*value;
-
-	if (ft_strcmp(var_name, "$") == 0)
-		return (ft_strdup(""));
-	value = find_env_value(data->env, var_name);
-	if (value)
-		return (ft_strdup(value));
-	else
-		return (ft_strdup(""));
-}
-
-size_t	estimate_buffer_size(const char *str, t_data *data)
-{
-	size_t	size;
-	int		i;
-	int		start;
-	char	*var_name;
-	char	*expanded_var;
-
-	size = ft_strlen(str) + 1;
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '$')
-		{
-			i++;
-			if (str[i] == '?') // for $? exit status
-			{
-				size += 11;
-				// maximum size of an int converted to string (plus sign and null byte)
-				i++;
-			}
-			else
-			{
-				start = i;
-				while (str[i] && (isalnum(str[i]) || str[i] == '_'))
-					i++;
-				var_name = ft_substr(str, start, i - start);
-				expanded_var = expand_variable(var_name, data);
-				size += ft_strlen(expanded_var);
-				free(var_name);
-				free(expanded_var);
-			}
-		}
-		else
-			i++;
-	}
-	return (size);
-}
-
 void	ft_strlcat_char(char *dst, char c, size_t dstsize)
 {
 	size_t	dst_len;
@@ -177,95 +42,7 @@ void	ft_strlcat_char(char *dst, char c, size_t dstsize)
 	}
 }
 
-char	*process_double_quotes(const char *str, t_data *data)
-{
-	char	*result;
-	char	*temp;
-	int		start;
-	int		i;
-	char	*expanded_var;
-	char	*status_str;
-	size_t	buffer_size;
 
-	// calculate buffer size to avoid realloc function
-	buffer_size = estimate_buffer_size(str, data);
-	result = malloc(buffer_size);
-	if (!result)
-		return (NULL);
-	result[0] = '\0';
-	i = 0;
-	start = 0;
-	while (str[i])
-	{
-		if (str[i] == '$')
-		{
-			if (i > start) // put everything thats before $ inside result string
-			{
-				temp = ft_substr(str, start, i - start);
-				ft_strlcat(result, temp, buffer_size);
-				free(temp);
-			}
-
-			i++; // skip '$'
-			start = i;
-
-
-			// handle $?
-			if (str[start] == '?' && (!str[start + 1] || !isalnum(str[start + 1])))
-			{
-				status_str = ft_itoa(data->state.last_exit_status);
-				ft_strlcat(result, status_str, buffer_size);
-				free(status_str);
-				i++;
-				start = i;
-				continue ;
-			}
-			else if (str[start] == '?' && isalnum(str[start + 1])) // handle $?HELLO)
-			{
-				status_str = ft_itoa(data->state.last_exit_status);
-				ft_strlcat(result, status_str, buffer_size);
-				free(status_str);
-				i++;
-				// append characters after $?
-				while (isalnum(str[i]) || str[i] == '_')
-				{
-					ft_strlcat_char(result, str[i], buffer_size);
-					i++;
-				}
-				start = i;
-				continue;
-			}
-
-
-			if (!str[start] || !(isalnum(str[start]) || str[start] == '_'))//print $ if not followed by anything
-			{
-				ft_strlcat(result, "$", buffer_size);
-				start = i;
-				continue ;
-			}
-			// env variables
-			while (str[i] && (isalnum(str[i]) || str[i] == '_'))
-				i++;
-			temp = ft_substr(str, start, i - start);
-			if (temp && temp[0] != '\0')
-			{
-				expanded_var = expand_variable(temp, data);
-				ft_strlcat(result, expanded_var, buffer_size);
-				free(expanded_var);
-			}
-			free(temp);
-			start = i;
-		}
-		i++;
-	}
-	if (start < i) // append remaining part after the last '$'
-	{
-		temp = ft_substr(str, start, i - start);
-		ft_strlcat(result, temp, buffer_size);
-		free(temp);
-	}
-	return (result);
-}
 
 int	is_in_single_quote(const char *arg, int position)
 {
@@ -283,7 +60,7 @@ int	is_in_single_quote(const char *arg, int position)
 	return (single_quotes % 2 != 0);
 }
 
-void	process_argument(char *arg, t_data *data)
+/*void	process_argument(char *arg, t_data *data)
 {
 	char	*processed_arg;
 	char	*temp;
@@ -409,6 +186,35 @@ void	process_argument(char *arg, t_data *data)
 	free(temp);
 	print_escape(processed_arg);
 	free(processed_arg);
+}*/
+
+void	print_escape(char *arg)
+{
+	int	j;
+
+	j = 0;
+	while (arg[j])
+	{
+		if (arg[j] == '\\' && arg[j + 1])
+		{
+			j++;
+			if (arg[j] == 'n')
+				ft_putchar_fd('\n', 1);
+			else if (arg[j] == 't')
+				ft_putchar_fd('\t', 1);
+			else if (arg[j] == '\\')
+				ft_putchar_fd('\\', 1);
+			else if (arg[j] == '\'')
+				ft_putchar_fd('\'', 1);
+			else if (arg[j] == '\"')
+				ft_putchar_fd('\"', 1);
+			else
+				ft_putchar_fd(arg[j], 1);
+		}
+		else
+			ft_putchar_fd(arg[j], 1);
+		j++;
+	}
 }
 
 void	ft_echo(t_data *data)
@@ -423,7 +229,8 @@ void	ft_echo(t_data *data)
 	while (data->commands->args[i])
 	{
 		arg = data->commands->args[i];
-		process_argument(arg, data);
+		//process_argument(arg, data);
+        print_escape(arg);
 		if (data->commands->args[i + 1])
 			ft_putchar_fd(' ', 1);
 		i++;
