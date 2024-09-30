@@ -65,7 +65,7 @@ int	handle_input(t_data *data)
 	}
 	data->toklist->tokens = ft_tokenize(data, input);
 	free(input);
-	return (data->toklist->tokens != NULL); //returns 1 if tokenize worked and 0 if not
+	return (1);
 }
 
 void	reset_command(t_data *data)

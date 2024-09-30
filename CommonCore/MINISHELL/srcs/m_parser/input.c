@@ -136,34 +136,3 @@ char	*get_full_input(void)
 	return (full_input);
 }
 
-char	*remove_balanced_quotes(const char *input)
-{
-	int		len;
-	int		i;
-	int		j;
-	int		single_quote;
-	int		double_quote;
-	char	*result;
-
-	len = ft_strlen(input);
-	result = malloc(len + 1);
-	if (!result)
-		return (NULL);
-	i = 0;
-	j = 0;
-	single_quote = 0;
-	double_quote = 0;
-	while (input[i])
-	{
-		if (input[i] == '\'' && double_quote % 2 == 0)
-			single_quote = !single_quote;
-		else if (input[i] == '\"' && single_quote % 2 == 0)
-			double_quote = !double_quote;
-		else
-			result[j++] = input[i];
-		i++;
-	}
-	result[j] = '\0';
-	return (result);
-}
-

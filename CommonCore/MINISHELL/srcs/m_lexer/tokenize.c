@@ -106,6 +106,30 @@ char	*process_env_token(const char *str, t_data *data)
 				start = i;
 				continue;
 			}
+            
+
+            /*
+            if (!str[start] || !(isalnum(str[start]) || str[start] == '_'))//print $ if not followed by anything
+			{
+				ft_strlcat(result, "$", buffer_size);
+				start = i;
+				continue ;
+			}
+            else if (str[start] == '?' && isalnum(str[start + 1])) // handle $?HELLO)
+			{
+				status_str = ft_itoa(data->state.last_exit_status);
+				ft_strlcat(result, status_str, buffer_size);
+				free(status_str);
+				i++;
+				// append characters after $?
+				while (isalnum(str[i]) || str[i] == '_')
+				{
+					ft_strlcat_char(result, str[i], buffer_size);
+					i++;
+				}
+				start = i;
+				continue;
+			}*/
 
 			if (i > start)
 			{
@@ -182,43 +206,101 @@ int quotes_check(const char *input)
 		}
 		i++;
 	}
-	return 0; // Return 0 if no '$' is found in single quotes
+	return (0); // Return 0 if no '$' is found in single quotes
+}
+
+
+#include <stdlib.h>
+#include <string.h>
+
+char *remove_balanced_quotes(const char *input) {
+    char *result;
+    size_t len;
+    size_t i = 0;
+    size_t j = 0;
+    char outer_quote = 0;
+    size_t closing_quote = 0;
+
+    len = ft_strlen(input);
+
+    // Find outer quotes
+    while (input[i]) {
+        if (outer_quote == 0 && (input[i] == '\"' || input[i] == '\'')) {
+            outer_quote = input[i];
+            closing_quote = i + 1;
+
+            // Find the closing quote
+            while (input[closing_quote]) {
+                if (input[closing_quote] == outer_quote) {
+                    break;
+                }
+                closing_quote++;
+            }
+            // If a matching closing quote is found
+            if (input[closing_quote] == outer_quote) {
+                break; // Exit outer loop if we find the closing quote
+            }
+        }
+        i++;
+    }
+
+    // Adjust length if outer quotes are present
+    if (outer_quote && input[len - 1] == outer_quote) {
+        len -= 2; // Exclude the outer quotes
+    }
+
+    // Allocate memory for the result
+    result = malloc(len + 1);
+    if (!result) {
+        return NULL; // Handle allocation failure
+    }
+
+    // Set the start index to skip the outer quote if it exists
+    size_t start_index = (outer_quote) ? 1 : 0;
+    size_t end_index = (outer_quote) ? closing_quote : len;
+
+    // Copy the characters excluding the outer quotes
+    while (start_index < end_index) {
+        result[j++] = input[start_index];
+        start_index++;
+    }
+
+    result[j] = '\0'; // Null-terminate the result string
+    return result;
+}
+
+
+
+
+int	is_in_quotes(const char *arg, int position)
+{
+	int	i;
+	int	in_quotes;
+
+	i = 0;
+	in_quotes = 0;
+	while (i < position)
+	{
+		if (arg[i] == '\'')
+			in_quotes++;
+		i++;
+	}
+	return (in_quotes % 2 != 0);
 }
 
 char *handle_quotes(const char *str, t_data *data)
 {
 	char	*expanded_str;
-	char	*new_str;
-	int		quote_type;
+    char    *result;
+    int     i;
 	size_t	len;
 
-	quote_type = quotes_check(str);
-	// if in single quotes, return
-	if (quote_type == 1)
-		return (ft_strdup(str));
-
-	expanded_str = process_env_token(str, data);
-
-	// Check if the expanded string has balanced quotes
-	len = ft_strlen(expanded_str);
-	if (len > 1 && expanded_str[0] == '\'' && expanded_str[len - 1] == '\'')
-	{
-		// remove quotes (create new str without quotes)
-		new_str = ft_substr(expanded_str, 1, len - 2); // Exclude the first and last character
-		free(expanded_str); // free old str
-		return (new_str); // return new str
-	}
-	else if (len > 1 && expanded_str[0] == '\"' && expanded_str[len - 1] == '\"')
-	{
-		// Same for double quotes
-		new_str = ft_substr(expanded_str, 1, len - 2);
-		free(expanded_str);
-		return (new_str);
-	}
-
-	return (expanded_str); // If no quotes to remove, return the expanded string
+    expanded_str = process_env_token(str, data);
+    len = ft_strlen(expanded_str);
+    i = 0;
+    result = remove_balanced_quotes(expanded_str);
+	return (result);
 }
-
 
 char	*ft_strtok(char *str, const char *delimiter)
 {
