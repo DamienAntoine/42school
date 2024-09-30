@@ -34,9 +34,10 @@ void set_exit_status(long status, t_data *data)
 void	ft_exit(t_data *data)
 {
 	char *status_str;
-	int status = ft_atoi(status_str); //ft_strtol needed+++++++++
+	int status;
 
     status_str = ft_strdup(data->commands->args[0]);
+	status = ft_atoi(status_str);//crash happens because of this
 	if (data->commands->args[0] && !data->commands->args[1])
 	{
 		if (ft_isalpha(status_str[0]))

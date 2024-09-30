@@ -230,7 +230,7 @@ void	ft_echo(t_data *data)
 	{
 		arg = data->commands->args[i];
 		//process_argument(arg, data);
-        print_escape(arg);
+		print_escape(arg);
 		if (data->commands->args[i + 1])
 			ft_putchar_fd(' ', 1);
 		i++;

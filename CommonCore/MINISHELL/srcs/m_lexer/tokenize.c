@@ -81,14 +81,14 @@ char	*process_env_token(const char *str, t_data *data)
 	start = 0;
 	while (str[i])
 	{
-		// Toggle single quotes
+		// single quotes
 		if (str[i] == '\'' && !in_double_quotes)
 		{
 			in_single_quotes = !in_single_quotes;
 			i++;
 			continue ;
 		}
-		// Toggle double quotes
+		// double quotes
 		if (str[i] == '\"')
 		{
 			in_double_quotes = !in_double_quotes;
@@ -106,31 +106,6 @@ char	*process_env_token(const char *str, t_data *data)
 				start = i;
 				continue;
 			}
-            
-
-            /*
-            if (!str[start] || !(isalnum(str[start]) || str[start] == '_'))//print $ if not followed by anything
-			{
-				ft_strlcat(result, "$", buffer_size);
-				start = i;
-				continue ;
-			}
-            else if (str[start] == '?' && isalnum(str[start + 1])) // handle $?HELLO)
-			{
-				status_str = ft_itoa(data->state.last_exit_status);
-				ft_strlcat(result, status_str, buffer_size);
-				free(status_str);
-				i++;
-				// append characters after $?
-				while (isalnum(str[i]) || str[i] == '_')
-				{
-					ft_strlcat_char(result, str[i], buffer_size);
-					i++;
-				}
-				start = i;
-				continue;
-			}*/
-
 			if (i > start)
 			{
 				temp = ft_substr(str, start, i - start);
@@ -141,14 +116,30 @@ char	*process_env_token(const char *str, t_data *data)
 			start = i;
 
 			// Handle $?
-			if (str[start] == '?' && (!str[start + 1] || !isalnum(str[start + 1])))
+			if (str[start] == '?')
 			{
+				// expand $?
 				status_str = ft_itoa(data->state.last_exit_status);
 				ft_strlcat(result, status_str, buffer_size);
 				free(status_str);
 				i++;
+				// add following characters
+				while (ft_isalnum(str[i]) || str[i] == '_')
+				{
+					ft_strlcat_char(result, str[i], buffer_size);
+					i++;
+				}
 				start = i;
-				continue ;
+				continue;
+			}
+
+
+			// handle "$"
+			if (!str[start] || !(ft_isalnum(str[start]) || str[start] == '_'))
+			{
+				ft_strlcat(result, "$", buffer_size);
+				start = i;
+				continue;
 			}
 
 			// Expand environment variables
@@ -213,61 +204,44 @@ int quotes_check(const char *input)
 #include <stdlib.h>
 #include <string.h>
 
-char *remove_balanced_quotes(const char *input) {
-    char *result;
-    size_t len;
-    size_t i = 0;
-    size_t j = 0;
-    char outer_quote = 0;
-    size_t closing_quote = 0;
+char *remove_balanced_quotes(const char *input)
+{
+	char	*result;
+	size_t	len;
+	size_t	i;
+	size_t	j;
+	int		in_single_quotes;
+	int		in_double_quotes;
 
-    len = ft_strlen(input);
+	i = 0;
+	j = 0;
+	in_single_quotes = 0;
+	in_double_quotes = 0;
+	len = ft_strlen(input);
 
-    // Find outer quotes
-    while (input[i]) {
-        if (outer_quote == 0 && (input[i] == '\"' || input[i] == '\'')) {
-            outer_quote = input[i];
-            closing_quote = i + 1;
+	result = malloc(len + 1);
+	if (!result)
+		return NULL;
 
-            // Find the closing quote
-            while (input[closing_quote]) {
-                if (input[closing_quote] == outer_quote) {
-                    break;
-                }
-                closing_quote++;
-            }
-            // If a matching closing quote is found
-            if (input[closing_quote] == outer_quote) {
-                break; // Exit outer loop if we find the closing quote
-            }
-        }
-        i++;
-    }
+	while (i < len)
+	{
+		if (input[i] == '\'' && !in_double_quotes)
+		{
+			in_single_quotes = !in_single_quotes;
+			i++; // skip quote
+		} else if (input[i] == '\"' && !in_single_quotes)
+		{
+			in_double_quotes = !in_double_quotes;
+			i++; // skip quote
+		}
+		else
+			result[j++] = input[i++]; // Copy non-quote characters
+	}
+	result[j] = '\0'; // Null-terminate the result
 
-    // Adjust length if outer quotes are present
-    if (outer_quote && input[len - 1] == outer_quote) {
-        len -= 2; // Exclude the outer quotes
-    }
-
-    // Allocate memory for the result
-    result = malloc(len + 1);
-    if (!result) {
-        return NULL; // Handle allocation failure
-    }
-
-    // Set the start index to skip the outer quote if it exists
-    size_t start_index = (outer_quote) ? 1 : 0;
-    size_t end_index = (outer_quote) ? closing_quote : len;
-
-    // Copy the characters excluding the outer quotes
-    while (start_index < end_index) {
-        result[j++] = input[start_index];
-        start_index++;
-    }
-
-    result[j] = '\0'; // Null-terminate the result string
-    return result;
+	return (result);
 }
+
 
 
 
@@ -291,16 +265,14 @@ int	is_in_quotes(const char *arg, int position)
 char *handle_quotes(const char *str, t_data *data)
 {
 	char	*expanded_str;
-    char    *result;
-    int     i;
-	size_t	len;
+	char	*result;
 
-    expanded_str = process_env_token(str, data);
-    len = ft_strlen(expanded_str);
-    i = 0;
-    result = remove_balanced_quotes(expanded_str);
-	return (result);
+	expanded_str = process_env_token(str, data);
+	result = remove_balanced_quotes(expanded_str);
+	free(expanded_str);
+	return result;
 }
+
 
 char	*ft_strtok(char *str, const char *delimiter)
 {
