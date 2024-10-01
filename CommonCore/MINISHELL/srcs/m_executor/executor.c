@@ -1,28 +1,27 @@
 #include "../../headers/minishell.h"
 
-void	execute_builtin(t_command *cmdtable, t_data *data)
+int	execute_builtin(t_command *cmdtable, t_data *data)
 {
 	if (ft_strcmp(cmdtable->cmds, "cd") == 0)
-		ft_cd(data);
+		return (ft_cd(data));
 	else if (ft_strcmp(cmdtable->cmds, "echo") == 0)
-		ft_echo(data);
+		return (ft_echo(data));
 	else if (ft_strcmp(cmdtable->cmds, "env") == 0)
-		ft_env(data->env);
+		return (ft_env(data->env));
 	else if (ft_strcmp(cmdtable->cmds, "pwd") == 0)
-		ft_pwd(data->env);
+		return (ft_pwd(data->env));
 	else if (ft_strcmp(cmdtable->cmds, "unset") == 0)
-		handle_unset(&data->env, data->toklist->tokens);
+		return (handle_unset(&data->env, data->toklist->tokens));
 	else if (ft_strcmp(cmdtable->cmds, "exit") == 0)
-		ft_exit(data);
+		return (ft_exit(data));
 	else if (ft_strcmp(cmdtable->cmds, "export") == 0)
-		handle_export(data);
-	else if (ft_strcmp(cmdtable->cmds, "cat") == 0)
-		ft_cat(data);
-	else if (ft_strcmp(cmdtable->cmds, "grep") == 0)
-		ft_grep(data);
+		return (handle_export(data));
+
+	return (1);
 }
 
-void	send_command(t_data *data)
+
+int	send_command(t_data *data)
 {
 	char		**envp = env_list_to_array(data->env);
 	char		*cmd_path;
@@ -31,10 +30,9 @@ void	send_command(t_data *data)
 	pid_t		pid;
 	int			status;
 	int			arg_count;
+	int			exit_code;
 	int			i;
 
-
-	//init full_args
 	arg_count = 0;
 	while (cmdtable->args[arg_count] != NULL)
 		arg_count++;
@@ -57,28 +55,30 @@ void	send_command(t_data *data)
 	{
 		free_split(envp);
 		data->state.last_exit_status = 0;
-		return;
+		free(full_args);
+		return (0);
 	}
 
 	// Handle built-ins directly in the context of the pipe
 	if (is_builtin(cmdtable->cmds))
 	{
 		if (data->redirects == NULL) // no redirections
-			execute_builtin(cmdtable, data); // execute directly
+			exit_code = execute_builtin(cmdtable, data); // execute directly
 		else // if redirections
 		{
-			setup_redirection(data->redirects); // setup redirection
-			execute_builtin(cmdtable, data); // execute builtin
+			setup_redirection(data->redirects);
+			exit_code = execute_builtin(cmdtable, data);
 		}
 		free_split(envp);
-		return; // exit function after handling built-in
+		free(full_args);
+		return (exit_code);
 	}
 
-	// Fork for external commands
+	// fork external commands
 	pid = fork();
 	if (pid == 0) // child process
 	{
-		setup_redirection(data->redirects); // Always setup redirection
+		setup_redirection(data->redirects);
 		cmd_path = get_command_path(cmdtable->cmds);
 
 		if (cmd_path)
@@ -92,25 +92,41 @@ void	send_command(t_data *data)
 			ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
 			ft_putstr_fd("\n", STDERR_FILENO);
 		}
-		exit(127); // Exit if command not found
+		exit(127); // exit if command not found
 	}
 	else if (pid > 0) // parent
 	{
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
-			set_exit_status(WEXITSTATUS(status), data);
-			else if (WIFSIGNALED(status))
-				set_exit_status(128 + WTERMSIG(status), data);
-		else
-		set_exit_status(status, data);
+		{
+			exit_code = WEXITSTATUS(status);
+			set_exit_status(exit_code, data);
+			free_split(envp);
+			free(full_args);
+			return (exit_code);
+		}
+		else if (WIFSIGNALED(status))
+		{
+			exit_code = 128 + WTERMSIG(status);
+			set_exit_status(exit_code, data);
+			free_split(envp);
+			free(full_args);
+			return (exit_code);
+		}
 	}
 	else
 	{
 		perror("fork");
 		data->state.last_exit_status = 1;
+		free_split(envp);
+		free(full_args);
+		return (1);
 	}
 	free_split(envp);
+	free(full_args);
+	return (1);
 }
+
 
 int	ft_cmdsize(t_command *lst)
 {

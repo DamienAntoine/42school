@@ -217,7 +217,7 @@ void	print_escape(char *arg)
 	}
 }
 
-void	ft_echo(t_data *data)
+int	ft_echo(t_data *data)
 {
 	int		n_flag;
 	int		i;
@@ -238,4 +238,5 @@ void	ft_echo(t_data *data)
 	if (!n_flag)
 		ft_putchar_fd('\n', 1);
 	data->state.last_exit_status = 0;
+	return (0);
 }

@@ -20,7 +20,7 @@ void set_exit_status(long status, t_data *data)
     data->state.last_exit_status = (int)normalized_status;
 }
 
-void	ft_exit(t_data *data)
+int	ft_exit(t_data *data)
 {
 	char	*status_str;
 	int		status;
@@ -51,5 +51,6 @@ void	ft_exit(t_data *data)
 		set_exit_status(data->state.last_exit_status, data);
 	free_minishell(data);
 	exit(data->state.last_exit_status);
+	return (0);
 }
 

@@ -31,10 +31,11 @@ static void	unset_env_var(t_env **env_list, char *name)
 	}
 }
 
-void    handle_unset(t_env **lst, char **args)
+int    handle_unset(t_env **lst, char **args)
 {
-    int i;
-    i = 1;
-    while (args[i])
-        unset_env_var(lst, args[i++]);
+	int i;
+	i = 1;
+	while (args[i])
+		unset_env_var(lst, args[i++]);
+	return (0);
 }

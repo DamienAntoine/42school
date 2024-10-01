@@ -80,12 +80,11 @@ int		are_quotes_balanced(const char *input);
 void	printcommands(t_data *data);
 void	init_commands(t_data *data);
 char	*trim_input(char *input);
-void    ft_env(t_env *lst);
 char	*get_current_directory(void);
 void	free_minishell(t_data *data);
 void	free_split(char **split);
 int		is_builtin(char *cmd);
-void	execute_builtin(t_command *cmdtable, t_data *data);
+int		execute_builtin(t_command *cmdtable, t_data *data);
 char	*get_command_path(const char *cmd);
 char *get_full_input(void);
 void add_redirection(t_data *data, char *file, int type);
@@ -109,25 +108,25 @@ void	handle_pipe(t_data *data, int num_commands);
 
 //executor.c
 int		execute_command(t_data *data);
-void	send_command(t_data *data);
+int		send_command(t_data *data);
 //redirection.c
 int	open_redirection(t_redirection *redir);
 
 
 
 //#########################   builtins   ########################
-void    ft_cd(t_data *cur);
-void    ft_echo(t_data *data);
-void	ft_env(t_env *lst);
+int    ft_cd(t_data *cur);
+int    ft_echo(t_data *data);
+int	ft_env(t_env *lst);
 char	**env_list_to_array(t_env *env_list);
-void    handle_unset(t_env **lst, char **args);
+int    handle_unset(t_env **lst, char **args);
 
-void	ft_pwd(t_env *cur_env);
+int	ft_pwd(t_env *cur_env);
 void	print_export(t_env *env_list, t_data *data);
 //void    handle_export(t_env **lst, char **args, t_state *state);
-void	handle_export(t_data *data);
+int	handle_export(t_data *data);
 
-void	ft_exit(t_data *data);
+int	ft_exit(t_data *data);
 //void	exit();
 //void	export();
 
