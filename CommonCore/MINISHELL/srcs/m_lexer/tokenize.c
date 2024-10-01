@@ -95,17 +95,9 @@ char	*process_env_token(const char *str, t_data *data)
 			i++;
 			continue ;
 		}
-
-		if (str[i] == '$')
+		// Handle variables (only outside singlequotes)
+		if (str[i] == '$' && !in_single_quotes)
 		{
-			// expand variables outside single quotes
-			if (in_single_quotes && !in_double_quotes)
-			{
-				ft_strlcat(result, "$", buffer_size);
-				i++;
-				start = i;
-				continue;
-			}
 			if (i > start)
 			{
 				temp = ft_substr(str, start, i - start);
@@ -114,8 +106,7 @@ char	*process_env_token(const char *str, t_data *data)
 			}
 			i++;
 			start = i;
-
-			// Handle $?
+			// $?
 			if (str[start] == '?')
 			{
 				// expand $?
@@ -132,8 +123,6 @@ char	*process_env_token(const char *str, t_data *data)
 				start = i;
 				continue;
 			}
-
-
 			// handle "$"
 			if (!str[start] || !(ft_isalnum(str[start]) || str[start] == '_'))
 			{
@@ -141,8 +130,7 @@ char	*process_env_token(const char *str, t_data *data)
 				start = i;
 				continue;
 			}
-
-			// Expand environment variables
+			// expand vars
 			while (str[i] && (isalnum(str[i]) || str[i] == '_' || str[i] == '=' || str[i] == ';'))
 				i++;
 			temp = ft_substr(str, start, i - start);
@@ -158,6 +146,7 @@ char	*process_env_token(const char *str, t_data *data)
 		else
 			i++;
 	}
+	// add last part of thestring
 	if (start < i)
 	{
 		temp = ft_substr(str, start, i - start);
@@ -229,22 +218,18 @@ char *remove_balanced_quotes(const char *input)
 		{
 			in_single_quotes = !in_single_quotes;
 			i++; // skip quote
-		} else if (input[i] == '\"' && !in_single_quotes)
+		}
+		else if (input[i] == '\"' && !in_single_quotes)
 		{
 			in_double_quotes = !in_double_quotes;
 			i++; // skip quote
 		}
 		else
-			result[j++] = input[i++]; // Copy non-quote characters
+			result[j++] = input[i++];
 	}
-	result[j] = '\0'; // Null-terminate the result
-
+	result[j] = '\0';
 	return (result);
 }
-
-
-
-
 
 int	is_in_quotes(const char *arg, int position)
 {
@@ -270,7 +255,7 @@ char *handle_quotes(const char *str, t_data *data)
 	expanded_str = process_env_token(str, data);
 	result = remove_balanced_quotes(expanded_str);
 	free(expanded_str);
-	return result;
+	return (result);
 }
 
 
