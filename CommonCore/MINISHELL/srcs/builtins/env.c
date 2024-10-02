@@ -1,6 +1,6 @@
 #include "../../headers/minishell.h"
 
-void	ft_env(t_env *lst)
+int	ft_env(t_env *lst)
 {
 	while (lst)
 	{
@@ -13,6 +13,7 @@ void	ft_env(t_env *lst)
 		}
 		lst = lst->next;
 	}
+	return (0);
 }
 
 char	**env_list_to_array(t_env *env_list)
@@ -23,7 +24,7 @@ char	**env_list_to_array(t_env *env_list)
 	int i = 0;
     size_t  len;
 
- 
+
 
 	// Step 1: Count the number of variables
 	while (temp)
@@ -40,7 +41,7 @@ char	**env_list_to_array(t_env *env_list)
 	// Step 3: Fill the array
 	temp = env_list;
 	while (temp)
-	{   
+	{
         len = ft_strlen(temp->type) + ft_strlen(temp->value) + 2;
 		// Format each string as "name=value"
 		env_array[i] = malloc(len);

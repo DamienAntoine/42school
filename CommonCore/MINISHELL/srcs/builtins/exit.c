@@ -20,64 +20,37 @@ void set_exit_status(long status, t_data *data)
     data->state.last_exit_status = (int)normalized_status;
 }
 
-
-/* void update_exit_status(t_data *data, long long status)
+int	ft_exit(t_data *data)
 {
-    if (status < 0 || status > 255)
-    {
-        // Ensure the exit status is within the valid range of long long int
-        status = 1; // Default to 1 on invalid status
-    }
-    data->state.last_exit_status = status;
-}
- */
-void	ft_exit(t_data *data)
-{
-	char *status_str;
-	int status; //ft_strtol needed+++++++++
+	char	*status_str;
+	int		status;
 
-    status_str = ft_strdup(data->commands->args[0]);
-	status = ft_atoi(status_str);	
-	if (data->commands->args[0] && !data->commands->args[1])
+	if (data->commands->args[0])
 	{
+		status_str = ft_strdup(data->commands->args[0]);
+		// if first argument is valid string
 		if (ft_isalpha(status_str[0]))
 		{
 			ft_putstr_fd("exit: numeric argument required\n", STDERR_FILENO);
-			set_exit_status(2, data); // exit hello hardcode non numeric
+			set_exit_status(2, data); // 2 for non numeric argument
 		}
 		else
-			set_exit_status(status, data);
-	}
-	else if (data->commands->args[1])
-	{
-		if (ft_isdigit(status_str[0]))
 		{
-			ft_putstr_fd("exit: too many arguments\n", STDERR_FILENO);
-			set_exit_status(1, data);
+			status = ft_atoi(status_str);
+			if (data->commands->args[1])
+			{
+				ft_putstr_fd("exit: too many arguments\n", STDERR_FILENO);
+				set_exit_status(1, data); // Set exit status to 1 for error
+			}
+			else
+				set_exit_status(status, data);
 		}
-
-		else
-		{
-            ft_putstr_fd("exit: numeric argument required\n", STDERR_FILENO);
-            set_exit_status(2, data); // Non-numeric first argument, exit with status 2
-        }
-
+		free(status_str);
 	}
 	else
 		set_exit_status(data->state.last_exit_status, data);
-
-
 	free_minishell(data);
-	/*
-	// Optionally print the exit status
-	if (status != 0)
-	{
-		ft_putstr_fd("Exiting with status ", STDERR_FILENO);
-		ft_putnbr_fd(status, STDERR_FILENO);
-		ft_putstr_fd("\n", STDERR_FILENO);
-	}
-	set_exit_status(status, data);
-	*/
-	// Exit the shell process with the specified status
 	exit(data->state.last_exit_status);
+	return (0);
 }
+

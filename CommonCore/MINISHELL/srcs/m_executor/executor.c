@@ -1,157 +1,27 @@
 #include "../../headers/minishell.h"
 
-void	execute_builtin(t_command *cmdtable, t_data *data)
+int	execute_builtin(t_command *cmdtable, t_data *data)
 {
 	if (ft_strcmp(cmdtable->cmds, "cd") == 0)
-		ft_cd(data);
+		return (ft_cd(data));
 	else if (ft_strcmp(cmdtable->cmds, "echo") == 0)
-		ft_echo(data);
-		//ft_echo(data->toklist, &(data->state), data->env);
+		return (ft_echo(data));
 	else if (ft_strcmp(cmdtable->cmds, "env") == 0)
-		ft_env(data->env);
+		return (ft_env(data->env));
 	else if (ft_strcmp(cmdtable->cmds, "pwd") == 0)
-		ft_pwd(data->env);
+		return (ft_pwd(data->env));
 	else if (ft_strcmp(cmdtable->cmds, "unset") == 0)
-		handle_unset(&data->env, data->toklist->tokens);
+		return (handle_unset(&data->env, data->toklist->tokens));
 	else if (ft_strcmp(cmdtable->cmds, "exit") == 0)
-	{
-		ft_exit(data);
-	/* 	if (data->toklist->token_count == 1)
-			ft_exit(data, 0);
-		else
-			ft_exit(data, ft_atoi(data->toklist->tokens[1])); */
-	}
+		return (ft_exit(data));
 	else if (ft_strcmp(cmdtable->cmds, "export") == 0)
-	{
-		handle_export(data);
-/* 		if (data->toklist->token_count == 1)
-			print_export(data->env, &(data->state));
-		else
-			handle_export(&data->env, data->toklist->tokens, &(data->state)); */
-	}
-	else if (ft_strcmp(cmdtable->cmds, "cat") == 0)
-		ft_cat(data);
-	else if (ft_strcmp(cmdtable->cmds, "grep") == 0)
-		ft_grep(data);
+		return (handle_export(data));
+
+	return (1);
 }
 
-/*void send_command(t_data *data)
-{
-	char		**envp = env_list_to_array(data->env);
-	t_command	*cmdtable = data->commands;
-	pid_t		pid;
-	int			status;
 
-	if (!cmdtable || !cmdtable->cmds)
-	{
-		ft_putstr_fd("No command provided\n", STDERR_FILENO);
-		free_split(envp);
-		data->state.last_exit_status = 127;
-		return;
-	}
-
-	if (is_builtin(cmdtable->cmds))
-	{
-		if (data->redirects == NULL) //if no redirections
-			execute_builtin(cmdtable, data); //only execute the builtin
-		else //if redirections
-		{
-			//fork process
-			pid = fork();
-			if (pid == 0)//child
-			{
-				printf("Built-in command with redirection.\n");
-				setup_redirection(data->redirects);
-				execute_builtin(cmdtable, data);
-				exit(data->state.last_exit_status);
-			}
-			else if (pid > 0)//parent
-			{
-				waitpid(pid, &status, 0);
-				if (WIFEXITED(status))
-					set_exit_status(WEXITSTATUS(status), data);
-				else if (WIFSIGNALED(status))
-					set_exit_status(128 + WTERMSIG(status), data);
-				else
-					set_exit_status(status, data);
-			}
-			else
-			{
-				perror("fork");//if fork failed
-				data->state.last_exit_status = 1;
-			}
-		}
-		free_split(envp);
-		return;
-	}
-
-//could cut function here
-	t_redirection	*redir;
-	char			*cmd_path;
-	int				heredoc_fd;
-
-	pid = fork();
-	if (pid == 0)//child process
-	{
-		if (data->redirects != NULL)
-		{
-			redir = data->redirects;
-			while (redir)
-			{
-				// check if it is a here-doc redirection
-				if (redir->type == 3) //3 = `<<` type
-				{
-					heredoc_fd = handle_here_doc(redir); //get the fd for heredoc
-					if (heredoc_fd != -1)
-					{
-						//redirect stdin to the output of the here-doc
-						dup2(heredoc_fd, STDIN_FILENO);
-						close(heredoc_fd); // Close after duplicating to stdin
-					}
-				}
-				redir = redir->next;
-			}
-			//handle other redirections
-			setup_redirection(data->redirects);
-		}
-		// Redirection setup should be added here if applicable
-		cmd_path = NULL;
-		if (cmdtable->cmds[0] == '/')
-			cmd_path = ft_strdup(cmdtable->cmds);//use absolute path
-		else
-			cmd_path = get_command_path(cmdtable->cmds);//find command in PATH
-		if (cmd_path)
-		{
-			execve(cmd_path, cmdtable->args, envp);
-			perror("execve");
-			free(cmd_path);
-		}
-		else
-		{
-			ft_putstr_fd("Command not found: ", STDERR_FILENO);
-			ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
-			ft_putstr_fd("\n", STDERR_FILENO);
-		}
-		exit(127);//Exit with command not found status
-	}
-	else if (pid > 0)//parent
-	{
-		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			set_exit_status(WEXITSTATUS(status), data);
-		else if (WIFSIGNALED(status))
-			set_exit_status(128 + WTERMSIG(status), data);
-		else
-			set_exit_status(status, data);
-	}
-	else{
-		perror("fork");
-		data->state.last_exit_status = 1;
-	}
-	free_split(envp);
-}*/
-
-void	send_command(t_data *data)
+int	send_command(t_data *data)
 {
 	char		**envp = env_list_to_array(data->env);
 	char		*cmd_path;
@@ -160,10 +30,9 @@ void	send_command(t_data *data)
 	pid_t		pid;
 	int			status;
 	int			arg_count;
+	int			exit_code;
 	int			i;
 
-
-	//init full_args
 	arg_count = 0;
 	while (cmdtable->args[arg_count] != NULL)
 		arg_count++;
@@ -182,36 +51,34 @@ void	send_command(t_data *data)
 	}
 	// NULL terminate the array
 	full_args[arg_count + 1] = NULL;
-
-
-
 	if (!cmdtable || !cmdtable->cmds)
 	{
-		ft_putstr_fd("No command provided\n", STDERR_FILENO);
 		free_split(envp);
-		data->state.last_exit_status = 127;
-		return;
+		data->state.last_exit_status = 0;
+		free(full_args);
+		return (0);
 	}
 
 	// Handle built-ins directly in the context of the pipe
 	if (is_builtin(cmdtable->cmds))
 	{
 		if (data->redirects == NULL) // no redirections
-			execute_builtin(cmdtable, data); // execute directly
+			exit_code = execute_builtin(cmdtable, data); // execute directly
 		else // if redirections
 		{
-			setup_redirection(data->redirects); // setup redirection
-			execute_builtin(cmdtable, data); // execute builtin
+			setup_redirection(data->redirects);
+			exit_code = execute_builtin(cmdtable, data);
 		}
 		free_split(envp);
-		return; // exit function after handling built-in
+		free(full_args);
+		return (exit_code);
 	}
 
-	// Fork for external commands
+	// fork external commands
 	pid = fork();
 	if (pid == 0) // child process
 	{
-		setup_redirection(data->redirects); // Always setup redirection
+		setup_redirection(data->redirects);
 		cmd_path = get_command_path(cmdtable->cmds);
 
 		if (cmd_path)
@@ -225,25 +92,41 @@ void	send_command(t_data *data)
 			ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
 			ft_putstr_fd("\n", STDERR_FILENO);
 		}
-		exit(127); // Exit if command not found
+		exit(127); // exit if command not found
 	}
 	else if (pid > 0) // parent
 	{
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
-			set_exit_status(WEXITSTATUS(status), data);
-			else if (WIFSIGNALED(status))
-				set_exit_status(128 + WTERMSIG(status), data);
-		else
-		set_exit_status(status, data);
+		{
+			exit_code = WEXITSTATUS(status);
+			set_exit_status(exit_code, data);
+			free_split(envp);
+			free(full_args);
+			return (exit_code);
+		}
+		else if (WIFSIGNALED(status))
+		{
+			exit_code = 128 + WTERMSIG(status);
+			set_exit_status(exit_code, data);
+			free_split(envp);
+			free(full_args);
+			return (exit_code);
+		}
 	}
 	else
 	{
 		perror("fork");
 		data->state.last_exit_status = 1;
+		free_split(envp);
+		free(full_args);
+		return (1);
 	}
 	free_split(envp);
+	free(full_args);
+	return (1);
 }
+
 
 int	ft_cmdsize(t_command *lst)
 {

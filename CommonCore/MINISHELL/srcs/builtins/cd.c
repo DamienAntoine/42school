@@ -9,7 +9,7 @@ char	*get_current_directory(void)
 	return (getcwd(NULL, 0)); // Get the current working directory
 }
 
-void	ft_cd(t_data *cur)
+int	ft_cd(t_data *cur)
 {
 	char	*target_dir = NULL;
 	char	*oldpwd = get_current_directory();
@@ -19,7 +19,7 @@ void	ft_cd(t_data *cur)
 	if (!oldpwd)
 	{
 		perror("getcwd");
-		return ;
+		return 1;
 	}
 
 	// Debug: Print the current directory before changing
@@ -32,7 +32,7 @@ void	ft_cd(t_data *cur)
 		ft_putstr_fd(" too many arguments\n", STDERR_FILENO);
 		free(oldpwd);
 		cur->state.last_exit_status = 1;
-		return ;
+		return 1;
 	}
 
 	// Determine the target directory
@@ -44,7 +44,7 @@ void	ft_cd(t_data *cur)
 		{
 			printf_and_free("Home directory not set\n", oldpwd);
 			cur->state.last_exit_status = 1;
-			return ;
+			return 1;
 		}
 	}
 	else if (!ft_strcmp(cur->commands->args[0], ".."))
@@ -56,7 +56,7 @@ void	ft_cd(t_data *cur)
 		{
 			printf_and_free("OLDPWD not set\n", oldpwd);
 			cur->state.last_exit_status = 1;
-			return ;
+			return 1;
 		}
 		printf("%s\n", oldpwd_env);
 		target_dir = oldpwd_env;
@@ -70,7 +70,7 @@ void	ft_cd(t_data *cur)
 			printf("cd: %s: No such environment variable\n", &cur->commands->args[0][1]);
 			free(oldpwd);
 			cur->state.last_exit_status = 1;
-			return;
+			return 1;
 		}
 	}
 	else
@@ -80,7 +80,7 @@ void	ft_cd(t_data *cur)
 	{
 		perror_and_free("cd", oldpwd);
 		cur->state.last_exit_status = 1;
-		return ;
+		return 1;
 	}
 
 	// Get the new current directory
@@ -89,7 +89,7 @@ void	ft_cd(t_data *cur)
 	{
 		perror_and_free("getcwd", oldpwd);
 		cur->state.last_exit_status = 1;
-		return ;
+		return 1;
 	}
 
 	// Update OLDPWD and PWD environment variables
@@ -102,4 +102,5 @@ void	ft_cd(t_data *cur)
 	// Clean up
 	free(oldpwd);
 	free(newpwd);
+	return (0);
 }
