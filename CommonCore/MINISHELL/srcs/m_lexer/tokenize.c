@@ -292,12 +292,12 @@ char *handle_quotes(const char *str, t_data *data)
 {
 	char	*expanded_str;
     char    *result;
-    int     i;
-	size_t	len;
+    // int     i;
+	// size_t	len;
 
     expanded_str = process_env_token(str, data);
-    len = ft_strlen(expanded_str);
-    i = 0;
+    // len = ft_strlen(expanded_str);
+    // i = 0;
     result = remove_balanced_quotes(expanded_str);
 	return (result);
 }
