@@ -31,6 +31,8 @@ static void sorted_insert(t_env **sorted_list, t_env *new_node) {
     }
 }
 
+
+
 // Function to clone nodes for sorting to avoid modifying the original list
 static t_env *clone_node(t_env *node) {
     if (node == NULL) return NULL;
@@ -41,6 +43,8 @@ static t_env *clone_node(t_env *node) {
     new_node->next = NULL;
     return new_node;
 }
+
+
 
 void print_export(t_env *env_list, t_data *data) {
     t_env *current = env_list;
@@ -78,6 +82,8 @@ void print_export(t_env *env_list, t_data *data) {
     }
     data->state.last_exit_status = 0;
 }
+
+
 
 static void export_with_arg(t_env **env_list, char *arg, t_data *data)
 {
