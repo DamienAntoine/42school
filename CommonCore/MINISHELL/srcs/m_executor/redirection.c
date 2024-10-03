@@ -3,37 +3,22 @@
 //Opens the file based on the type of redirection (input, output, append).
 //Returns the file descriptor (fd) for that file.
 
-int open_redirection(t_redirection *redir) 
+int open_redirection(t_redirection *redir)
 {
-    int fd;
+	int	fd;
 
-    fd = -1;
-    if (redir->type == 0) 
-    {  // Input
-        fd = open(redir->file, O_RDONLY);
-    }
-	else if (redir->type == 1) 
-	{  // Output
-        fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    } 
-	else if (redir->type == 2) 
-	{  // Append
-        fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-    } 
-	else if (redir->type == 3) 
-	{  
-        fd = handle_here_doc(redir);
-    }
-//    else 
-//    {
-//        fprintf(stderr, "Invalid redirection type: %d\n", redir->type);
-//        return -1;
-//    }
+	fd = -1;
+	if (redir->type == 0)
+		fd = open(redir->file, O_RDONLY);// Input
+	else if (redir->type == 1)
+		fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);// Output
+	else if (redir->type == 2)
+		fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);// Append
+	else if (redir->type == 3)
+		fd = handle_here_doc(redir);
 	if (fd < 0)
-    {
-        perror("open");
-    }
-    return fd;
+		perror("open");
+	return fd;
 }
 
 int handle_here_doc(t_redirection *redir)
@@ -75,9 +60,9 @@ int handle_here_doc(t_redirection *redir)
 
 
 /*
-Loops through all the redirections in a linked list and 
+Loops through all the redirections in a linked list and
 applies them using dup2 to redirect stdin or stdout as needed.
-This is the function you'll use in the child process of your 
+This is the function you'll use in the child process of your
 send_command function before calling execve.
 */
 
@@ -122,20 +107,20 @@ void setup_redirection(t_redirection *redir)
 }
 
 /*Adds a new redirection to your t_redirection linked list.
-You would call this function when parsing the command, 
+You would call this function when parsing the command,
 adding any redirections (<, >, >>) as they appear.*/
-void add_redirection(t_data *data, char *file, int type) 
+void add_redirection(t_data *data, char *file, int type)
 {
     t_redirection *new_redir = malloc(sizeof(t_redirection));
 	t_redirection *tmp;
     tmp = NULL;
-    if (!new_redir) 
+    if (!new_redir)
 	{
         perror("Failed to allocate memory for new redirection");
         return;
     }
 	new_redir->file = ft_strdup(file);
-    if (!new_redir->file) 
+    if (!new_redir->file)
 	{
         free(new_redir);
         perror("Failed to duplicate file string");
@@ -145,12 +130,12 @@ void add_redirection(t_data *data, char *file, int type)
     new_redir->next = NULL;
 	// If there are no redirections yet, add the new one as the first element.
     if (data->redirects == NULL)
-        data->redirects = new_redir; 
-	else 
+        data->redirects = new_redir;
+	else
 	{
         // Otherwise, find the end of the list and append the new redirection.
         tmp = data->redirects;
-        while (tmp->next != NULL) 
+        while (tmp->next != NULL)
 		{
             tmp = tmp->next;
         }
@@ -173,7 +158,7 @@ void ft_sortredirect(t_data *data, int *i) {
         redirect_type = 3; // Here-doc
 
     // Process redirection if a valid type was found
-    if (redirect_type != -1) 
+    if (redirect_type != -1)
 	{
         (*i)++;
         if (*i < toklist->token_count)

@@ -18,7 +18,6 @@ char	*expand_variable(const char *var_name, t_data *data)
 		return (ft_strdup(""));
 }
 
-
 size_t	estimate_buffer_size(const char *str, t_data *data)
 {
 	size_t	size;
@@ -121,17 +120,18 @@ char	*process_env_token(const char *str, t_data *data)
 					i++;
 				}
 				start = i;
-				continue;
+				continue ;
 			}
 			// handle "$"
 			if (!str[start] || !(ft_isalnum(str[start]) || str[start] == '_'))
 			{
 				ft_strlcat(result, "$", buffer_size);
 				start = i;
-				continue;
+				continue ;
 			}
 			// expand vars
-			while (str[i] && (isalnum(str[i]) || str[i] == '_' || str[i] == '=' || str[i] == ';'))
+			while (str[i] && (isalnum(str[i]) || str[i] == '_' || str[i] == '='
+					|| str[i] == ';'))
 				i++;
 			temp = ft_substr(str, start, i - start);
 			if (temp && temp[0] != '\0')
@@ -156,8 +156,7 @@ char	*process_env_token(const char *str, t_data *data)
 	return (result);
 }
 
-
-int quotes_check(const char *input)
+int	quotes_check(const char *input)
 {
 	int	i;
 	int	in_single_quotes;
@@ -174,7 +173,6 @@ int quotes_check(const char *input)
 		// toggle double quotes
 		else if (input[i] == '\"')
 			in_double_quotes = !in_double_quotes;
-
 		if (input[i] == '$')
 		{
 			// double quotes: expand
@@ -189,11 +187,10 @@ int quotes_check(const char *input)
 	return (0); // Return 0 if no '$' is found in single quotes
 }
 
-
 #include <stdlib.h>
 #include <string.h>
 
-char *remove_balanced_quotes(const char *input)
+char	*remove_balanced_quotes(const char *input)
 {
 	char	*result;
 	size_t	len;
@@ -207,11 +204,9 @@ char *remove_balanced_quotes(const char *input)
 	in_single_quotes = 0;
 	in_double_quotes = 0;
 	len = ft_strlen(input);
-
 	result = malloc(len + 1);
 	if (!result)
-		return NULL;
-
+		return (NULL);
 	while (i < len)
 	{
 		if (input[i] == '\'' && !in_double_quotes)
@@ -247,7 +242,7 @@ int	is_in_quotes(const char *arg, int position)
 	return (in_quotes % 2 != 0);
 }
 
-char *handle_quotes(const char *str, t_data *data)
+char	*handle_quotes(const char *str, t_data *data)
 {
 	char	*expanded_str;
 	char	*result;
@@ -258,17 +253,15 @@ char *handle_quotes(const char *str, t_data *data)
 	return (result);
 }
 
-
 char	*ft_strtok(char *str, const char *delimiter)
 {
 	static char	*last;
 	int			in_single_quotes;
 	int			in_double_quotes;
-	char		*end;
 	char		*start;
 
-	in_double_quotes = 0;
 	in_single_quotes = 0;
+	in_double_quotes = 0;
 	if (str == NULL)
 		str = last;
 	if (str == NULL || *str == '\0')
@@ -284,15 +277,28 @@ char	*ft_strtok(char *str, const char *delimiter)
 			in_double_quotes = !in_double_quotes;
 		else if (*str == '\'' && !in_double_quotes)
 			in_single_quotes = !in_single_quotes;
-		else if (ft_strchr(delimiter, *str) && !in_double_quotes
-			&& !in_single_quotes)
-			break ;
+		else if (!in_single_quotes && !in_double_quotes)
+		{
+			if (*str == '<' || *str == '>')
+			{
+				if (str != start)
+				{
+					last = str;
+					return (ft_substr(start, 0, str - start));
+				}
+				if (*(str + 1) == *str)
+					str++;
+				last = str + 1;
+				return (ft_substr(start, 0, str - start + 1));
+			}
+			if (ft_strchr(delimiter, *str))
+				break ;
+		}
 		str++;
 	}
-	end = str;
-	if (*end != '\0')
-		*end++ = '\0';
-	last = end;
+	if (*str != '\0')
+		*str++ = '\0';
+	last = str;
 	return (start);
 }
 
@@ -328,9 +334,10 @@ char	**ft_tokenize(t_data *data, char *input)
 	i = 0;
 	while (args[i])
 	{
-		expanded = handle_quotes(args[i], data);// find expanded value and remove the quotes
+		expanded = handle_quotes(args[i], data);
+			// find expanded value and remove the quotes
 		free(args[i]);
-		args[i] = expanded;// assign the expanded string to args[i]
+		args[i] = expanded; // assign the expanded string to args[i]
 		i++;
 	}
 	return (args);
