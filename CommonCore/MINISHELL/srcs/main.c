@@ -101,8 +101,8 @@ int	main(int argc, char **argv, char **env)
 			//printcommands(data);//delete when everything is finished
 			execute_command(data);
 
-			if (data->redirects)
-				free_redirections(data->redirects);
+			// if (data->redirects)
+			// 	free_redirections(&data->redirects);
 		}
 	}
 	return (free_minishell(data), 0);

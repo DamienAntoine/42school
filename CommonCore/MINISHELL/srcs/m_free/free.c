@@ -62,14 +62,14 @@ void	free_split(char **split)
 	free(split);
 }
 
-void	free_redirections(t_redirection *redirections)
+void	free_redirections(t_redirection **redirections)
 {
 	t_redirection	*temp;
 
-	while (redirections)
+	while (*redirections)
 	{
-		temp = redirections;
-		redirections = redirections->next;
+		temp = *redirections;
+		*redirections = (*redirections)->next;
 		if (temp->file)
 		{
 			free(temp->file);
@@ -77,6 +77,7 @@ void	free_redirections(t_redirection *redirections)
 		}
 		free(temp);
 	}
+	*redirections = NULL;
 }
 
 void	free_token_list(t_token_list *token_list)
@@ -98,6 +99,6 @@ void	free_minishell(t_data *data)
 	if (data->env)
 		free_env_list(data->env);
 	if (data->redirects)
-		free_redirections(data->redirects);
+		free_redirections(&data->redirects);
 	free(data);
 }

@@ -168,7 +168,7 @@ void init_env(char **env, t_env **cur_env);
 //free.c
 void free_env_list(t_env *env);
 void free_token_list(t_token_list *token_list);
-void free_redirections(t_redirection *redirections);
+void free_redirections(t_redirection **redirections);
 void free_command(t_command *command);
 
 //#########################   m_lexer   ########################

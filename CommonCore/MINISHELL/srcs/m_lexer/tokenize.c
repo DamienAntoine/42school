@@ -123,11 +123,6 @@ char	*process_env_token(const char *str, t_data *data)
 				start = i;
 				continue;
 			}
-<<<<<<< HEAD
-
-			// Expand environment variables
-			while (str[i] && (ft_isalnum(str[i]) || str[i] == '_' || str[i] == '=' || str[i] == ';'))
-=======
 			// handle "$"
 			if (!str[start] || !(ft_isalnum(str[start]) || str[start] == '_'))
 			{
@@ -137,7 +132,6 @@ char	*process_env_token(const char *str, t_data *data)
 			}
 			// expand vars
 			while (str[i] && (isalnum(str[i]) || str[i] == '_' || str[i] == '=' || str[i] == ';'))
->>>>>>> a94235fd94c1155a9e8e382a4501eddbccd1f5c4
 				i++;
 			temp = ft_substr(str, start, i - start);
 			if (temp && temp[0] != '\0')
