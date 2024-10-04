@@ -88,10 +88,7 @@ int	main(int argc, char **argv, char **env)
 	{
 		reset_toklist(data);
 		if (!handle_input(data))
-		{
-			free_minishell(data);  // Ensure cleanup on exit
 			return (0);
-		}
 		reset_command(data);
 		if (!has_synt_errors(data->toklist))
 		{
