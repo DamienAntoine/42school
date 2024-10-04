@@ -74,12 +74,16 @@ void setup_redirection(t_redirection *redir)
     // Traverse the redirection list to find the last redirection for each type
     while (current)
     {
-        if (current->type == 0 || current->type == 3)
-            fd_in = open_redirection(current);
-        else if (current->type == 1)
-            fd_out = open_redirection(current);
-        else if (current->type == 2)
-            fd_append = open_redirection(current);
+        // Ensure you are accessing valid redirection types
+        if (current->type >= 0 && current->type <= 3)
+        {
+            if (current->type == 0 || current->type == 3)
+                fd_in = open_redirection(current);
+            else if (current->type == 1)
+                fd_out = open_redirection(current);
+            else if (current->type == 2)
+                fd_append = open_redirection(current);
+        }
         current = current->next;
     }
 
@@ -105,6 +109,7 @@ void setup_redirection(t_redirection *redir)
         close(fd_out);
     }
 }
+
 
 /*Adds a new redirection to your t_redirection linked list.
 You would call this function when parsing the command,
@@ -144,7 +149,8 @@ void add_redirection(t_data *data, char *file, int type)
 }
 
 
-void ft_sortredirect(t_data *data, int *i) {
+void ft_sortredirect(t_data *data, int *i)
+{
     t_token_list *toklist = data->toklist;
     int redirect_type = -1;
 
