@@ -66,16 +66,23 @@ void	free_redirections(t_redirection *redirections)
 {
 	t_redirection	*temp;
 
-	while (redirections)
+	if (redirections)
 	{
-		temp = redirections;
-		redirections = redirections->next;
-		if (temp->file)
+		while (redirections)
 		{
-			free(temp->file);
-			temp->file = NULL;
+			printf("%s\n", redirections->file);
+			printf("%d\n", redirections->type);
+			temp = redirections;
+			redirections = redirections->next;
+			if (temp->file)
+			{
+				free(temp->file);
+				temp->file = NULL;
+			}
+			if (temp)
+				free(temp);
 		}
-		free(temp);
+		free(redirections);
 	}
 }
 
@@ -97,7 +104,10 @@ void	free_minishell(t_data *data)
 		free_command(data->commands);
 	if (data->env)
 		free_env_list(data->env);
-	if (data->redirects)
+	if (data->redirects != NULL)
+	{
 		free_redirections(data->redirects);
+		data->redirects = NULL;
+	}
 	free(data);
 }

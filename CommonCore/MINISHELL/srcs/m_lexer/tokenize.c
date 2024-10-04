@@ -340,6 +340,7 @@ char	**ft_tokenize(t_data *data, char *input)
 		args[i] = expanded; // assign the expanded string to args[i]
 		i++;
 	}
+	free(processed_input);
 	return (args);
 }
 

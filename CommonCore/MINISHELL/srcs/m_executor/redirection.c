@@ -74,7 +74,6 @@ void setup_redirection(t_redirection *redir)
     // Traverse the redirection list to find the last redirection for each type
     while (current)
     {
-        // Ensure you are accessing valid redirection types
         if (current->type >= 0 && current->type <= 3)
         {
             if (current->type == 0 || current->type == 3)
@@ -86,29 +85,32 @@ void setup_redirection(t_redirection *redir)
         }
         current = current->next;
     }
-
     // Apply the last input redirection
     if (fd_in != -1)
     {
         if (dup2(fd_in, STDIN_FILENO) == -1)
-            perror("dup2");
+            perror("dup2 failed for input redirection");
         close(fd_in);
     }
-
     // Apply the last output redirection (append takes precedence if present)
     if (fd_append != -1)
     {
         if (dup2(fd_append, STDOUT_FILENO) == -1)
-            perror("dup2");
+            perror("dup2 failed for append redirection");
         close(fd_append);
     }
     else if (fd_out != -1)
     {
-        if (dup2(fd_out, STDOUT_FILENO) == -1)
-            perror("dup2");
+		///////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////
+		//if (dup2(fd_out, STDOUT_FILENO) == -1)//program gets stuck here when trying to redirect
+		//	perror("dup2 failed for output redirection");
+		///////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////
         close(fd_out);
     }
 }
+
 
 
 /*Adds a new redirection to your t_redirection linked list.

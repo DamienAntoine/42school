@@ -51,6 +51,7 @@ int	handle_input(t_data *data)
 {
 	char	*input;
 
+
 	input = get_full_input();
 	if (!input)
 	{
@@ -76,7 +77,6 @@ int	main(int argc, char **argv, char **env)
 {
 	t_data	*data;
 
-
 	(void)argv;
 	if (argc > 1)
 		exit(0);
@@ -88,16 +88,16 @@ int	main(int argc, char **argv, char **env)
 	{
 		reset_toklist(data);
 		if (!handle_input(data))
+		{
+			free_minishell(data);  // Ensure cleanup on exit
 			return (0);
+		}
 		reset_command(data);
 		if (!has_synt_errors(data->toklist))
 		{
 			ft_sort_tokens(data);
 			//printcommands(data);//delete when everything is finished
 			execute_command(data);
-
-			if (data->redirects)
-				free_redirections(data->redirects);
 		}
 	}
 	return (free_minishell(data), 0);
