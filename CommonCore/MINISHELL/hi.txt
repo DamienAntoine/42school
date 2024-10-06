@@ -1,4 +1,4 @@
-hi
+test
 [?2004h[35mMSL> [0m[?2004l
 hi.txt
 1

@@ -15,6 +15,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <limits.h>
+#include <sys/stat.h>
 
 
 # define BUFFER_SIZE 1024

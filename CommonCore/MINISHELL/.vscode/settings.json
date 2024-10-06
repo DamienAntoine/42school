@@ -16,6 +16,7 @@
 		"random": "c",
 		"stdbool.h": "c",
 		"string_view": "c",
-		"initializer_list": "c"
+		"initializer_list": "c",
+		"readline.h": "c"
 	}
 }

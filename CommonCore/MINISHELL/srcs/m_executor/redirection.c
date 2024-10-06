@@ -16,9 +16,11 @@ int open_redirection(t_redirection *redir)
 		fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);// Append
 	else if (redir->type == 3)
 		fd = handle_here_doc(redir);
-	if (fd < 0)
-		perror("open");
-	return fd;
+	else
+		return (-1);
+	if (fd == -1)
+		perror("Failed to open file for redirection");
+	return (fd);
 }
 
 int handle_here_doc(t_redirection *redir)
@@ -103,8 +105,14 @@ void setup_redirection(t_redirection *redir)
     {
 		///////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////
+		ft_putstr_fd("before check\n", 1);
+		printf("file descriptor: %d\n", fd_out);
 		if (dup2(fd_out, STDOUT_FILENO) == -1)//program gets stuck here when trying to redirect
+		{
+			ft_putstr_fd("in check1\n", 1);
 			perror("dup2 failed for output redirection");
+			ft_putstr_fd("in check2\n", 1);
+		}
 		///////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////
         close(fd_out);

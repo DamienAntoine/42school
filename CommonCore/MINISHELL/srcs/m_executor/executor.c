@@ -81,18 +81,63 @@ int	send_command(t_data *data)
 		setup_redirection(data->redirects);
 		cmd_path = get_command_path(cmdtable->cmds);
 
-		if (cmd_path)
+		struct stat path_stat;
+		if (stat(cmdtable->cmds, &path_stat) == 0)
+		{
+			if (S_ISDIR(path_stat.st_mode))
+			{
+				if (cmdtable->cmds[0] == '.' || cmdtable->cmds[0] == '/')
+				{
+					ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
+					ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+					exit(126); // exit if it's a directory
+				}
+				else
+				{
+					ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
+					ft_putstr_fd(": command not found\n", STDERR_FILENO);
+					exit(127); // exit if command not found
+				}
+			}
+			if (!S_ISREG(path_stat.st_mode))//checks if its a file (0 for no)
+			{
+				ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
+				ft_putstr_fd(": command not found\n", STDERR_FILENO);
+				exit(127); // exit if it's not a regular file (not executable)
+			}
+			if (access(cmdtable->cmds, X_OK) != 0)//checks execute permission (1 for yes 0 for no)
+			{
+				ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
+				ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+				exit(126); // exit if permission denied
+			}
+		}
+		else if (cmd_path && access(cmd_path, X_OK) != 0) // Explicitly check cmd_path if stat fails
+		{
+			ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
+			ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+			exit(126); // exit if permission denied
+		}
+		else if (cmd_path)
 		{
 			execve(cmd_path, full_args, envp);
 			perror("execve");
 		}
 		else
 		{
-			ft_putstr_fd("Command not found: ", STDERR_FILENO);
+			if (cmdtable->cmds[0] == '/' || cmdtable->cmds[0] == '.')
+			{
+				if (stat(cmdtable->cmds, &path_stat) != 0)
+				{
+					ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
+					ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+					exit(127); // exit if no such file or directory
+				}
+			}
 			ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
-			ft_putstr_fd("\n", STDERR_FILENO);
+			ft_putstr_fd(": command not found\n", STDERR_FILENO);
+			exit(127); // exit if command not found
 		}
-		exit(127); // exit if command not found
 	}
 	else if (pid > 0) // parent
 	{
