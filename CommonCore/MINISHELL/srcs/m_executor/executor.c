@@ -74,6 +74,7 @@ int	send_command(t_data *data)
 		return (exit_code);
 	}
 
+
 	// fork external commands
 	pid = fork();
 	if (pid == 0) // child process
@@ -81,62 +82,82 @@ int	send_command(t_data *data)
 		setup_redirection(data->redirects);
 		cmd_path = get_command_path(cmdtable->cmds);
 
-		struct stat path_stat;
-		if (stat(cmdtable->cmds, &path_stat) == 0)
+		// if cmd_path, use cmd_path instead of cmdtable->cmds
+		char *exec_target;
+		if (cmd_path)
+			exec_target = cmd_path;
+		else
+			exec_target = cmdtable->cmds;
+
+		// check if file exists
+		int fd = open(exec_target, O_RDONLY);
+		if (fd == -1)
 		{
-			if (S_ISDIR(path_stat.st_mode))
+			if (errno == EACCES) // Check for permission denied error
 			{
-				if (cmdtable->cmds[0] == '.' || cmdtable->cmds[0] == '/')
-				{
-					ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
-					ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
-					exit(126); // exit if it's a directory
-				}
-				else
-				{
-					ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
-					ft_putstr_fd(": command not found\n", STDERR_FILENO);
-					exit(127); // exit if command not found
-				}
-			}
-			if (!S_ISREG(path_stat.st_mode))//checks if its a file (0 for no)
-			{
-				ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
-				ft_putstr_fd(": command not found\n", STDERR_FILENO);
-				exit(127); // exit if it's not a regular file (not executable)
-			}
-			if (access(cmdtable->cmds, X_OK) != 0)//checks execute permission (1 for yes 0 for no)
-			{
-				ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
+				ft_putstr_fd(exec_target, STDERR_FILENO);
 				ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
-				exit(126); // exit if permission denied
+				exit(126); // Permission denied
 			}
-		}
-		else if (cmd_path && access(cmd_path, X_OK) != 0) // Explicitly check cmd_path if stat fails
-		{
-			ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
-			ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
-			exit(126); // exit if permission denied
-		}
-		else if (cmd_path)
-		{
-			execve(cmd_path, full_args, envp);
-			perror("execve");
+			else if (exec_target[0] == '.' || exec_target[0] == '/')// if file doesnt exist and input is a path
+			{
+				ft_putstr_fd(exec_target, STDERR_FILENO);
+				ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+				exit(127); // File doesn't exist
+			}
+			else
+			{
+				// if not a path, cmd not found
+				ft_putstr_fd(exec_target, STDERR_FILENO);
+				ft_putstr_fd(": command not found\n", STDERR_FILENO);
+				exit(127);
+			}
 		}
 		else
 		{
-			if (cmdtable->cmds[0] == '/' || cmdtable->cmds[0] == '.')
+			// check if is directory
+			char buffer[1];
+			if (read(fd, buffer, 1) == -1)
 			{
-				if (stat(cmdtable->cmds, &path_stat) != 0)
+				// if read returns -1, means its a dir
+				if (errno == EISDIR) // if open is used on a directory, it returns EISDIR into errno
 				{
-					ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
-					ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
-					exit(127); // exit if no such file or directory
+					// only print "Is a directory" for paths
+					if (exec_target[0] == '.' || exec_target[0] == '/')
+					{
+						ft_putstr_fd(exec_target, STDERR_FILENO);
+						ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+						close(fd);
+						exit(126);
+					}
+					else
+					{
+						// if not a path, cmd not found
+						ft_putstr_fd(exec_target, STDERR_FILENO);
+						ft_putstr_fd(": command not found\n", STDERR_FILENO);
+						close(fd);
+						exit(127); // Command not found
+					}
 				}
 			}
-			ft_putstr_fd(cmdtable->cmds, STDERR_FILENO);
-			ft_putstr_fd(": command not found\n", STDERR_FILENO);
-			exit(127); // exit if command not found
+			close(fd);
+		}
+		// try executing
+		if (execve(exec_target, full_args, envp) == -1)
+		{
+			if (errno == ENOENT)// if execve failed because file or dir dont exist, returns ENOENT
+			{
+				ft_putstr_fd(exec_target, STDERR_FILENO);
+				ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+				exit(127);
+			}
+			else
+			{
+				// everything else is cmd not found
+				ft_putstr_fd(exec_target, STDERR_FILENO);
+				ft_putstr_fd(": command not found\n", STDERR_FILENO);
+				exit(127);
+			}
 		}
 	}
 	else if (pid > 0) // parent
