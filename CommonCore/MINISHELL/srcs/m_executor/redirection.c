@@ -5,59 +5,64 @@
 
 int open_redirection(t_redirection *redir)
 {
-	int	fd;
+    int fd = -1;
+    if (redir->type == 0)
+        fd = open(redir->file, O_RDONLY); // Input
+    else if (redir->type == 1)
+        fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644); // Output
+    else if (redir->type == 2)
+        fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644); // Append
+    else if (redir->type == 3)
+        fd = handle_here_doc(redir);
+    else
+        return -1;
 
-	fd = -1;
-	if (redir->type == 0)
-		fd = open(redir->file, O_RDONLY);// Input
-	else if (redir->type == 1)
-		fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);// Output
-	else if (redir->type == 2)
-		fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);// Append
-	else if (redir->type == 3)
-		fd = handle_here_doc(redir);
-	else
-		return (-1);
-	if (fd == -1)
-		perror("Failed to open file for redirection");
-	return (fd);
+    if (fd == -1)
+        perror("Failed to open file for redirection");
+    else
+        printf("Opened file: %s with fd: %d\n", redir->file, fd); // Debug print
+
+    return fd;
 }
+
 
 int handle_here_doc(t_redirection *redir)
 {
-    char *delimiter = redir->file;
-    char *line = NULL;
-    int pipefd[2];
+	char *delimiter = redir->file;
+	char *line = NULL;
+	int pipefd[2];
 
-    if (pipe(pipefd) == -1)
-    {
-        perror("pipe");
-        return -1;
-    }
+	if (pipe(pipefd) == -1)
+	{
+		perror("pipe");
+		return -1;
+	}
 
-    while (1)
-    {
-        line = readline("heredoc> ");  // Prompt the user for input
-        if (line == NULL)  // Handle Ctrl+D
-        {
-            ft_putstr_fd("\n", STDERR_FILENO);
-            break;
-        }
+	while (1)
+	{
+		line = readline("heredoc> "); // Prompt the user for input
+		if (line == NULL) // Handle Ctrl+D
+		{
+			ft_putstr_fd("\n", STDERR_FILENO);
+			break;
+		}
 
-        if (ft_strcmp(line, delimiter) == 0)  // Stop reading if the delimiter is reached
-        {
-            free(line);
-            break;
-        }
+		printf("Read line: %s\n", line); // Debugging statement
 
-        write(pipefd[1], line, ft_strlen(line));  // Write the line to the pipe
-        write(pipefd[1], "\n", 1);  // Add newline
-        free(line);
-    }
+		if (ft_strcmp(line, delimiter) == 0) // Stop reading if the delimiter is reached
+		{
+			free(line);
+			break;
+		}
 
-    close(pipefd[1]); // Close the write end of the pipe
+		write(pipefd[1], line, ft_strlen(line)); // Write the line to the pipe
+		write(pipefd[1], "\n", 1); // Add newline
+		free(line);
+	}
 
-    return pipefd[0]; // Return the read end of the pipe
+	close(pipefd[1]); // Close the write end of the pipe
+
+	return pipefd[0]; // Return the read end of the pipe
 }
 
 
@@ -78,15 +83,16 @@ void setup_redirection(t_redirection *redir)
     {
         if (current->type >= 0 && current->type <= 3)
         {
-            if (current->type == 0 || current->type == 3)
+            if (current->type == 0 || current->type == 3) // Input redirection
                 fd_in = open_redirection(current);
-            else if (current->type == 1)
+            else if (current->type == 1) // Output redirection
                 fd_out = open_redirection(current);
-            else if (current->type == 2)
+            else if (current->type == 2) // Append redirection
                 fd_append = open_redirection(current);
         }
         current = current->next;
     }
+
     // Apply the last input redirection
     if (fd_in != -1)
     {
@@ -94,6 +100,7 @@ void setup_redirection(t_redirection *redir)
             perror("dup2 failed for input redirection");
         close(fd_in);
     }
+
     // Apply the last output redirection (append takes precedence if present)
     if (fd_append != -1)
     {
@@ -102,22 +109,27 @@ void setup_redirection(t_redirection *redir)
         close(fd_append);
     }
     else if (fd_out != -1)
-    {
-		///////////////////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////////////////
-		ft_putstr_fd("before check\n", 1);
-		printf("file descriptor: %d\n", fd_out);
-		if (dup2(fd_out, STDOUT_FILENO) == -1)//program gets stuck here when trying to redirect
+	{
+		// Debugging statement
+		printf("Attempting to redirect stdout to fd: %d\n", fd_out);
+
+		// Check if fd_out is valid
+		if (fcntl(fd_out, F_GETFL) == -1)
 		{
-			ft_putstr_fd("in check1\n", 1);
-			perror("dup2 failed for output redirection");
-			ft_putstr_fd("in check2\n", 1);
+			perror("Invalid file descriptor");
+			return; // Handle the error as needed
 		}
-		///////////////////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////////////////
-        close(fd_out);
-    }
+		printf("hello");
+		if (dup2(fd_out, STDOUT_FILENO) == -1) // program gets stuck here when trying to redirect
+		{
+			perror("dup2 failed for output redirection");
+			return; // Return to avoid further operations if dup2 fails
+		}
+		printf("Successfully redirected stdout to fd: %d\n", fd_out); // Success statement
+		close(fd_out);
+	}
 }
+
 
 
 

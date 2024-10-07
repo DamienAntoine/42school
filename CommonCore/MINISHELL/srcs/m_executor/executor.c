@@ -59,7 +59,7 @@ int	send_command(t_data *data)
 		return (0);
 	}
 
-	// Handle built-ins directly in the context of the pipe
+	// Handle built-ins directly
 	if (is_builtin(cmdtable->cmds))
 	{
 		if (data->redirects == NULL) // no redirections
@@ -79,7 +79,8 @@ int	send_command(t_data *data)
 	pid = fork();
 	if (pid == 0) // child process
 	{
-		setup_redirection(data->redirects);
+		 if (data->redirects != NULL)
+			setup_redirection(data->redirects);
 		cmd_path = get_command_path(cmdtable->cmds);
 
 		// if cmd_path, use cmd_path instead of cmdtable->cmds
@@ -143,6 +144,19 @@ int	send_command(t_data *data)
 			close(fd);
 		}
 		// try executing
+
+		// debug
+		printf("Attempting to execute command: %s\n", exec_target);
+		printf("Arguments for execve:\n");
+		for (int j = 0; j < arg_count + 1; j++)
+			printf("[%d]: %s\n", j, full_args[j]);
+		////////////////////////////////////////////////////////////
+
+		if (execve(exec_target, full_args, envp) == -1)
+		{
+			perror("execve failed"); // Detailed error if execve fails
+			exit(127);
+		}
 		if (execve(exec_target, full_args, envp) == -1)
 		{
 			if (errno == ENOENT)// if execve failed because file or dir dont exist, returns ENOENT
@@ -159,6 +173,7 @@ int	send_command(t_data *data)
 				exit(127);
 			}
 		}
+		printf("cc\n");
 	}
 	else if (pid > 0) // parent
 	{
@@ -188,8 +203,10 @@ int	send_command(t_data *data)
 		free(full_args);
 		return (1);
 	}
+	printf("where are you\n");
 	free_split(envp);
 	free(full_args);
+	printf("testsendcommand\n");
 	return (1);
 }
 
