@@ -1,99 +1,83 @@
 #include "../../headers/minishell.h"
 
-//Opens the file based on the type of redirection (input, output, append).
-//Returns the file descriptor (fd) for that file.
-
+// Function to open files based on redirection type
 int open_redirection(t_redirection *redir)
 {
     int fd = -1;
-    if (redir->type == 0)
-        fd = open(redir->file, O_RDONLY); // Input
-    else if (redir->type == 1)
-        fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644); // Output
-    else if (redir->type == 2)
-        fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644); // Append
-    else if (redir->type == 3)
-        fd = handle_here_doc(redir);
-    else
-        return -1;
 
+    // Determine the type of redirection using if-else statements
+    if (redir->type == 0) // Input redirection
+        fd = open(redir->file, O_RDONLY);
+    else if (redir->type == 1) // Output redirection
+        fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    else if (redir->type == 2) // Append redirection
+        fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+    else if (redir->type == 3) // Here-doc
+        fd = handle_here_doc(redir);
+
+    // Check if file opening was successful
     if (fd == -1)
         perror("Failed to open file for redirection");
-    else
-        printf("Opened file: %s with fd: %d\n", redir->file, fd); // Debug print
 
     return fd;
 }
 
-
+// Function to handle here-doc redirection
 int handle_here_doc(t_redirection *redir)
 {
-	char *delimiter = redir->file;
-	char *line = NULL;
-	int pipefd[2];
+    char *delimiter = redir->file;
+    char *line = NULL;
+    int pipefd[2];
 
-	if (pipe(pipefd) == -1)
-	{
-		perror("pipe");
-		return -1;
-	}
+    if (pipe(pipefd) == -1)
+    {
+        perror("pipe");
+        return -1;
+    }
 
-	while (1)
-	{
-		line = readline("heredoc> "); // Prompt the user for input
-		if (line == NULL) // Handle Ctrl+D
-		{
-			ft_putstr_fd("\n", STDERR_FILENO);
-			break;
-		}
+    while (1)
+    {
+        line = readline("heredoc> "); // Prompt for input
+        if (line == NULL) // Handle Ctrl+D
+        {
+            ft_putstr_fd("\n", STDERR_FILENO);
+            break;
+        }
 
-		printf("Read line: %s\n", line); // Debugging statement
+        if (ft_strcmp(line, delimiter) == 0) // Stop on delimiter
+        {
+            free(line);
+            break;
+        }
 
-		if (ft_strcmp(line, delimiter) == 0) // Stop reading if the delimiter is reached
-		{
-			free(line);
-			break;
-		}
+        write(pipefd[1], line, ft_strlen(line)); // Write to pipe
+        write(pipefd[1], "\n", 1); // Add newline
+        free(line);
+    }
 
-		write(pipefd[1], line, ft_strlen(line)); // Write the line to the pipe
-		write(pipefd[1], "\n", 1); // Add newline
-		free(line);
-	}
-
-	close(pipefd[1]); // Close the write end of the pipe
-
-	return pipefd[0]; // Return the read end of the pipe
+    close(pipefd[1]); // Close the write end of the pipe
+    return pipefd[0]; // Return the read end of the pipe
 }
 
-
-/*
-Loops through all the redirections in a linked list and
-applies them using dup2 to redirect stdin or stdout as needed.
-This is the function you'll use in the child process of your
-send_command function before calling execve.
-*/
-
+// Function to set up redirection for the command
 void setup_redirection(t_redirection *redir)
 {
     int fd_in = -1, fd_out = -1, fd_append = -1;
     t_redirection *current = redir;
 
-    // Traverse the redirection list to find the last redirection for each type
     while (current)
     {
-        if (current->type >= 0 && current->type <= 3)
-        {
-            if (current->type == 0 || current->type == 3) // Input redirection
-                fd_in = open_redirection(current);
-            else if (current->type == 1) // Output redirection
-                fd_out = open_redirection(current);
-            else if (current->type == 2) // Append redirection
-                fd_append = open_redirection(current);
-        }
+        if (current->type == 0) // Input redirection
+            fd_in = open_redirection(current);
+        else if (current->type == 1) // Output redirection
+            fd_out = open_redirection(current);
+        else if (current->type == 2) // Append redirection
+            fd_append = open_redirection(current);
+
         current = current->next;
     }
 
-    // Apply the last input redirection
+    // Apply input redirection if available
     if (fd_in != -1)
     {
         if (dup2(fd_in, STDIN_FILENO) == -1)
@@ -101,7 +85,7 @@ void setup_redirection(t_redirection *redir)
         close(fd_in);
     }
 
-    // Apply the last output redirection (append takes precedence if present)
+    // Apply output redirection (append takes precedence)
     if (fd_append != -1)
     {
         if (dup2(fd_append, STDOUT_FILENO) == -1)
@@ -109,67 +93,46 @@ void setup_redirection(t_redirection *redir)
         close(fd_append);
     }
     else if (fd_out != -1)
-	{
-		// Debugging statement
-		printf("Attempting to redirect stdout to fd: %d\n", fd_out);
-
-		// Check if fd_out is valid
-		if (fcntl(fd_out, F_GETFL) == -1)
-		{
-			perror("Invalid file descriptor");
-			return; // Handle the error as needed
-		}
-		printf("hello");
-		if (dup2(fd_out, STDOUT_FILENO) == -1) // program gets stuck here when trying to redirect
-		{
-			perror("dup2 failed for output redirection");
-			return; // Return to avoid further operations if dup2 fails
-		}
-		printf("Successfully redirected stdout to fd: %d\n", fd_out); // Success statement
-		close(fd_out);
-	}
+    {
+        if (dup2(fd_out, STDOUT_FILENO) == -1)
+            perror("dup2 failed for output redirection");
+        close(fd_out);
+    }
 }
 
-
-
-
-/*Adds a new redirection to your t_redirection linked list.
-You would call this function when parsing the command,
-adding any redirections (<, >, >>) as they appear.*/
 void add_redirection(t_data *data, char *file, int type)
 {
     t_redirection *new_redir = malloc(sizeof(t_redirection));
-	t_redirection *tmp;
-    tmp = NULL;
     if (!new_redir)
-	{
+    {
         perror("Failed to allocate memory for new redirection");
         return;
     }
-	new_redir->file = ft_strdup(file);
+
+    new_redir->file = ft_strdup(file);
     if (!new_redir->file)
-	{
+    {
         free(new_redir);
         perror("Failed to duplicate file string");
         return;
     }
-	new_redir->type = type;
+
+    new_redir->type = type;
     new_redir->next = NULL;
-	// If there are no redirections yet, add the new one as the first element.
+
+    // Add to the linked list of redirections
     if (data->redirects == NULL)
         data->redirects = new_redir;
-	else
-	{
-        // Otherwise, find the end of the list and append the new redirection.
-        tmp = data->redirects;
+    else
+    {
+        t_redirection *tmp = data->redirects;
         while (tmp->next != NULL)
-		{
+        {
             tmp = tmp->next;
         }
         tmp->next = new_redir;
     }
 }
-
 
 void ft_sortredirect(t_data *data, int *i)
 {
@@ -187,13 +150,13 @@ void ft_sortredirect(t_data *data, int *i)
 
     // Process redirection if a valid type was found
     if (redirect_type != -1)
-	{
+    {
         (*i)++;
         if (*i < toklist->token_count)
             add_redirection(data, toklist->tokens[*i], redirect_type);
         else
             // Error handling: expected a filename after redirection operator
-        	fprintf(stderr, "Syntax error: No file name after redirection operator.\n");
+            fprintf(stderr, "Syntax error: No file name after redirection operator.\n");
         (*i)++;
     }
 }
