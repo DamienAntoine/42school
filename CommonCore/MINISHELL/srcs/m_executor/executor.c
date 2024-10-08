@@ -79,107 +79,118 @@ void	handle_exec_error(char *exec_target)
 	exit(127);
 }
 
-int	send_command(t_data *data)
-{
-	char		**envp;
-	char		*cmd_path;
-	char		**full_args;
-	t_command	*cmdtable;
-	pid_t		pid;
-	int			status;
-	int			arg_count;
-	int			exit_code;
-	int			i;
-	char		*exec_target;
-	int			fd;
 
-	envp = env_list_to_array(data->env);
-	cmdtable = data->commands;
-	arg_count = 0;
-	while (cmdtable->args[arg_count] != NULL)
-		arg_count++;
-	full_args = malloc((arg_count + 2) * sizeof(char *));
-	if (!full_args)
-	{
-		perror("malloc");
-		exit(EXIT_FAILURE);
-	}
-	full_args[0] = cmdtable->cmds;
-	i = 0;
-	while (i < arg_count)
-	{
-		full_args[i + 1] = cmdtable->args[i];
-		i++;
-	}
-	full_args[arg_count + 1] = NULL;
-	if (!cmdtable || !cmdtable->cmds)
-	{
-		free_split(envp);
-		data->state.last_exit_status = 0;
-		free(full_args);
-		return (0);
-	}
-	// Handle built-ins directly in the context of the pipe
-	if (is_builtin(cmdtable->cmds))
-	{
-		int saved_stdin = dup(STDIN_FILENO);   // save original FD
-		int saved_stdout = dup(STDOUT_FILENO); // save original FD
-		if (data->redirects != NULL) // Apply redirection if necessary
-			setup_redirection(data->redirects);
-		exit_code = execute_builtin(cmdtable, data);
-		// Restore original FD after builtins
-		if (dup2(saved_stdin, STDIN_FILENO) == -1)
-			perror("dup2 failed restoring stdin");
-		if (dup2(saved_stdout, STDOUT_FILENO) == -1)
-			perror("dup2 failed restoring stdout");
-		close(saved_stdin);  // close saved FDs
-		close(saved_stdout); // close saved FDs
-		free_split(envp);
-		free(full_args);
-		return (exit_code);
-	}
-	// Fork external command
-	pid = fork();
-	if (pid == 0) // child
-	{
-		if (data->redirects != NULL)// Apply redirection only for external commands
-			setup_redirection(data->redirects);
-		cmd_path = get_command_path(cmdtable->cmds);
-		if (cmd_path)
-			exec_target = cmd_path;
-		else
-			exec_target = cmdtable->cmds;
-		fd = open(exec_target, O_RDONLY);
-		if (fd == -1)
-		{
-			handle_exec_error(exec_target);
-			if (errno == EACCES)
-				exit (126);
-			else
-				exit (127);
-		}
-		close(fd);
-		if (execve(exec_target, full_args, envp) == -1)
-			handle_exec_error(exec_target);
-	}
-	else if (pid > 0) // parent
-	{
-		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			exit_code = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-			exit_code = 128 + WTERMSIG(status);
-		set_exit_status(exit_code, data);
-	}
-	else
-	{
-		perror("fork");
-		exit_code = 1;
-	}
-	free_split(envp);
-	free(full_args);
-	return (exit_code);
+
+int send_command(t_data *data)
+{
+    char    **envp;
+    char    *cmd_path;
+    char    **full_args;
+    t_command *cmdtable;
+    pid_t   pid;
+    int     status;
+    int     arg_count;
+    int     exit_code;
+    int     i;
+    char    *exec_target;
+
+    envp = env_list_to_array(data->env);
+    cmdtable = data->commands;
+    arg_count = 0;
+    while (cmdtable->args[arg_count] != NULL)
+        arg_count++;
+
+    full_args = malloc((arg_count + 2) * sizeof(char *));
+    if (!full_args)
+    {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    full_args[0] = cmdtable->cmds;
+    i = 0;
+    while (i < arg_count)
+    {
+        full_args[i + 1] = cmdtable->args[i];
+        i++;
+    }
+    full_args[arg_count + 1] = NULL;
+
+    if (!cmdtable || !cmdtable->cmds)
+    {
+        free_split(envp);
+        data->state.last_exit_status = 0;
+        free(full_args);
+        return (0);
+    }
+
+    // built-ins
+    if (is_builtin(cmdtable->cmds))
+    {
+        pid = fork();
+        if (pid == 0) // child
+        {
+            if (data->redirects != NULL) // apply redirection if necessary
+                setup_redirection(data->redirects);
+
+            exit_code = execute_builtin(cmdtable, data);
+            exit(exit_code);
+        }
+        else if (pid > 0) // parent
+        {
+            waitpid(pid, &status, 0);
+            if (WIFEXITED(status))
+                exit_code = WEXITSTATUS(status);
+            else if (WIFSIGNALED(status))
+                exit_code = 128 + WTERMSIG(status);
+            set_exit_status(exit_code, data);
+        }
+        else
+        {
+            perror("fork");
+            exit_code = 1;
+        }
+    }
+    else
+    {
+		//external cmd
+        pid = fork();
+        if (pid == 0) // child
+        {
+            if (data->redirects != NULL) // apply redirection only for external commands
+                setup_redirection(data->redirects);
+
+            cmd_path = get_command_path(cmdtable->cmds);
+            if (cmd_path)
+                exec_target = cmd_path;
+            else
+                exec_target = cmdtable->cmds;
+
+            if (execve(exec_target, full_args, envp) == -1)
+                handle_exec_error(exec_target);
+        }
+        else if (pid > 0) // Parent
+        {
+            waitpid(pid, &status, 0);
+            if (WIFEXITED(status))
+                exit_code = WEXITSTATUS(status);
+            else if (WIFSIGNALED(status))
+                exit_code = 128 + WTERMSIG(status);
+            set_exit_status(exit_code, data);
+        }
+        else
+        {
+            perror("fork");
+            exit_code = 1;
+        }
+    }
+
+    free_split(envp);
+    free(full_args);
+    return (exit_code);
 }
+
+
 
 int	ft_cmdsize(t_command *lst)
 {
