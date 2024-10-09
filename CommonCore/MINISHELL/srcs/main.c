@@ -112,9 +112,9 @@ int	main(int argc, char **argv, char **env)
 		{
 			ft_sort_tokens(data);
 			//printcommands(data);//delete when everything is finished
-			printf("ft_sort_tokens is done.\n");
+			//printf("ft_sort_tokens is done.\n");
 			execute_command(data);
-			printf("execute_command is done back to main\n");
+			//printf("execute_command is done back to main\n");
 		}
 	}
 	return (free_minishell(data), 0);
