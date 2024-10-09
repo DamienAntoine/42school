@@ -70,6 +70,23 @@ void	reset_command(t_data *data)
 	data->commands = malloc(sizeof(t_command));
 	init_commands(data);
 }
+void reset_redirection(t_data *data)
+{
+    t_redirection *current = data->redirects;
+    t_redirection *next;
+
+    // Traverse the linked list and free each redirection
+    while (current != NULL)
+    {
+        next = current->next; // Save the next node
+        free(current->file);  // Free the file name if dynamically allocated
+        free(current);        // Free the current node
+        current = next;       // Move to the next node
+    }
+
+    // Reset the head pointer to NULL after freeing the list
+    data->redirects = NULL;
+}
 
 
 
@@ -90,11 +107,14 @@ int	main(int argc, char **argv, char **env)
 		if (!handle_input(data))
 			return (0);
 		reset_command(data);
+		reset_redirection(data);
 		if (!has_synt_errors(data->toklist))
 		{
 			ft_sort_tokens(data);
 			//printcommands(data);//delete when everything is finished
+			printf("ft_sort_tokens is done.\n");
 			execute_command(data);
+			printf("execute_command is done back to main\n");
 		}
 	}
 	return (free_minishell(data), 0);
