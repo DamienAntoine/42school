@@ -9,17 +9,17 @@ int	has_synt_errors(t_token_list *toklist)
 	if (synt_result != 0)
 	{
 		if (synt_result == ERPIPE)
-			printf("SYNTAX ERROR: Pipe misplaced");
+			printf("SYNTAX ERROR: Pipe misplaced\n");
 		else if (synt_result == ERCONS)
-			printf("SYNTAX ERROR: Consecutive operators");
+			printf("SYNTAX ERROR: Consecutive operators\n");
 		else if (synt_result == ERREDIR)
-			printf("SYNTAX ERROR: Redirection at the start or end of the command line");
+			printf("SYNTAX ERROR: Redirection at the start or end of the command line\n");
 		else if (synt_result == ERTOKEN)
-			printf("SYNTAX ERROR: No token after operator");
+			printf("SYNTAX ERROR: No token after operator\n");
 		else if (synt_result == ERQUOTE)
-			printf("SYNTAX ERROR: Unmatched quotes");
+			printf("SYNTAX ERROR: Unmatched quotes\n");
 		else if (synt_result == ERVARN)
-			printf("SYNTAX ERROR: Invalid Env variable name");
+			printf("SYNTAX ERROR: Invalid Env variable name\n");
 		return (1);
 	}
 	else

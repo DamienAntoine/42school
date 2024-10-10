@@ -116,6 +116,7 @@ int execute_builtin_command(t_command *cmdtable, t_data *data)
     {
         if (data->redirects != NULL)
         {
+            printf("inside the execute_builtin_command setup_redirection about to enter\n");
             if (setup_redirection(data->redirects) == -1)
                 exit(1);
         }
@@ -156,6 +157,7 @@ int execute_external_command(t_command *cmdtable, char **full_args, char **envp,
     {
         if (data->redirects != NULL)
         {
+            printf("inside the execute_external_command  setup_redirection about to enter\n");
             if (setup_redirection(data->redirects) == -1)
                 exit(1);
         }
@@ -197,6 +199,9 @@ int send_command(t_data *data)
         data->state.last_exit_status = 0;
         return 0;
     }
+
+    printf("this is send_command.  about to do either execute_builtin or external_command\n");
+
     // check for built-ins
     if (is_builtin(cmdtable->cmds))
         exit_code = execute_builtin_command(cmdtable, data);
