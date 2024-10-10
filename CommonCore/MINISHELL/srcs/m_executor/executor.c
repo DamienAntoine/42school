@@ -130,8 +130,11 @@ int send_command(t_data *data)
         pid = fork();
         if (pid == 0) // child
         {
-            if (data->redirects != NULL) // apply redirection if necessary
-                setup_redirection(data->redirects);
+            if (data->redirects != NULL) // apply redirection only for external commands
+			{
+				if (setup_redirection(data->redirects) == -1) // check redirect error
+					exit(1);
+			}
 
             exit_code = execute_builtin(cmdtable, data);
             exit(exit_code);
@@ -158,7 +161,10 @@ int send_command(t_data *data)
         if (pid == 0) // child
         {
             if (data->redirects != NULL) // apply redirection only for external commands
-                setup_redirection(data->redirects);
+			{
+				if (setup_redirection(data->redirects) == -1) // check redirect error
+					exit(1);
+			}
 
             cmd_path = get_command_path(cmdtable->cmds);
             if (cmd_path)

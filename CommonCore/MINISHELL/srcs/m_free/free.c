@@ -70,8 +70,6 @@ void	free_redirections(t_redirection *redirections)
 	{
 		while (redirections)
 		{
-			printf("%s\n", redirections->file);
-			printf("%d\n", redirections->type);
 			temp = redirections;
 			redirections = redirections->next;
 			if (temp->file)

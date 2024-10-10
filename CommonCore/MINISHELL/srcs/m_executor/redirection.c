@@ -59,46 +59,64 @@ int handle_here_doc(t_redirection *redir)
     return pipefd[0]; // Return the read end of the pipe
 }
 
-// Function to set up redirection for the command
-void setup_redirection(t_redirection *redir)
+int setup_redirection(t_redirection *redir)
 {
     int fd_in = -1, fd_out = -1, fd_append = -1;
     t_redirection *current = redir;
+    int result = 0;
 
     while (current)
     {
-        if (current->type == 0) // Input redirection
+        if (current->type == 0)
+        {
             fd_in = open_redirection(current);
-        else if (current->type == 1) // Output redirection
+            if (fd_in == -1)
+                return -1;
+        }
+        else if (current->type == 1)
+        {
             fd_out = open_redirection(current);
-        else if (current->type == 2) // Append redirection
+            if (fd_out == -1)
+                return -1;
+        }
+        else if (current->type == 2)
+        {
             fd_append = open_redirection(current);
-
+            if (fd_append == -1)
+                return -1;
+        }
         current = current->next;
     }
-
-    // Apply input redirection if available
     if (fd_in != -1)
     {
         if (dup2(fd_in, STDIN_FILENO) == -1)
-            perror("dup2 failed for input redirection");
+        {
+            close(fd_in);
+            return -1;
+        }
         close(fd_in);
     }
-
-    // Apply output redirection (append takes precedence)
     if (fd_append != -1)
     {
         if (dup2(fd_append, STDOUT_FILENO) == -1)
-            perror("dup2 failed for append redirection");
+        {
+            close(fd_append);
+            return -1;
+        }
         close(fd_append);
     }
     else if (fd_out != -1)
     {
         if (dup2(fd_out, STDOUT_FILENO) == -1)
-            perror("dup2 failed for output redirection");
+        {
+            close(fd_out);
+            return -1;
+        }
         close(fd_out);
     }
+    return result;
 }
+
 
 void add_redirection(t_data *data, char *file, int type)
 {

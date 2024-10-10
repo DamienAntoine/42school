@@ -89,7 +89,7 @@ int		execute_builtin(t_command *cmdtable, t_data *data);
 char	*get_command_path(const char *cmd);
 char *get_full_input(void);
 void add_redirection(t_data *data, char *file, int type);
-void setup_redirection(t_redirection *redir);
+int setup_redirection(t_redirection *redir);
 int handle_here_doc(t_redirection *redir);
 char	*ft_strstr(const char *haystack, const char *needle);
 void ft_cat(t_data *data);
