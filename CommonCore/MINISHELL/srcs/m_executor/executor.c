@@ -79,28 +79,17 @@ void	handle_exec_error(char *exec_target)
 	exit(127);
 }
 
-
-
-int send_command(t_data *data)
+char **prepare_full_args(t_command *cmdtable, int *arg_count)
 {
-    char    **envp;
-    char    *cmd_path;
-    char    **full_args;
-    t_command *cmdtable;
-    pid_t   pid;
-    int     status;
-    int     arg_count;
-    int     exit_code;
-    int     i;
-    char    *exec_target;
+	int i;
+	char **full_args;
 
-    envp = env_list_to_array(data->env);
-    cmdtable = data->commands;
-    arg_count = 0;
-    while (cmdtable->args[arg_count] != NULL)
-        arg_count++;
+	i = 0;
+    *arg_count = 0;
+    while (cmdtable->args[*arg_count] != NULL)
+        (*arg_count)++;
 
-    full_args = malloc((arg_count + 2) * sizeof(char *));
+    full_args = malloc((*arg_count + 2) * sizeof(char *));
     if (!full_args)
     {
         perror("malloc");
@@ -108,92 +97,111 @@ int send_command(t_data *data)
     }
 
     full_args[0] = cmdtable->cmds;
-    i = 0;
-    while (i < arg_count)
-    {
+    while (i < *arg_count)
+	{
         full_args[i + 1] = cmdtable->args[i];
-        i++;
+		i++;
+	}
+
+    full_args[*arg_count + 1] = NULL;
+    return full_args;
+}
+
+int execute_builtin_command(t_command *cmdtable, t_data *data)
+{
+    pid_t pid = fork();
+	int status;
+	int exit_code;
+    if (pid == 0) // Child
+    {
+        if (data->redirects != NULL)
+        {
+            if (setup_redirection(data->redirects) == -1)
+                exit(1);
+        }
+        return execute_builtin(cmdtable, data);
     }
-    full_args[arg_count + 1] = NULL;
+    else if (pid > 0) // Parent
+    {
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			exit_code = WEXITSTATUS(status);
+		else
+			exit_code = 128 + WTERMSIG(status);
+		return (exit_code);
+    }
+    else
+    {
+        perror("fork");
+        return 1;
+    }
+}
+
+int execute_external_command(t_command *cmdtable, char **full_args, char **envp, t_data *data)
+{
+    pid_t pid = fork();
+	char *cmd_path;
+    char *exec_target;
+	int exit_code;
+	int status;
+
+	cmd_path = get_command_path(cmdtable->cmds);
+	if (cmd_path)
+		exec_target = cmd_path;
+	else
+		exec_target = cmdtable->cmds;
+
+    if (pid == 0) // Child
+    {
+        if (data->redirects != NULL)
+        {
+            if (setup_redirection(data->redirects) == -1)
+                exit(1);
+        }
+        if (execve(exec_target, full_args, envp) == -1)
+            handle_exec_error(exec_target);
+    }
+    else if (pid > 0) // Parent
+    {
+        waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			exit_code = WEXITSTATUS(status);
+		else
+			exit_code = 128 + WTERMSIG(status);
+		return (exit_code);
+    }
+    else
+    {
+        perror("fork");
+        return 1;
+    }
+	return (0);
+}
+
+// Main function to send a command
+int send_command(t_data *data)
+{
+    char **envp = env_list_to_array(data->env);
+    t_command *cmdtable = data->commands;
+	int arg_count;
+    char **full_args = prepare_full_args(cmdtable, &arg_count);
+    int exit_code = 0;
 
     if (!cmdtable || !cmdtable->cmds)
     {
         free_split(envp);
         data->state.last_exit_status = 0;
-        free(full_args);
-        return (0);
+        return 0;
     }
-
-    // built-ins
+    // check for built-ins
     if (is_builtin(cmdtable->cmds))
-    {
-        pid = fork();
-        if (pid == 0) // child
-        {
-            if (data->redirects != NULL) // apply redirection only for external commands
-			{
-				if (setup_redirection(data->redirects) == -1) // check redirect error
-					exit(1);
-			}
-
-            exit_code = execute_builtin(cmdtable, data);
-            exit(exit_code);
-        }
-        else if (pid > 0) // parent
-        {
-            waitpid(pid, &status, 0);
-            if (WIFEXITED(status))
-                exit_code = WEXITSTATUS(status);
-            else if (WIFSIGNALED(status))
-                exit_code = 128 + WTERMSIG(status);
-            set_exit_status(exit_code, data);
-        }
-        else
-        {
-            perror("fork");
-            exit_code = 1;
-        }
-    }
-    else
-    {
-		//external cmd
-        pid = fork();
-        if (pid == 0) // child
-        {
-            if (data->redirects != NULL) // apply redirection only for external commands
-			{
-				if (setup_redirection(data->redirects) == -1) // check redirect error
-					exit(1);
-			}
-
-            cmd_path = get_command_path(cmdtable->cmds);
-            if (cmd_path)
-                exec_target = cmd_path;
-            else
-                exec_target = cmdtable->cmds;
-
-            if (execve(exec_target, full_args, envp) == -1)
-                handle_exec_error(exec_target);
-        }
-        else if (pid > 0) // Parent
-        {
-            waitpid(pid, &status, 0);
-            if (WIFEXITED(status))
-                exit_code = WEXITSTATUS(status);
-            else if (WIFSIGNALED(status))
-                exit_code = 128 + WTERMSIG(status);
-            set_exit_status(exit_code, data);
-        }
-        else
-        {
-            perror("fork");
-            exit_code = 1;
-        }
-    }
-
+        exit_code = execute_builtin_command(cmdtable, data);
+    else // external command
+        exit_code = execute_external_command(cmdtable, full_args, envp, data);
     free_split(envp);
     free(full_args);
-    return (exit_code);
+    set_exit_status(exit_code, data);
+    return exit_code;
 }
 
 
