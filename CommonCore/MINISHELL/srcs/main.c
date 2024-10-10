@@ -109,6 +109,7 @@ int	main(int argc, char **argv, char **env)
 			return (0);
 		reset_command(data);
 		reset_redirection(data);
+		data->state.last_exit_status = 0;
 		if (!has_synt_errors(data->toklist))
 		{
 			ft_sort_tokens(data);

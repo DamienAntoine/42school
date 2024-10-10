@@ -46,7 +46,7 @@ void	handle_exec_error(char *exec_target)
 			if (errno == EACCES)
 			{
 				ft_putstr_fd(exec_target, STDERR_FILENO);
-				ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+		    	ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
 				exit(126);
 			}
 		}
@@ -119,7 +119,8 @@ int execute_builtin_command(t_command *cmdtable, t_data *data)
             if (setup_redirection(data->redirects) == -1)
                 exit(1);
         }
-        return execute_builtin(cmdtable, data);
+        // return execute_builtin(cmdtable, data);
+        exit(execute_builtin(cmdtable, data));
     }
     else if (pid > 0) // Parent
     {
@@ -159,7 +160,10 @@ int execute_external_command(t_command *cmdtable, char **full_args, char **envp,
                 exit(1);
         }
         if (execve(exec_target, full_args, envp) == -1)
+        {
             handle_exec_error(exec_target);
+            exit(errno);
+        }
     }
     else if (pid > 0) // Parent
     {
@@ -173,7 +177,7 @@ int execute_external_command(t_command *cmdtable, char **full_args, char **envp,
     else
     {
         perror("fork");
-        return 1;
+        return (1);
     }
 	return (0);
 }

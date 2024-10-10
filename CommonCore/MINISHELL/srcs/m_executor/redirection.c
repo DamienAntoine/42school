@@ -63,7 +63,8 @@ int setup_redirection(t_redirection *redir)
 {
     int fd_in = -1, fd_out = -1, fd_append = -1;
     t_redirection *current = redir;
-    int result = 0;
+
+    printf("setup_redirection is called.\n");
 
     while (current)
     {
@@ -75,12 +76,16 @@ int setup_redirection(t_redirection *redir)
         }
         else if (current->type == 1)
         {
+              if (fd_out != -1)
+                close(fd_out);
             fd_out = open_redirection(current);
             if (fd_out == -1)
                 return -1;
         }
         else if (current->type == 2)
         {
+             if (fd_append != -1)
+                close(fd_append);
             fd_append = open_redirection(current);
             if (fd_append == -1)
                 return -1;
@@ -96,16 +101,7 @@ int setup_redirection(t_redirection *redir)
         }
         close(fd_in);
     }
-    if (fd_append != -1)
-    {
-        if (dup2(fd_append, STDOUT_FILENO) == -1)
-        {
-            close(fd_append);
-            return -1;
-        }
-        close(fd_append);
-    }
-    else if (fd_out != -1)
+    if (fd_out != -1)
     {
         if (dup2(fd_out, STDOUT_FILENO) == -1)
         {
@@ -114,7 +110,16 @@ int setup_redirection(t_redirection *redir)
         }
         close(fd_out);
     }
-    return result;
+    else if (fd_append != -1)
+    {
+        if (dup2(fd_append, STDOUT_FILENO) == -1)
+        {
+            close(fd_append);
+            return -1;
+        }
+        close(fd_append);
+    }
+    return 0;
 }
 
 

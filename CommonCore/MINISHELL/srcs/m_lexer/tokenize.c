@@ -253,6 +253,68 @@ char	*handle_quotes(const char *str, t_data *data)
 	return (result);
 }
 
+char *ft_strtok(char *str, const char *delimiter)
+{
+    static char *last;
+    int in_single_quotes = 0;
+    int in_double_quotes = 0;
+    char *start;
+
+    if (str == NULL)
+        str = last;
+    if (str == NULL || *str == '\0')
+        return (NULL);
+    
+    // Skip leading delimiters
+    while (*str && ft_strchr(delimiter, *str))
+        str++;
+    
+    if (*str == '\0')
+        return (NULL);
+
+    start = str;
+
+    // Tokenize the string
+    while (*str)
+    {
+        if (*str == '"' && !in_single_quotes)
+            in_double_quotes = !in_double_quotes;
+        else if (*str == '\'' && !in_double_quotes)
+            in_single_quotes = !in_single_quotes;
+        else if (!in_single_quotes && !in_double_quotes)
+        {
+            // Handle special characters: pipe (|), redirection (<, >)
+            if (*str == '|' || *str == '<' || *str == '>')
+            {
+                // Return preceding token if there is one
+                if (str != start)
+                {
+                    last = str;
+                    return (ft_substr(start, 0, str - start));
+                }
+                
+                // Handle double redirection operators (<<, >>)
+                if (*(str + 1) == *str)
+                    str++;
+                
+                last = str + 1;
+                return (ft_substr(start, 0, str - start + 1));
+            }
+
+            if (ft_strchr(delimiter, *str))
+                break;
+        }
+        str++;
+    }
+
+    if (*str != '\0')
+        *str++ = '\0';
+    
+    last = str;
+    return (start);
+}
+
+/* 
 char	*ft_strtok(char *str, const char *delimiter)
 {
 	static char	*last;
@@ -300,7 +362,7 @@ char	*ft_strtok(char *str, const char *delimiter)
 		*str++ = '\0';
 	last = str;
 	return (start);
-}
+} */
 
 char	**ft_tokenize(t_data *data, char *input)
 {
