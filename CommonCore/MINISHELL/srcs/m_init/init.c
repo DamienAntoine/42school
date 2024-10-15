@@ -36,6 +36,8 @@ t_data	*init_minishell(char **env)
 	init_commands(data);
 	data->toklist->tokens = NULL;
 	data->state.last_exit_status = 0;
+	data->error_occurred = 0;
+	//data->redirects->error_flag = 0;
 	return (data);
 }
 

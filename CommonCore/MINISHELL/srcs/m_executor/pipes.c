@@ -1,7 +1,5 @@
 #include "../../headers/minishell.h"
 
-#include "../../headers/minishell.h"
-
 void	handle_pipe(t_data *data, int num_commands)
 {
 	t_command	*cmdtable;

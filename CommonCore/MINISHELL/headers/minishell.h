@@ -39,7 +39,8 @@ typedef struct s_data
 	struct s_command		*commands;
 	struct s_redirection	*redirects;
 	struct s_env			*env;
-	t_state			state;   //added for echo
+	t_state					state;
+	int						error_occurred;
 }	t_data;
 
 typedef struct s_env
@@ -60,6 +61,7 @@ typedef struct s_redirection					//this struct is to be able to use multiple red
 {
 	char					*file;				// file for redirection
 	int						type;				// 0 for input ("<"), 1 for output (">"), 2 for append (">>"), 3 for ("<<")
+	int						error_flag;
 	struct	s_redirection	*next;				// pointer to the next redirection
 }	t_redirection;
 

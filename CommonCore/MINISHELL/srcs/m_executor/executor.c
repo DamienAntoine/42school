@@ -19,64 +19,73 @@ int	execute_builtin(t_command *cmdtable, t_data *data)
 	return (1);
 }
 
-void	handle_exec_error(char *exec_target)
+void	handle_exec_error(t_data *data, char *exec_target)
 {
 	struct stat	path_stat;
 
-	if (stat(exec_target, &path_stat) == 0)
+	if (data->error_occurred != 1)
 	{
-		if (S_ISDIR(path_stat.st_mode))
+		if (stat(exec_target, &path_stat) == 0)
 		{
-			if (exec_target[0] == '.' || exec_target[0] == '/')
+			if (S_ISDIR(path_stat.st_mode))
 			{
-				ft_putstr_fd(exec_target, STDERR_FILENO);
-				ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
-				exit(126);
+				if (exec_target[0] == '.' || exec_target[0] == '/')
+				{
+					ft_putstr_fd(exec_target, STDERR_FILENO);
+					ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+					data->error_occurred = 1;
+					exit(126);
+				}
+				else
+				{
+					ft_putstr_fd(exec_target, STDERR_FILENO);
+					ft_putstr_fd(": command not found\n", STDERR_FILENO);
+					data->error_occurred = 1;
+					exit(127);
+				}
 			}
-			else
+			// if regular file but no permission (not currently working as intended ?)
+			if (S_ISREG(path_stat.st_mode) && access(exec_target, X_OK) == -1)
 			{
-				ft_putstr_fd(exec_target, STDERR_FILENO);
-				ft_putstr_fd(": command not found\n", STDERR_FILENO);
+				if (errno == EACCES)
+				{
+					ft_putstr_fd(exec_target, STDERR_FILENO);
+					ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+					data->error_occurred = 1;
+					exit(126);
+				}
+			}
+			// if its a file but not executable
+			ft_putstr_fd(exec_target, STDERR_FILENO);
+			ft_putstr_fd(": command not found\n", STDERR_FILENO);
+			data->error_occurred = 1;
+			exit(127);
+		}
+		else
+		{
+			// if stat fails (check if file exists)
+			if (errno == ENOENT)
+			{
+				if (exec_target[0] == '.' || exec_target[0] == '/')
+				{
+					ft_putstr_fd(exec_target, STDERR_FILENO);
+					ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+				}
+				else
+				{
+					ft_putstr_fd(exec_target, STDERR_FILENO);
+					ft_putstr_fd(": command not found\n", STDERR_FILENO);
+				}
+				data->error_occurred = 1;
 				exit(127);
 			}
 		}
-		// if regular file but no permission (not currently working as intended ?)
-		if (S_ISREG(path_stat.st_mode) && access(exec_target, X_OK) == -1)
-		{
-			if (errno == EACCES)
-			{
-				ft_putstr_fd(exec_target, STDERR_FILENO);
-				ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
-				exit(126);
-			}
-		}
-		// if its a file but not executable
+		// default error
 		ft_putstr_fd(exec_target, STDERR_FILENO);
 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
+		data->error_occurred = 1;
 		exit(127);
 	}
-	else
-	{
-		// if stat fails (check if file exists)
-		if (errno == ENOENT)
-		{
-			if (exec_target[0] == '.' || exec_target[0] == '/')
-			{
-				ft_putstr_fd(exec_target, STDERR_FILENO);
-				ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
-			}
-			else
-			{
-				ft_putstr_fd(exec_target, STDERR_FILENO);
-				ft_putstr_fd(": command not found\n", STDERR_FILENO);
-			}
-			exit(127);
-		}
-	}
-	// default error
-	ft_putstr_fd(exec_target, STDERR_FILENO);
-	ft_putstr_fd(": command not found\n", STDERR_FILENO);
-	exit(127);
 }
 
 char **prepare_full_args(t_command *cmdtable, int *arg_count)
@@ -159,7 +168,7 @@ int execute_external_command(t_command *cmdtable, char **full_args, char **envp,
                 exit(1);
         }
         if (execve(exec_target, full_args, envp) == -1)
-            handle_exec_error(exec_target);
+            handle_exec_error(data, exec_target);
     }
     else if (pid > 0) // Parent
     {
@@ -178,6 +187,23 @@ int execute_external_command(t_command *cmdtable, char **full_args, char **envp,
 	return (0);
 }
 
+int	check_redirection_before_fork(t_data *data)
+{
+    t_redirection	*redir = data->redirects;
+    int				fd;
+
+    while (redir)
+	{
+        fd = open_redirection(redir);
+        if (fd == -1)
+            return -1;
+        if (redir->type != 3)
+            close(fd);
+        redir = redir->next;
+    }
+    return (0);
+}
+
 // Main function to send a command
 int send_command(t_data *data)
 {
@@ -187,6 +213,8 @@ int send_command(t_data *data)
     char **full_args = prepare_full_args(cmdtable, &arg_count);
     int exit_code = 0;
 
+	if (data->error_occurred)
+		return (1);
     if (!cmdtable || !cmdtable->cmds)
     {
         free_split(envp);
@@ -226,6 +254,9 @@ int	execute_command(t_data *data)
 
 	num_commands = ft_cmdsize(data->commands);
 	cmdtable = data->commands;
+	// check command before possible redirects
+	if (data->redirects != NULL)
+		check_redirection_before_fork(data);
 	if (cmdtable->next != NULL) // means there's a pipe
 	{
 		handle_pipe(data, num_commands);
