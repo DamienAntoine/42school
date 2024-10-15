@@ -281,7 +281,8 @@ int execute_command(t_data *data)
         if (check == -1)
 		{
             exit_code = 1; // Indicate failure
-			perror("Failed to open file for redirection");
+			perror(data->redirects->file);
+			// printf("%s: No such file or redirection\n", data->redirects->file);
 		}
     }
 

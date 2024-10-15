@@ -65,10 +65,12 @@ int setup_redirection(t_redirection *redir)
         {
             fd = open_redirection(redir);
             if (fd == -1) {
-                // Set an error flag and continue to the next redirection
-                redir->error_flag = 1;
-                redir = redir->next;
-                continue;
+                // File doesn't exist, redirect to /dev/null
+                fd = open("/dev/null", O_RDONLY);
+                if (fd == -1) {
+                    perror("/dev/null");
+                    return -1;
+                }
             }
             if (dup2(fd, STDIN_FILENO) == -1)
             {
@@ -77,6 +79,22 @@ int setup_redirection(t_redirection *redir)
             }
             close(fd);
         }
+        // if (redir->type == 0) // Input redirection
+        // {
+        //     fd = open_redirection(redir);
+        //     if (fd == -1) {
+        //         // Set an error flag and continue to the next redirection
+        //         redir->error_flag = 1;
+        //         redir = redir->next;
+        //         continue;
+        //     }
+        //     if (dup2(fd, STDIN_FILENO) == -1)
+        //     {
+        //         close(fd);
+        //         return -1; // Handle other dup2 errors if necessary
+        //     }
+        //     close(fd);
+        // }
         else if (redir->type == 1) // Output redirection
         {
             fd = open_redirection(redir);

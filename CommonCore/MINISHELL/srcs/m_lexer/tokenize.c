@@ -252,25 +252,28 @@ char	*handle_quotes(const char *str, t_data *data)
 	free(expanded_str);
 	return (result);
 }
-
 char	*ft_strtok(char *str, const char *delimiter)
 {
 	static char	*last;
-	int			in_single_quotes;
-	int			in_double_quotes;
+	int			in_single_quotes = 0;
+	int			in_double_quotes = 0;
 	char		*start;
 
-	in_single_quotes = 0;
-	in_double_quotes = 0;
 	if (str == NULL)
 		str = last;
 	if (str == NULL || *str == '\0')
 		return (NULL);
+
+	// Skip leading delimiters
 	while (*str && ft_strchr(delimiter, *str))
 		str++;
+
 	if (*str == '\0')
 		return (NULL);
+
 	start = str;
+
+	// Tokenize while not inside quotes and not encountering delimiter
 	while (*str)
 	{
 		if (*str == '"' && !in_single_quotes)
@@ -279,28 +282,78 @@ char	*ft_strtok(char *str, const char *delimiter)
 			in_single_quotes = !in_single_quotes;
 		else if (!in_single_quotes && !in_double_quotes)
 		{
-			if (*str == '<' || *str == '>')
+			if (ft_strchr("<>|", *str))  // Detect pipe or redirection symbols
 			{
-				if (str != start)
+				if (str != start)  // Return token before special symbol
 				{
 					last = str;
 					return (ft_substr(start, 0, str - start));
 				}
-				if (*(str + 1) == *str)
+				if (*(str + 1) == *str)  // Handle double symbols like '>>' or '||'
 					str++;
 				last = str + 1;
 				return (ft_substr(start, 0, str - start + 1));
 			}
-			if (ft_strchr(delimiter, *str))
-				break ;
+			if (ft_strchr(delimiter, *str))  // Break if delimiter found
+				break;
 		}
 		str++;
 	}
+
 	if (*str != '\0')
 		*str++ = '\0';
 	last = str;
 	return (start);
 }
+
+// char	*ft_strtok(char *str, const char *delimiter)
+// {
+// 	static char	*last;
+// 	int			in_single_quotes;
+// 	int			in_double_quotes;
+// 	char		*start;
+
+// 	in_single_quotes = 0;
+// 	in_double_quotes = 0;
+// 	if (str == NULL)
+// 		str = last;
+// 	if (str == NULL || *str == '\0')
+// 		return (NULL);
+// 	while (*str && ft_strchr(delimiter, *str))
+// 		str++;
+// 	if (*str == '\0')
+// 		return (NULL);
+// 	start = str;
+// 	while (*str)
+// 	{
+// 		if (*str == '"' && !in_single_quotes)
+// 			in_double_quotes = !in_double_quotes;
+// 		else if (*str == '\'' && !in_double_quotes)
+// 			in_single_quotes = !in_single_quotes;
+// 		else if (!in_single_quotes && !in_double_quotes)
+// 		{
+// 			if (*str == '<' || *str == '>')
+// 			{
+// 				if (str != start)
+// 				{
+// 					last = str;
+// 					return (ft_substr(start, 0, str - start));
+// 				}
+// 				if (*(str + 1) == *str)
+// 					str++;
+// 				last = str + 1;
+// 				return (ft_substr(start, 0, str - start + 1));
+// 			}
+// 			if (ft_strchr(delimiter, *str))
+// 				break ;
+// 		}
+// 		str++;
+// 	}
+// 	if (*str != '\0')
+// 		*str++ = '\0';
+// 	last = str;
+// 	return (start);
+// }
 
 char	**ft_tokenize(t_data *data, char *input)
 {
