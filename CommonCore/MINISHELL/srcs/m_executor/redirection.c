@@ -70,55 +70,49 @@ int setup_redirection(t_redirection *redir)
 
     while (current)
     {
-        if (current->type == 0)
+        if (current->type == 0) // Input redirection
         {
             fd_in = open_redirection(current);
             if (fd_in == -1)
                 return -1;
+            if (dup2(fd_in, STDIN_FILENO) == -1) // Redirect STDIN
+            {
+                close(fd_in);
+                return -1;
+            }
+            close(fd_in);
         }
-        else if (current->type == 1)
+        else if (current->type == 1) // Output redirection
         {
             fd_out = open_redirection(current);
             if (fd_out == -1)
                 return -1;
+            if (dup2(fd_out, STDOUT_FILENO) == -1) // Redirect STDOUT
+            {
+                close(fd_out);
+                return -1;
+            }
+            close(fd_out);
         }
-        else if (current->type == 2)
+        else if (current->type == 2) // Append redirection
         {
             fd_append = open_redirection(current);
             if (fd_append == -1)
                 return -1;
-        }
-        current = current->next;
-    }
-    if (fd_in != -1)
-    {
-        if (dup2(fd_in, STDIN_FILENO) == -1)
-        {
-            close(fd_in);
-            return -1;
-        }
-        close(fd_in);
-    }
-    if (fd_append != -1)
-    {
-        if (dup2(fd_append, STDOUT_FILENO) == -1)
-        {
+            if (dup2(fd_append, STDOUT_FILENO) == -1) // Redirect STDOUT for append
+            {
+                close(fd_append);
+                return -1;
+            }
             close(fd_append);
-            return -1;
         }
-        close(fd_append);
-    }
-    else if (fd_out != -1)
-    {
-        if (dup2(fd_out, STDOUT_FILENO) == -1)
-        {
-            close(fd_out);
-            return -1;
-        }
-        close(fd_out);
+        else if (current->type == 3) // Here-doc
+            handle_here_doc(redir);
+        current = current->next;
     }
     return result;
 }
+
 
 
 void add_redirection(t_data *data, char *file, int type)
