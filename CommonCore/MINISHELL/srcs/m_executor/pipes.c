@@ -34,11 +34,8 @@ int handle_pipes(t_data *data, t_command *cmdtable, int num_commands)
         {
             if (data->redirects != NULL)
             {
-                if (setup_redirection(data->redirects) == -1)
-                {
-                    perror("setup_redirection failed");
+                if (setup_redirection(data->redirects) == -1 && data->error_occurred != 1)
                     exit(1); // Exit the child process with an error
-                }
             }
 
             // Setup pipes

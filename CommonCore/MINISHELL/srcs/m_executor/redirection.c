@@ -15,13 +15,6 @@ int open_redirection(t_redirection *redir)
     else if (redir->type == 3) // Here-doc
         fd = handle_here_doc(redir);
 
-    // Check if file opening was successful
-    if (fd == -1 && redir->error_flag != 1)
-	{
-        perror("Failed to open file for redirection");
-		redir->error_flag = 1;
-	}
-
     return fd;
 }
 

@@ -279,7 +279,10 @@ int execute_command(t_data *data)
 	{
         check = check_redirection_before_fork(data);
         if (check == -1)
-            return 1; // Indicate failure
+		{
+            exit_code = 1; // Indicate failure
+			perror("Failed to open file for redirection");
+		}
     }
 
     // Step 2: Handle Pipes
