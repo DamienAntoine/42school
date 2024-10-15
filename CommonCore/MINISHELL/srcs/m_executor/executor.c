@@ -126,7 +126,10 @@ int execute_builtin_command(t_command *cmdtable, t_data *data)
         if (data->redirects != NULL)
         {
             if (setup_redirection(data->redirects) == -1)
+			{
+				printf("error setting up redirections\n");
                 exit(1);
+			}
         }
         return execute_builtin(cmdtable, data);
     }
@@ -204,33 +207,50 @@ int	check_redirection_before_fork(t_data *data)
     return (0);
 }
 
-// Main function to send a command
 int send_command(t_data *data)
 {
     char **envp = env_list_to_array(data->env);
     t_command *cmdtable = data->commands;
-	int arg_count;
+    int arg_count;
     char **full_args = prepare_full_args(cmdtable, &arg_count);
     int exit_code = 0;
 
-	if (data->error_occurred)
-		return (1);
+    if (data->error_occurred)
+        return 1;
+
     if (!cmdtable || !cmdtable->cmds)
     {
         free_split(envp);
         data->state.last_exit_status = 0;
         return 0;
     }
-    // check for built-ins
+
+    // Check for built-ins
     if (is_builtin(cmdtable->cmds))
         exit_code = execute_builtin_command(cmdtable, data);
-    else // external command
+    else
+    {
+        // Get the full command path
+        char *command_path = get_command_path(cmdtable->cmds);
+        if (!command_path)
+        {
+            handle_exec_error(data, cmdtable->cmds);
+            free_split(envp);
+            free(full_args);
+            return 127; // Command not found
+        }
         exit_code = execute_external_command(cmdtable, full_args, envp, data);
+        if (exit_code == 126 || exit_code == 127) // Permission denied or command not found
+            handle_exec_error(data, command_path);
+        free(command_path);
+    }
+
     free_split(envp);
     free(full_args);
-    set_exit_status(exit_code, data);
-    return exit_code;
+    set_exit_status(exit_code, data); // This should properly set last_exit_status
+    return exit_code; // Return the exit code
 }
+
 
 
 
@@ -247,22 +267,24 @@ int	ft_cmdsize(t_command *lst)
 	return (size);
 }
 
-int	execute_command(t_data *data)
+int execute_command(t_data *data)
 {
-	t_command	*cmdtable;
-	int			num_commands;
+    t_command *cmdtable = data->commands;
+    int num_commands = ft_cmdsize(cmdtable);
+    int exit_code = 0;
+	int check;
 
-	num_commands = ft_cmdsize(data->commands);
-	cmdtable = data->commands;
-	// check command before possible redirects
-	if (data->redirects != NULL)
-		check_redirection_before_fork(data);
-	if (cmdtable->next != NULL) // means there's a pipe
+    // Step 1: Handle Redirections
+    if (data->redirects != NULL)
 	{
-		handle_pipe(data, num_commands);
-		return (0);
-	}
-	// no pipe, just check command syntax and execute
-	send_command(data);
-	return (data->state.last_exit_status);
+        check = check_redirection_before_fork(data);
+        if (check == -1)
+            return 1; // Indicate failure
+    }
+
+    // Step 2: Handle Pipes
+    exit_code = handle_pipes(data, cmdtable, num_commands);
+    if (exit_code == -1)
+        return -1;
+    return (exit_code);
 }

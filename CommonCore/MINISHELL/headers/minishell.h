@@ -107,7 +107,7 @@ void set_exit_status(long status, t_data *data);
 
 //######################### m_executor ##########################
 //pipes.c
-void	handle_pipe(t_data *data, int num_commands);
+int handle_pipes(t_data *data, t_command *cmdtable, int num_commands);
 
 //executor.c
 int		execute_command(t_data *data);

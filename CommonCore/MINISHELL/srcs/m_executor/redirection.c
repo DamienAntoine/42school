@@ -64,54 +64,61 @@ int handle_here_doc(t_redirection *redir)
 
 int setup_redirection(t_redirection *redir)
 {
-    int fd_in = -1, fd_out = -1, fd_append = -1;
-    t_redirection *current = redir;
-    int result = 0;
+    int fd;
 
-    while (current)
+    while (redir)
     {
-        if (current->type == 0) // Input redirection
+        if (redir->type == 0) // Input redirection
         {
-            fd_in = open_redirection(current);
-            if (fd_in == -1)
-                return -1;
-            if (dup2(fd_in, STDIN_FILENO) == -1) // Redirect STDIN
+            fd = open_redirection(redir);
+            if (fd == -1) {
+                // Set an error flag and continue to the next redirection
+                redir->error_flag = 1;
+                redir = redir->next;
+                continue;
+            }
+            if (dup2(fd, STDIN_FILENO) == -1)
             {
-                close(fd_in);
+                close(fd);
+                return -1; // Handle other dup2 errors if necessary
+            }
+            close(fd);
+        }
+        else if (redir->type == 1) // Output redirection
+        {
+            fd = open_redirection(redir);
+            if (fd == -1)
+                return -1;
+            if (dup2(fd, STDOUT_FILENO) == -1)
+            {
+                close(fd);
                 return -1;
             }
-            close(fd_in);
+            close(fd);
         }
-        else if (current->type == 1) // Output redirection
+        else if (redir->type == 2) // Append redirection
         {
-            fd_out = open_redirection(current);
-            if (fd_out == -1)
+            fd = open_redirection(redir);
+            if (fd == -1)
                 return -1;
-            if (dup2(fd_out, STDOUT_FILENO) == -1) // Redirect STDOUT
+            if (dup2(fd, STDOUT_FILENO) == -1)
             {
-                close(fd_out);
+                close(fd);
                 return -1;
             }
-            close(fd_out);
+            close(fd);
         }
-        else if (current->type == 2) // Append redirection
+        else if (redir->type == 3) // Here-doc
         {
-            fd_append = open_redirection(current);
-            if (fd_append == -1)
-                return -1;
-            if (dup2(fd_append, STDOUT_FILENO) == -1) // Redirect STDOUT for append
-            {
-                close(fd_append);
-                return -1;
-            }
-            close(fd_append);
-        }
-        else if (current->type == 3) // Here-doc
+            // Implement your here-doc logic here
+            // If waiting for input, ensure that it works correctly
             handle_here_doc(redir);
-        current = current->next;
+        }
+        redir = redir->next;
     }
-    return result;
+    return 0;
 }
+
 
 
 
