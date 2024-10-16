@@ -23,7 +23,6 @@ t_data	*init_minishell(char **env)
 		return (NULL);
 	}
 	data->env = NULL;
-	data->redirects = NULL;
 	init_env(env, &data->env);
 	if (!data->env)
 	{
@@ -46,4 +45,5 @@ void	init_commands(t_data *data)
 	data->commands->args = NULL;
 	data->commands->cmds = NULL;
 	data->commands->next = NULL;
+	data->commands->redirects = NULL;
 }

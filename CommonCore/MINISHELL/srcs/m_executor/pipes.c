@@ -33,9 +33,9 @@ int handle_pipes(t_data *data, t_command *cmdtable, int num_commands)
 
         if (pid == 0) // Child process
         {
-            if (data->redirects != NULL)
+            if (cmdtable->redirects != NULL)
             {
-                if (setup_redirection(data->redirects) == -1 && data->error_occurred != 1)
+                if (setup_redirection(cmdtable->redirects) == -1 && data->error_occurred != 1)
                     exit(1); // Exit the child process with an error
             }
 

@@ -125,7 +125,8 @@ int setup_redirection(t_redirection *redir)
 
 
 
-void add_redirection(t_data *data, char *file, int type)
+// Updated add_redirection to accept the current command
+void add_redirection(t_command *current_command, char *file, int type)
 {
     t_redirection *new_redir = malloc(sizeof(t_redirection));
     if (!new_redir)
@@ -133,7 +134,6 @@ void add_redirection(t_data *data, char *file, int type)
         perror("Failed to allocate memory for new redirection");
         return;
     }
-
     new_redir->file = ft_strdup(file);
     if (!new_redir->file)
     {
@@ -141,16 +141,13 @@ void add_redirection(t_data *data, char *file, int type)
         perror("Failed to duplicate file string");
         return;
     }
-
     new_redir->type = type;
     new_redir->next = NULL;
-
-    // Add to the linked list of redirections
-    if (data->redirects == NULL)
-        data->redirects = new_redir;
+    if (current_command->redirects == NULL)
+        current_command->redirects = new_redir;
     else
     {
-        t_redirection *tmp = data->redirects;
+        t_redirection *tmp = current_command->redirects;
         while (tmp->next != NULL)
         {
             tmp = tmp->next;
@@ -162,6 +159,7 @@ void add_redirection(t_data *data, char *file, int type)
 void ft_sortredirect(t_data *data, int *i)
 {
     t_token_list *toklist = data->toklist;
+	t_command *current_command;
     int redirect_type = -1;
 
     if (ft_strcmp(toklist->tokens[*i], "<") == 0)
@@ -172,16 +170,16 @@ void ft_sortredirect(t_data *data, int *i)
         redirect_type = 2; // Append
     else if (ft_strcmp(toklist->tokens[*i], "<<") == 0)
         redirect_type = 3; // Here-doc
-
-    // Process redirection if a valid type was found
+    current_command = data->commands;
     if (redirect_type != -1)
     {
         (*i)++;
         if (*i < toklist->token_count)
-            add_redirection(data, toklist->tokens[*i], redirect_type);
+            add_redirection(current_command, toklist->tokens[*i], redirect_type); // Pass current_command
         else
-            // Error handling: expected a filename after redirection operator
             fprintf(stderr, "Syntax error: No file name after redirection operator.\n");
         (*i)++;
     }
 }
+
+

@@ -37,7 +37,6 @@ typedef struct s_data
 {
 	struct s_token_list		*toklist;
 	struct s_command		*commands;
-	struct s_redirection	*redirects;
 	struct s_env			*env;
 	t_state					state;
 	int						error_occurred;
@@ -54,6 +53,7 @@ typedef struct s_command
 {
 	char					*cmds;				//command (ls, env, cd, ...)
 	char					**args;				//arguments / flags (-l, "file.txt", ...)
+	struct s_redirection	*redirects;
 	struct s_command		*next;				//pointer to next command if pipe (|)
 }	t_command;
 
@@ -90,7 +90,7 @@ int		is_builtin(char *cmd);
 int		execute_builtin(t_command *cmdtable, t_data *data);
 char	*get_command_path(const char *cmd);
 char *get_full_input(void);
-void add_redirection(t_data *data, char *file, int type);
+void add_redirection(t_command *current_command, char *file, int type);
 int setup_redirection(t_redirection *redir);
 int handle_here_doc(t_redirection *redir);
 char	*ft_strstr(const char *haystack, const char *needle);
@@ -195,7 +195,7 @@ t_redirection *ft_create_redirection(char *file, int type);
 //sort_tokens.c
 void	ft_sort_tokens(t_data *data);
 void	ft_sortloop(t_data *data, int i, int j);
-void	ft_sortredirect(t_data *data, int *i);
+void ft_sortredirect(t_data *data, int *i);
 //void	ft_sortpipes(t_data *data);
 void	ft_sortpipes(t_command *commands);
 

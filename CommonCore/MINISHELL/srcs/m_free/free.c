@@ -42,6 +42,7 @@ void	free_command(t_command *command)
 		}
 		if (command->cmds)
 			free(command->cmds);
+		free_redirections(command->redirects);
 		command = command->next;
 		free(temp);
 	}
@@ -80,7 +81,7 @@ void	free_redirections(t_redirection *redirections)
 			if (temp)
 				free(temp);
 		}
-		free(redirections);
+		//free(redirections);
 	}
 }
 
@@ -102,10 +103,5 @@ void	free_minishell(t_data *data)
 		free_command(data->commands);
 	if (data->env)
 		free_env_list(data->env);
-	if (data->redirects != NULL)
-	{
-		free_redirections(data->redirects);
-		data->redirects = NULL;
-	}
 	free(data);
 }

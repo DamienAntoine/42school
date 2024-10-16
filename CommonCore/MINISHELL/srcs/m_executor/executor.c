@@ -123,9 +123,9 @@ int execute_builtin_command(t_command *cmdtable, t_data *data)
 	int exit_code;
     if (pid == 0) // Child
     {
-        if (data->redirects != NULL)
+        if (cmdtable->redirects != NULL)
         {
-            if (setup_redirection(data->redirects) == -1)
+            if (setup_redirection(cmdtable->redirects) == -1)
 			{
 				printf("error setting up redirections\n");
                 exit(1);
@@ -165,9 +165,9 @@ int execute_external_command(t_command *cmdtable, char **full_args, char **envp,
 
     if (pid == 0) // Child
     {
-        if (data->redirects != NULL)
+        if (cmdtable->redirects != NULL)
         {
-            if (setup_redirection(data->redirects) == -1)
+            if (setup_redirection(cmdtable->redirects) == -1)
                 exit(1);
         }
         if (execve(exec_target, full_args, envp) == -1)
@@ -190,21 +190,29 @@ int execute_external_command(t_command *cmdtable, char **full_args, char **envp,
 	return (0);
 }
 
-int	check_redirection_before_fork(t_data *data)
+int check_redirection_before_fork(t_data *data)
 {
-    t_redirection	*redir = data->redirects;
-    int				fd;
+    t_command *cmdtable = data->commands;
+    int fd;
 
-    while (redir)
-	{
-        fd = open_redirection(redir);
-        if (fd == -1)
-            return -1;
-        if (redir->type != 3)
-            close(fd);
-        redir = redir->next;
+    while (cmdtable) // Iterate through each command in the command list
+    {
+        t_redirection *redir = cmdtable->redirects;
+        while (redir) // Iterate through the redirections for this command
+        {
+            fd = open_redirection(redir);
+            if (fd == -1)
+            {
+                perror(redir->file); // Provide feedback on which redirection failed
+                return -1; // Indicate failure
+            }
+            if (redir->type != 3) // If not a here-document
+                close(fd); // Close file descriptor
+            redir = redir->next; // Move to the next redirection
+        }
+        cmdtable = cmdtable->next; // Move to the next command
     }
-    return (0);
+    return 0; // Indicate success
 }
 
 int send_command(t_data *data)
@@ -214,6 +222,12 @@ int send_command(t_data *data)
     int arg_count;
     char **full_args = prepare_full_args(cmdtable, &arg_count);
     int exit_code = 0;
+
+	if (data == NULL)
+	{
+		fprintf(stderr, "Error: Data pointer is NULL.\n");
+		return 1;
+	}
 
     if (data->error_occurred)
         return 1;
@@ -275,13 +289,13 @@ int execute_command(t_data *data)
 	int check;
 
     // Step 1: Handle Redirections
-    if (data->redirects != NULL)
+    if (cmdtable->redirects != NULL)
 	{
         check = check_redirection_before_fork(data);
         if (check == -1)
 		{
             exit_code = 1; // Indicate failure
-			perror(data->redirects->file);
+			//perror(cmdtable->redirects->file);
 			// printf("%s: No such file or redirection\n", data->redirects->file);
 		}
     }
