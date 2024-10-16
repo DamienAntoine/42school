@@ -64,14 +64,6 @@ int setup_redirection(t_redirection *redir)
         if (redir->type == 0) // Input redirection
         {
             fd = open_redirection(redir);
-            if (fd == -1) {
-                // File doesn't exist, redirect to /dev/null
-                fd = open("/dev/null", O_RDONLY);
-                if (fd == -1) {
-                    perror("/dev/null");
-                    return -1;
-                }
-            }
             if (dup2(fd, STDIN_FILENO) == -1)
             {
                 close(fd);

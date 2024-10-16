@@ -8,6 +8,7 @@ int handle_pipes(t_data *data, t_command *cmdtable, int num_commands)
     int j;
     int status;
     int exit_code = 0;
+    pid_t child_pids[num_commands]; // Array to store child PIDs for waitpid
 
     // Create pipes
     while (i < num_commands - 1)
@@ -39,9 +40,9 @@ int handle_pipes(t_data *data, t_command *cmdtable, int num_commands)
             }
 
             // Setup pipes
-            if (i > 0)
+            if (i > 0) // If it's not the first command, redirect input from the previous pipe
                 dup2(pipes[i - 1][0], STDIN_FILENO);
-            if (i < num_commands - 1)
+            if (i < num_commands - 1) // If it's not the last command, redirect output to the next pipe
                 dup2(pipes[i][1], STDOUT_FILENO);
 
             // Close all pipes in the child process
@@ -59,6 +60,10 @@ int handle_pipes(t_data *data, t_command *cmdtable, int num_commands)
             free_minishell(data);
             exit(exit_code); // Exit with the command's exit status
         }
+        else
+        {
+            child_pids[i] = pid; // Store child PID for waitpid
+        }
 
         cmdtable = cmdtable->next; // Move to the next command
         i++;
@@ -73,11 +78,16 @@ int handle_pipes(t_data *data, t_command *cmdtable, int num_commands)
         i++;
     }
 
-    // Wait for all child processes to finish
+    // Wait for each child process to finish in order, ensuring synchronization
     i = 0;
     while (i < num_commands)
     {
-        wait(&status);
+        // Use waitpid to wait for the exact child process
+        if (waitpid(child_pids[i], &status, 0) == -1)
+        {
+            perror("waitpid");
+            exit_code = 1; // Handle error in waitpid
+        }
         if (WIFEXITED(status))
         {
             data->state.last_exit_status = WEXITSTATUS(status); // Store the exit status of the last command
@@ -86,7 +96,6 @@ int handle_pipes(t_data *data, t_command *cmdtable, int num_commands)
         }
         i++;
     }
+
     return exit_code; // Return the exit code for the last command
 }
-
-
