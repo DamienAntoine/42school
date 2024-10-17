@@ -312,7 +312,7 @@ int execute_command(t_data *data)
         if (exit_code == -1)
             return -1;
     }
-/*     // Step 2: Handle Pipes
+    /* // Step 2: Handle Pipes
     exit_code = handle_pipes(data, cmdtable, num_commands);
     if (exit_code == -1)
         return -1; */
