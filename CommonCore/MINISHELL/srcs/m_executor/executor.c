@@ -299,10 +299,22 @@ int execute_command(t_data *data)
 			// printf("%s: No such file or redirection\n", data->redirects->file);
 		}
     }
-
-    // Step 2: Handle Pipes
+    // Step 2: Check if there are pipes or just a single command
+    if (num_commands == 1)
+    {
+        // If there's only one command, we execute it directly
+        exit_code = send_command(data); // Execute the command
+    }
+    else
+    {
+        // If there are pipes, handle them
+        exit_code = handle_pipes(data, cmdtable, num_commands);
+        if (exit_code == -1)
+            return -1;
+    }
+/*     // Step 2: Handle Pipes
     exit_code = handle_pipes(data, cmdtable, num_commands);
     if (exit_code == -1)
-        return -1;
+        return -1; */
     return (exit_code);
 }
