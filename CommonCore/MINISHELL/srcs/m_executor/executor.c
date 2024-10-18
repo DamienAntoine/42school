@@ -118,36 +118,19 @@ char **prepare_full_args(t_command *cmdtable, int *arg_count)
 
 int execute_builtin_command(t_command *cmdtable, t_data *data)
 {
-    pid_t pid = fork();
-	int status;
-	int exit_code;
-    if (pid == 0) // Child
+    if (cmdtable->redirects != NULL)
     {
-        if (cmdtable->redirects != NULL)
+        if (setup_redirection(cmdtable->redirects) == -1)
         {
-            if (setup_redirection(cmdtable->redirects) == -1)
-			{
-				printf("error setting up redirections\n");
-                exit(1);
-			}
+            printf("Error setting up redirections\n");
+            return 1; // Handle error
         }
-        return execute_builtin(cmdtable, data);
     }
-    else if (pid > 0) // Parent
-    {
-		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			exit_code = WEXITSTATUS(status);
-		else
-			exit_code = 128 + WTERMSIG(status);
-		return (exit_code);
-    }
-    else
-    {
-        perror("fork");
-        return 1;
-    }
+
+    // Directly execute built-in command without forking
+    return execute_builtin(cmdtable, data);
 }
+
 
 int execute_external_command(t_command *cmdtable, char **full_args, char **envp, t_data *data)
 {
@@ -288,19 +271,23 @@ int execute_command(t_data *data)
     int exit_code = 0;
 	int check;
 
+	if (cmdtable->redirects == NULL && !cmdtable->next)
+    {
+	    exit_code = send_command(data);
+        if (exit_code != 0)
+            return exit_code; // If a built-in command fails, return the error code
+    }
+
     // Step 1: Handle Redirections
     if (cmdtable->redirects != NULL)
 	{
         check = check_redirection_before_fork(data);
         if (check == -1)
-		{
             exit_code = 1; // Indicate failure
-			//perror(cmdtable->redirects->file);
-			// printf("%s: No such file or redirection\n", data->redirects->file);
-		}
     }
 
     // Step 2: Handle Pipes
+	if (cmdtable->next || cmdtable->redirects)
     exit_code = handle_pipes(data, cmdtable, num_commands);
     if (exit_code == -1)
         return -1;
