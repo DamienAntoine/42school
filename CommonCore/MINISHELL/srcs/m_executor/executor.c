@@ -288,7 +288,7 @@ int execute_command(t_data *data)
 
     // Step 2: Handle Pipes
 	if (cmdtable->next || cmdtable->redirects)
-    exit_code = handle_pipes(data, cmdtable, num_commands);
+    	exit_code = handle_pipes(data, cmdtable, num_commands);
     if (exit_code == -1)
         return -1;
     return (exit_code);
