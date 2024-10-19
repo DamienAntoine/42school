@@ -93,12 +93,12 @@ int	main(int argc, char **argv, char **env)
 		if (!handle_input(data))
 			return (0);
 		reset_command(data);
-		if (!has_synt_errors(data->toklist))
-		{
+		// if (!has_synt_errors(data->toklist))
+		// {
 			ft_sort_tokens(data);
 			//printcommands(data);//delete when everything is finished
 			execute_command(data);
-		}
+		// }
 	}
 	return (free_minishell(data), 0);
 }
