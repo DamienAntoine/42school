@@ -248,9 +248,6 @@ int send_command(t_data *data)
     return exit_code; // Return the exit code
 }
 
-
-
-
 int	ft_cmdsize(t_command *lst)
 {
 	size_t	size;
@@ -275,18 +272,17 @@ int execute_command(t_data *data)
     {
 	    exit_code = send_command(data);
         if (exit_code != 0)
-            return exit_code; // If a built-in command fails, return the error code
+            return exit_code;
     }
 
-    // Step 1: Handle Redirections
+    // Redirection errors
     if (cmdtable->redirects != NULL)
 	{
         check = check_redirection_before_fork(data);
         if (check == -1)
             exit_code = 1; // Indicate failure
     }
-
-    // Step 2: Handle Pipes
+    // Redirections and pipes (both in handle_pipes for now)
 	if (cmdtable->next || cmdtable->redirects)
     	exit_code = handle_pipes(data, cmdtable, num_commands);
     if (exit_code == -1)

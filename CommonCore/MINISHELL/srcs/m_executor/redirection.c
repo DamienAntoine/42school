@@ -18,6 +18,57 @@ int open_redirection(t_redirection *redir)
     return fd;
 }
 
+int setup_redirection(t_redirection *redir)
+{
+    int fd;
+
+    while (redir)
+    {
+        if (redir->type == 0) // Input redirection
+        {
+            fd = open_redirection(redir);
+            if (dup2(fd, STDIN_FILENO) == -1)
+            {
+                close(fd);
+                return -1; // Handle other dup2 errors if necessary
+            }
+            close(fd);
+        }
+        else if (redir->type == 1) // Output redirection
+        {
+            fd = open_redirection(redir);
+            if (fd == -1)
+                return -1;
+            if (dup2(fd, STDOUT_FILENO) == -1)
+            {
+                close(fd);
+                return -1;
+            }
+            close(fd);
+        }
+        else if (redir->type == 2) // Append redirection
+        {
+            fd = open_redirection(redir);
+            if (fd == -1)
+                return -1;
+            if (dup2(fd, STDOUT_FILENO) == -1)
+            {
+                close(fd);
+                return -1;
+            }
+            close(fd);
+        }
+        else if (redir->type == 3) // Here-doc
+        {
+            // Implement your here-doc logic here
+            // If waiting for input, ensure that it works correctly
+            handle_here_doc(redir);
+        }
+        redir = redir->next;
+    }
+    return 0;
+}
+
 // Function to handle here-doc redirection
 int handle_here_doc(t_redirection *redir)
 {
@@ -55,75 +106,6 @@ int handle_here_doc(t_redirection *redir)
     return pipefd[0]; // Return the read end of the pipe
 }
 
-int setup_redirection(t_redirection *redir)
-{
-    int fd;
-
-    while (redir)
-    {
-        if (redir->type == 0) // Input redirection
-        {
-            fd = open_redirection(redir);
-            if (dup2(fd, STDIN_FILENO) == -1)
-            {
-                close(fd);
-                return -1; // Handle other dup2 errors if necessary
-            }
-            close(fd);
-        }
-        // if (redir->type == 0) // Input redirection
-        // {
-        //     fd = open_redirection(redir);
-        //     if (fd == -1) {
-        //         // Set an error flag and continue to the next redirection
-        //         redir->error_flag = 1;
-        //         redir = redir->next;
-        //         continue;
-        //     }
-        //     if (dup2(fd, STDIN_FILENO) == -1)
-        //     {
-        //         close(fd);
-        //         return -1; // Handle other dup2 errors if necessary
-        //     }
-        //     close(fd);
-        // }
-        else if (redir->type == 1) // Output redirection
-        {
-            fd = open_redirection(redir);
-            if (fd == -1)
-                return -1;
-            if (dup2(fd, STDOUT_FILENO) == -1)
-            {
-                close(fd);
-                return -1;
-            }
-            close(fd);
-        }
-        else if (redir->type == 2) // Append redirection
-        {
-            fd = open_redirection(redir);
-            if (fd == -1)
-                return -1;
-            if (dup2(fd, STDOUT_FILENO) == -1)
-            {
-                close(fd);
-                return -1;
-            }
-            close(fd);
-        }
-        else if (redir->type == 3) // Here-doc
-        {
-            // Implement your here-doc logic here
-            // If waiting for input, ensure that it works correctly
-            handle_here_doc(redir);
-        }
-        redir = redir->next;
-    }
-    return 0;
-}
-
-
-
 
 // Updated add_redirection to accept the current command
 void add_redirection(t_command *current_command, char *file, int type)
@@ -156,10 +138,9 @@ void add_redirection(t_command *current_command, char *file, int type)
     }
 }
 
-void ft_sortredirect(t_data *data, int *i)
+void ft_sortredirect(t_data *data, t_command *current_command, int *i)
 {
     t_token_list *toklist = data->toklist;
-	t_command *current_command;
     int redirect_type = -1;
 
     if (ft_strcmp(toklist->tokens[*i], "<") == 0)
@@ -170,12 +151,11 @@ void ft_sortredirect(t_data *data, int *i)
         redirect_type = 2; // Append
     else if (ft_strcmp(toklist->tokens[*i], "<<") == 0)
         redirect_type = 3; // Here-doc
-    current_command = data->commands;
     if (redirect_type != -1)
     {
         (*i)++;
         if (*i < toklist->token_count)
-            add_redirection(current_command, toklist->tokens[*i], redirect_type); // Pass current_command
+            add_redirection(current_command, toklist->tokens[*i], redirect_type);
         else
             fprintf(stderr, "Syntax error: No file name after redirection operator.\n");
         (*i)++;

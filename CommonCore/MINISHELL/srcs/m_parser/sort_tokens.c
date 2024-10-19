@@ -40,7 +40,7 @@ void	ft_sortloop(t_data *data, int i, int j)
 				 ft_strcmp(toklist->tokens[i], ">>") == 0 ||
 				 ft_strcmp(toklist->tokens[i], "<<") == 0)
 				 {
-					ft_sortredirect(data, &i);
+					ft_sortredirect(data, current, &i);
 					continue ;
 				 }
 		// Handle normal command tokens
