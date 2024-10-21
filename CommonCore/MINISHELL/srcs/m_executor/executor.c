@@ -53,18 +53,15 @@ void	handle_exec_error(t_data *data, char *exec_target)
             }
             else if (access(exec_target, F_OK) == 0 && access(exec_target, X_OK) == -1)
             {
-                // if its a file but not executable
                 ft_putstr_fd(exec_target, STDERR_FILENO);
                 ft_putstr_fd(": command not found\n", STDERR_FILENO);
                 data->error_occurred = 1;
                 exit(127);
             }
-			// if regular file but no permission (not currently working as intended ?)
 			else if (S_ISREG(path_stat.st_mode) && access(exec_target, X_OK) == -1)
 			{
 				if (errno == EACCES)
 				{
-                    //printf("test***************************\n");
 					ft_putstr_fd(exec_target, STDERR_FILENO);
 					ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
 					data->error_occurred = 1;
@@ -74,7 +71,6 @@ void	handle_exec_error(t_data *data, char *exec_target)
 		}
 		else
 		{
-			// if stat fails (check if file exists)
 			if (errno == ENOENT)
 			{
 				if (exec_target[0] == '.' || exec_target[0] == '/')
@@ -91,7 +87,6 @@ void	handle_exec_error(t_data *data, char *exec_target)
 				exit(127);
 			}
 		}
-		// default error
 		ft_putstr_fd(exec_target, STDERR_FILENO);
 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
 		data->error_occurred = 1;
@@ -134,11 +129,10 @@ int execute_builtin_command(t_command *cmdtable, t_data *data)
         if (setup_redirection(cmdtable->redirects) == -1)
         {
             printf("Error setting up redirections\n");
-            return 1; // Handle error
+            return 1;
         }
     }
 
-    // Directly execute built-in command without forking
     return execute_builtin(cmdtable, data);
 }
 
@@ -157,7 +151,7 @@ int execute_external_command(t_command *cmdtable, char **full_args, char **envp,
 	else
 		exec_target = cmdtable->cmds;
 
-    if (pid == 0) // Child
+    if (pid == 0) 
     {
         if (cmdtable->redirects != NULL)
         {
@@ -170,7 +164,7 @@ int execute_external_command(t_command *cmdtable, char **full_args, char **envp,
         }
             
     }
-    else if (pid > 0) // Parent
+    else if (pid > 0) 
     {
         waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
@@ -192,24 +186,24 @@ int check_redirection_before_fork(t_data *data)
     t_command *cmdtable = data->commands;
     int fd;
 
-    while (cmdtable) // Iterate through each command in the command list
+    while (cmdtable) 
     {
         t_redirection *redir = cmdtable->redirects;
-        while (redir) // Iterate through the redirections for this command
+        while (redir) 
         {
             fd = open_redirection(redir);
             if (fd == -1)
             {
-                perror(redir->file); // Provide feedback on which redirection failed
-                return -1; // Indicate failure
+                perror(redir->file); 
+                return -1; 
             }
-            if (redir->type != 3) // If not a here-document
-                close(fd); // Close file descriptor
-            redir = redir->next; // Move to the next redirection
+            if (redir->type != 3) 
+                close(fd); 
+            redir = redir->next; 
         }
-        cmdtable = cmdtable->next; // Move to the next command
+        cmdtable = cmdtable->next; 
     }
-    return 0; // Indicate success
+    return 0; 
 }
 
 int send_command(t_data *data)
@@ -235,33 +229,29 @@ int send_command(t_data *data)
         data->state.last_exit_status = 0;
         return 0;
     }
-
-    // Check for built-ins
     if (is_builtin(cmdtable->cmds))
         exit_code = execute_builtin_command(cmdtable, data);
     else
     {
-        // Get the full command path
         char *command_path = get_command_path(cmdtable->cmds);
 
         if (!command_path)
         {
-
             handle_exec_error(data, cmdtable->cmds);
             free_split(envp);
             free(full_args);
-            return 127; // Command not found
+            return 127; 
         }
         exit_code = execute_external_command(cmdtable, full_args, envp, data);
-        if (exit_code == 126 || exit_code == 127) // Permission denied or command not found
+        if (exit_code == 126 || exit_code == 127) 
             handle_exec_error(data, command_path);
         free(command_path);
     }
 
     free_split(envp);
     free(full_args);
-    set_exit_status(exit_code, data); // This should properly set last_exit_status
-    return exit_code; // Return the exit code
+    set_exit_status(exit_code, data); 
+    return exit_code; 
 }
 
 int	ft_cmdsize(t_command *lst)
@@ -291,14 +281,12 @@ int execute_command(t_data *data)
             return exit_code;
     }
 
-    // Redirection errors
     if (cmdtable->redirects != NULL)
 	{
         check = check_redirection_before_fork(data);
         if (check == -1)
-            exit_code = 1; // Indicate failure
+            exit_code = 1; 
     }
-    // Redirections and pipes (both in handle_pipes for now)
 	if (cmdtable->next || cmdtable->redirects)
     	exit_code = handle_pipes(data, cmdtable, num_commands);
     if (exit_code == -1)

@@ -1,18 +1,16 @@
 #include "../../headers/minishell.h"
 
-// Function to open files based on redirection type
 int open_redirection(t_redirection *redir)
 {
     int fd = -1;
 
-    // Determine the type of redirection using if-else statements
-    if (redir->type == 0) // Input redirection
+    if (redir->type == 0) 
         fd = open(redir->file, O_RDONLY);
-    else if (redir->type == 1) // Output redirection
+    else if (redir->type == 1) 
         fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    else if (redir->type == 2) // Append redirection
+    else if (redir->type == 2) 
         fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-    else if (redir->type == 3) // Here-doc
+    else if (redir->type == 3) 
         fd = handle_here_doc(redir);
 
     return fd;
@@ -24,17 +22,17 @@ int setup_redirection(t_redirection *redir)
 
     while (redir)
     {
-        if (redir->type == 0) // Input redirection
+        if (redir->type == 0) 
         {
             fd = open_redirection(redir);
             if (dup2(fd, STDIN_FILENO) == -1)
             {
                 close(fd);
-                return -1; // Handle other dup2 errors if necessary
+                return -1; 
             }
             close(fd);
         }
-        else if (redir->type == 1) // Output redirection
+        else if (redir->type == 1) 
         {
             fd = open_redirection(redir);
             if (fd == -1)
@@ -46,7 +44,7 @@ int setup_redirection(t_redirection *redir)
             }
             close(fd);
         }
-        else if (redir->type == 2) // Append redirection
+        else if (redir->type == 2) 
         {
             fd = open_redirection(redir);
             if (fd == -1)
@@ -58,18 +56,13 @@ int setup_redirection(t_redirection *redir)
             }
             close(fd);
         }
-        else if (redir->type == 3) // Here-doc
-        {
-            // Implement your here-doc logic here
-            // If waiting for input, ensure that it works correctly
+        else if (redir->type == 3) 
             handle_here_doc(redir);
-        }
         redir = redir->next;
     }
     return 0;
 }
 
-// Function to handle here-doc redirection
 int handle_here_doc(t_redirection *redir)
 {
     char *delimiter = redir->file;
@@ -84,30 +77,29 @@ int handle_here_doc(t_redirection *redir)
 
     while (1)
     {
-        line = readline("heredoc> "); // Prompt for input
-        if (line == NULL) // Handle Ctrl+D
+        line = readline("heredoc> "); 
+        if (line == NULL) 
         {
             ft_putstr_fd("\n", STDERR_FILENO);
             break;
         }
 
-        if (ft_strcmp(line, delimiter) == 0) // Stop on delimiter
+        if (ft_strcmp(line, delimiter) == 0) 
         {
             free(line);
             break;
         }
 
-        write(pipefd[1], line, ft_strlen(line)); // Write to pipe
-        write(pipefd[1], "\n", 1); // Add newline
+        write(pipefd[1], line, ft_strlen(line)); 
+        write(pipefd[1], "\n", 1); 
         free(line);
     }
 
-    close(pipefd[1]); // Close the write end of the pipe
-    return pipefd[0]; // Return the read end of the pipe
+    close(pipefd[1]); 
+    return pipefd[0]; 
 }
 
 
-// Updated add_redirection to accept the current command
 void add_redirection(t_command *current_command, char *file, int type)
 {
     t_redirection *new_redir = malloc(sizeof(t_redirection));
@@ -144,13 +136,13 @@ void ft_sortredirect(t_data *data, t_command *current_command, int *i)
     int redirect_type = -1;
 
     if (ft_strcmp(toklist->tokens[*i], "<") == 0)
-        redirect_type = 0; // Input
+        redirect_type = 0;
     else if (ft_strcmp(toklist->tokens[*i], ">") == 0)
-        redirect_type = 1; // Output
+        redirect_type = 1; 
     else if (ft_strcmp(toklist->tokens[*i], ">>") == 0)
-        redirect_type = 2; // Append
+        redirect_type = 2;
     else if (ft_strcmp(toklist->tokens[*i], "<<") == 0)
-        redirect_type = 3; // Here-doc
+        redirect_type = 3; 
     if (redirect_type != -1)
     {
         (*i)++;

@@ -1,41 +1,42 @@
 #include "../headers/minishell.h"
 
-void	printcommands(t_data *data) // debugging function
-{
-	t_command		*cmd;
-	t_token_list	*token;
-	int				i;
+// void	printcommands(t_data *data) // debugging function
+// {
+// 	t_command		*cmd;
+// 	t_token_list	*token;
+// 	int				i;
 
-	cmd = data->commands;
-	token = data->toklist;
+// 	cmd = data->commands;
+// 	token = data->toklist;
 
 
-	printf("\n**********Debugging**********\n");
-	printf("#TOKENS\n");
+// 	printf("\n**********Debugging**********\n");
+// 	printf("#TOKENS\n");
 
-	i = 0;
-	while (token->tokens[i])
-	{
-		printf("%s\n", token->tokens[i]);
-		i++;
-	}
-	printf("\n\n#COMMANDS\n");
-	while (cmd)
-	{
-		printf("cmd:");
-		printf("%s\n", cmd->cmds);
+// 	i = 0;
+// 	while (token->tokens[i])
+// 	{
+// 		printf("%s\n", token->tokens[i]);
+// 		i++;
+// 	}
+// 	printf("\n\n#COMMANDS\n");
+// 	while (cmd)
+// 	{
+// 		printf("cmd:");
+// 		printf("%s\n", cmd->cmds);
 
-		i = 0;
-		while (cmd->args[i])
-		{
-			printf("Arg %d\n", i);
-			printf("%s\n", cmd->args[i]);
-			i++;
-		}
-		cmd = cmd->next;
-	}
-	printf("\n*****************************\n\n");
-}
+// 		i = 0;
+// 		while (cmd->args[i])
+// 		{
+// 			printf("Arg %d\n", i);
+// 			printf("%s\n", cmd->args[i]);
+// 			i++;
+// 		}
+// 		cmd = cmd->next;
+// 	}
+// 	printf("\n*****************************\n\n");
+// }
+
 
 void	reset_toklist(t_data *data)
 {
@@ -71,7 +72,7 @@ void	reset_command(t_data *data)
 	if (!data->commands)
 	{
         perror("Failed to allocate memory for new commands");
-        exit(EXIT_FAILURE); // or handle the error as needed
+        exit(EXIT_FAILURE);
     }
 	init_commands(data);
 }
@@ -82,7 +83,6 @@ t_history *add_command_to_history(t_history **history, const char *command)
     t_history *new_node = malloc(sizeof(t_history));
     if (!new_node)
         return NULL;
-
     new_node->command = strdup(command);
     new_node->next = NULL;
     new_node->prev = NULL;

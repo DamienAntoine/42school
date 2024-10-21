@@ -4,7 +4,7 @@ int output_redirection_exists(t_redirection *redirects)
 {
     while (redirects)
     {
-        if (redirects->type == 1 || redirects->type == 2) // Output redirection (1: >, 2: >>)
+        if (redirects->type == 1 || redirects->type == 2) 
             return 1;
         redirects = redirects->next;
     }
@@ -22,7 +22,6 @@ int handle_pipes(t_data *data, t_command *cmdtable, int num_commands)
     int exit_code = 0;
     pid_t child_pids[num_commands];
 
-    // create pipes
     while (i < num_commands - 1)
     {
         if (pipe(pipes[i]) == -1)
@@ -34,7 +33,6 @@ int handle_pipes(t_data *data, t_command *cmdtable, int num_commands)
     }
 
     i = 0;
-    // fork and execute each command
     while (i < num_commands)
     {
         if ((pid = fork()) == -1)
@@ -43,7 +41,7 @@ int handle_pipes(t_data *data, t_command *cmdtable, int num_commands)
             return -1;
         }
 
-        if (pid == 0) // Child
+        if (pid == 0) 
         {
             if (cmdtable->redirects != NULL)
             {
@@ -51,14 +49,11 @@ int handle_pipes(t_data *data, t_command *cmdtable, int num_commands)
                     exit(1);
             }
 
-            // setup pipes for next command
-            if (i > 0) // if not the first command redirect input from the previous pipe
+            if (i > 0) 
                 dup2(pipes[i - 1][0], STDIN_FILENO);
-            // if not the last command
             if (i < num_commands - 1 && !output_redirection_exists(cmdtable->redirects))
                 dup2(pipes[i][1], STDOUT_FILENO);
 
-            // close pipes in child
 			j = 0;
             while (j < num_commands - 1)
             {
@@ -67,7 +62,6 @@ int handle_pipes(t_data *data, t_command *cmdtable, int num_commands)
 				j++;
             }
 
-            // execute the command
             data->commands = cmdtable;
             exit_code = send_command(data);
             free_minishell(data);
@@ -78,7 +72,6 @@ int handle_pipes(t_data *data, t_command *cmdtable, int num_commands)
         cmdtable = cmdtable->next;
         i++;
     }
-    // close pipes
 	i = 0;
     while (i < num_commands - 1)
     {
@@ -87,7 +80,6 @@ int handle_pipes(t_data *data, t_command *cmdtable, int num_commands)
 		i++;
     }
 
-    // wait for every childprocesxs
 	i = 0;
     while (i < num_commands)
     {

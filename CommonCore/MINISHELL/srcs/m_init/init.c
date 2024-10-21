@@ -37,7 +37,6 @@ t_data	*init_minishell(char **env)
 	data->state.last_exit_status = 0;
 	data->error_occurred = 0;
 	data->history = NULL;
-	//data->redirects->error_flag = 0;
 	return (data);
 }
 

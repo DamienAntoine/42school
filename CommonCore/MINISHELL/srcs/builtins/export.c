@@ -1,22 +1,6 @@
 
 #include "../../headers/minishell.h"
 
-//syntax: export
-//implemented with no options
-
-/*displays a list of all environment variables that have been
-marked for export to child processes initiated by the current shell session*/
-
-/*Displaying Exported Variables:
-Running export without any arguments lists
-all the variables that have been exported,
-meaning they are available to child processes.
-This is useful for verifying which environment
-variables have been configured for export.*/
-
-//to undo export, do unset.
-
-// Function to insert a node into a sorted linked list
 static void sorted_insert(t_env **sorted_list, t_env *new_node) {
     if (!(*sorted_list) || strcmp((*sorted_list)->type, new_node->type) >= 0) {
         new_node->next = *sorted_list;
@@ -31,12 +15,11 @@ static void sorted_insert(t_env **sorted_list, t_env *new_node) {
     }
 }
 
-// Function to clone nodes for sorting to avoid modifying the original list
 static t_env *clone_node(t_env *node) {
     if (node == NULL) return NULL;
     t_env *new_node = malloc(sizeof(t_env));
     if (!new_node) return NULL;
-    new_node->type = node->type;  // Assuming these are pointers and don't need duplication
+    new_node->type = node->type; 
     new_node->value = node->value;
     new_node->next = NULL;
     return new_node;
@@ -47,7 +30,6 @@ void print_export(t_env *env_list, t_data *data) {
     t_env *sorted_list = NULL;
     t_env *new_node;
 
-    // Create a new sorted list
     while (current) {
         new_node = clone_node(current);
         if (new_node) {
@@ -55,8 +37,6 @@ void print_export(t_env *env_list, t_data *data) {
         }
         current = current->next;
     }
-
-    // Print the sorted list
     current = sorted_list;
     while (current) {
         ft_putstr_fd("declare -x ", 1);
@@ -69,12 +49,10 @@ void print_export(t_env *env_list, t_data *data) {
         ft_putchar_fd('\n', 1);
         current = current->next;
     }
-
-    // Free the sorted list
     while (sorted_list) {
         current = sorted_list;
         sorted_list = sorted_list->next;
-        free(current);  // Free the cloned node
+        free(current); 
     }
     data->state.last_exit_status = 0;
 }
@@ -85,9 +63,7 @@ static void export_with_arg(t_env **env_list, char *arg, t_data *data)
     char *new_value = ft_strtok(NULL, "");
 
     if (new_value == NULL)
-        new_value = "";  // Ensure new_value is not NULL
-
-    // Find the end of the list or the existing variable to update
+        new_value = "";  
     t_env **current = env_list;
     while (*current && ft_strcmp((*current)->type, name) != 0) {
         current = &(*current)->next;
@@ -95,23 +71,21 @@ static void export_with_arg(t_env **env_list, char *arg, t_data *data)
 
     if (*current)
     {
-        // Update existing variable
         free((*current)->value);
         (*current)->value = ft_strdup(new_value);
         if ((*current)->value == NULL) {
             perror("Memory allocation failed for value");
-            data->state.last_exit_status  = 1;  // Indicate failure
+            data->state.last_exit_status  = 1;  
             return;
         }
-        data->state.last_exit_status = 0;  // Indicate success
+        data->state.last_exit_status = 0;  
     }
     else
     {
-        // Append new variable at the end
         t_env *new_node = malloc(sizeof(t_env));
         if (!new_node) {
             perror("Failed to allocate memory for new environment variable");
-            data->state.last_exit_status = 1;  // Indicate failure
+            data->state.last_exit_status = 1;  
             return;
         }
         new_node->type = ft_strdup(name);
@@ -119,15 +93,15 @@ static void export_with_arg(t_env **env_list, char *arg, t_data *data)
         new_node->next = NULL;
 
         if (new_node->type == NULL || new_node->value == NULL) {
-            free(new_node->type);  // Clean up in case of partial failure
+            free(new_node->type);  
             free(new_node->value);
             free(new_node);
-            data->state.last_exit_status =  1;  // Indicate failure
+            data->state.last_exit_status =  1; 
             return;
         }
 
-        *current = new_node;  // Append the new node at the end of the list
-        data->state.last_exit_status =  0;  // Indicate success
+        *current = new_node; 
+        data->state.last_exit_status =  0; 
     }
 }
 
@@ -136,24 +110,18 @@ int is_valid_arg(const char *arg)
 {
 	int i = 0;
 
-	// Empty string is invalid
 	if (!arg || !arg[0])
 		return (0);
-
-	// The first character must be a letter or underscore
 	if (!ft_isalpha(arg[0]) && arg[0] != '_')
 		return (0);
-
-	// Traverse the rest of the string
 	while (arg[i] && arg[i] != '=')
 	{
-		// Valid characters are letters, digits, and underscores
 		if (!ft_isalnum(arg[i]) && arg[i] != '_')
 			return (0);
 		i++;
 	}
 
-	return (1);  // Valid identifier
+	return (1); 
 }
 
 int	handle_export(t_data *data)
@@ -169,12 +137,9 @@ int	handle_export(t_data *data)
 		{
 			if (!is_valid_arg(data->commands->args[i]))
 			{
-				// Print the error message for invalid identifiers
 				ft_putstr_fd("export: `", STDERR_FILENO);
 				ft_putstr_fd(data->commands->args[i], STDERR_FILENO);
 				ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
-
-				// Set the exit status to 1
 				data->state.last_exit_status = 1;
 				exit(data->state.last_exit_status);
 			}

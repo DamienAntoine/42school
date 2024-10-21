@@ -1,8 +1,5 @@
 #include "../../headers/minishell.h"
 
-// init (when starting minishell)
-// to print with the env cmd,
-	//just go through every node and print "NAME"+"="+"value"+newline
 void	init_env(char **env, t_env **cur_env)
 {
 	int		i;
@@ -16,9 +13,8 @@ void	init_env(char **env, t_env **cur_env)
 	*cur_env = NULL;
 	while (env[i])
 	{
-		// find first '='
 		equal_sign = strchr(env[i], '=');
-		if (!equal_sign)  // no '=', skip to next
+		if (!equal_sign) 
 		{
 			i++;
 			continue ;
@@ -30,7 +26,6 @@ void	init_env(char **env, t_env **cur_env)
 			free_env_list(*cur_env);
 			exit(EXIT_FAILURE);
 		}
-		// extract name anv value
 		new_node->type = ft_substr(env[i], 0, equal_sign - env[i]);
 		new_node->value = ft_strdup(equal_sign + 1);
 		new_node->next = NULL;
@@ -71,7 +66,7 @@ void update_or_add_env_variable(t_env **env_list, const char *name, const char *
 		new_node->type = ft_strdup(name);
 		new_node->value = ft_strdup(value);
 		new_node->next = *env_list;
-		*env_list = new_node; // Set new node as head
+		*env_list = new_node;
 	}
 }
 

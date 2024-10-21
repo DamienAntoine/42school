@@ -1,12 +1,8 @@
 #include "../../headers/minishell.h"
 
-// syntax: cd <path>
-// should work with relative path (from current directory) and
-// also with absolute path (from home directory)
-
 char	*get_current_directory(void)
 {
-	return (getcwd(NULL, 0)); // Get the current working directory
+	return (getcwd(NULL, 0)); 
 }
 
 int	ft_cd(t_data *cur)
@@ -22,10 +18,6 @@ int	ft_cd(t_data *cur)
 		return 1;
 	}
 
-	// Debug: Print the current directory before changing
-	//printf("Old PWD: %s\n", oldpwd);
-
-	// Check if too many arguments are passed
 	if (cur->commands->args[1])
 	{
 		errno = EINVAL;
@@ -35,10 +27,8 @@ int	ft_cd(t_data *cur)
 		return 1;
 	}
 
-	// Determine the target directory
 	if (!cur->commands->args[0])
 	{
-		// No arguments, move to home directory
 		target_dir = find_env_value(cur->env, "HOME");
 		if (!target_dir)
 		{
@@ -63,7 +53,6 @@ int	ft_cd(t_data *cur)
 	}
 	else if (cur->commands->args[0][0] == '$')
 	{
-		// Argument is an environment variable, retrieve its value
 		target_dir = find_env_value(cur->env, &cur->commands->args[0][1]);
 		if (!target_dir)
 		{
@@ -75,7 +64,6 @@ int	ft_cd(t_data *cur)
 	}
 	else
 		target_dir = cur->commands->args[0];
-	// Perform the directory change
 	if (chdir(target_dir) != 0)
 	{
 		perror_and_free("cd", oldpwd);
@@ -83,7 +71,6 @@ int	ft_cd(t_data *cur)
 		return 1;
 	}
 
-	// Get the new current directory
 	newpwd = get_current_directory();
 	if (!newpwd)
 	{
@@ -91,15 +78,8 @@ int	ft_cd(t_data *cur)
 		cur->state.last_exit_status = 1;
 		return 1;
 	}
-
-	// Update OLDPWD and PWD environment variables
 	update_or_add_env_variable(&cur->env, "OLDPWD", oldpwd);
 	update_or_add_env_variable(&cur->env, "PWD", newpwd);
-
-	// Debug: Print the new directory after changing
-	//printf("New PWD: %s\n", newpwd);
-
-	// Clean up
 	free(oldpwd);
 	free(newpwd);
 	return (0);
