@@ -33,6 +33,13 @@ typedef struct s_state
 	int	last_exit_status;
 }	t_state;
 
+typedef struct s_history
+{
+    char *command;
+    struct s_history *prev;
+    struct s_history *next;
+} t_history;
+
 typedef struct s_data
 {
 	struct s_token_list		*toklist;
@@ -40,6 +47,7 @@ typedef struct s_data
 	struct s_env			*env;
 	t_state					state;
 	int						error_occurred;
+	t_history				*history;
 }	t_data;
 
 typedef struct s_env
@@ -71,8 +79,10 @@ typedef struct s_token_list
 	int			token_count;
 }	t_token_list;
 
+
 //####  need to be sorted later  ########################
 
+t_history *add_command_to_history(t_history **history, const char *command);
 char	*process_env_token(const char *str, t_data *data);
 void	ft_strlcat_char(char *dst, char c, size_t dstsize);
 char	*expand_variable(const char *var_name, t_data *data);
