@@ -19,7 +19,7 @@ int	execute_builtin(t_command *cmdtable, t_data *data)
 	return (1);
 }
 
-void	handle_exec_error(t_data *data, char *exec_target)
+int	handle_exec_error(t_data *data, char *exec_target)
 {
 	struct stat	path_stat;
 
@@ -34,14 +34,15 @@ void	handle_exec_error(t_data *data, char *exec_target)
 					ft_putstr_fd(exec_target, STDERR_FILENO);
 					ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
 					data->error_occurred = 1;
-					exit(126);
+					return(126);
 				}
 				else
 				{
 					ft_putstr_fd(exec_target, STDERR_FILENO);
 					ft_putstr_fd(": command not found\n", STDERR_FILENO);
 					data->error_occurred = 1;
-					exit(127);
+                    printf("first exit 127");
+					return(127);
 				}
 			}
             if (access(exec_target, F_OK) == 0 && access(exec_target, R_OK) == -1 && access(exec_target, W_OK) == -1 && access(exec_target, X_OK) == -1)
@@ -49,14 +50,15 @@ void	handle_exec_error(t_data *data, char *exec_target)
                 ft_putstr_fd(exec_target, STDERR_FILENO);
                 ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
                 data->error_occurred = 1;
-                exit(126);
+                return(126);
             }
             else if (access(exec_target, F_OK) == 0 && access(exec_target, X_OK) == -1)
             {
                 ft_putstr_fd(exec_target, STDERR_FILENO);
                 ft_putstr_fd(": command not found\n", STDERR_FILENO);
                 data->error_occurred = 1;
-                exit(127);
+                printf("second exit 127");
+                return(127);
             }
 			else if (S_ISREG(path_stat.st_mode) && access(exec_target, X_OK) == -1)
 			{
@@ -65,7 +67,7 @@ void	handle_exec_error(t_data *data, char *exec_target)
 					ft_putstr_fd(exec_target, STDERR_FILENO);
 					ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
 					data->error_occurred = 1;
-					exit(126);
+					return(126);
 				}
 			}
 		}
@@ -84,14 +86,17 @@ void	handle_exec_error(t_data *data, char *exec_target)
 					ft_putstr_fd(": command not found\n", STDERR_FILENO);
 				}
 				data->error_occurred = 1;
-				exit(127);
+                printf("third exit 127");
+				return(127);
 			}
 		}
 		ft_putstr_fd(exec_target, STDERR_FILENO);
 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
 		data->error_occurred = 1;
-		exit(127);
+        printf("fouth exit 127");
+		return(127);
 	}
+    return (0);
 }
 
 char **prepare_full_args(t_command *cmdtable, int *arg_count)
@@ -160,7 +165,7 @@ int execute_external_command(t_command *cmdtable, char **full_args, char **envp,
         }
         if (execve(exec_target, full_args, envp) == -1)
         {
-            handle_exec_error(data, exec_target);
+            exit(handle_exec_error(data, exec_target));
         }
             
     }
