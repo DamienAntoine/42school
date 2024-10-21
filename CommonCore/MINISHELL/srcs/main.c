@@ -55,10 +55,10 @@ int	handle_input(t_data *data)
 	input = get_full_input();
 	if (!input)
 	{
-		//printf("\nMinishell Terminated (ctrl+d)\n");
 		free_minishell(data);
 		return (0);
 	}
+	add_command_to_history(&(data->history), input);
 	data->toklist->tokens = ft_tokenize(data, input);
 	free(input);
 	return (1);
@@ -74,6 +74,31 @@ void	reset_command(t_data *data)
         exit(EXIT_FAILURE); // or handle the error as needed
     }
 	init_commands(data);
+}
+
+t_history *add_command_to_history(t_history **history, const char *command)
+{
+	t_history *tail;
+    t_history *new_node = malloc(sizeof(t_history));
+    if (!new_node)
+        return NULL;
+
+    new_node->command = strdup(command);
+    new_node->next = NULL;
+    new_node->prev = NULL;
+
+    if (*history == NULL)
+        *history = new_node;
+    else
+    {
+        tail = *history;
+        while (tail->next)
+            tail = tail->next;
+        tail->next = new_node;
+        new_node->prev = tail;
+    }
+    add_history(command);
+    return new_node;
 }
 
 int	main(int argc, char **argv, char **env)
@@ -93,12 +118,9 @@ int	main(int argc, char **argv, char **env)
 		if (!handle_input(data))
 			return (0);
 		reset_command(data);
-		if (!has_synt_errors(data->toklist))
-		{
-			ft_sort_tokens(data);
-			//printcommands(data);//delete when everything is finished
-			execute_command(data);
-		}
+		ft_sort_tokens(data);
+		//printcommands(data);//delete when everything is finished
+		execute_command(data);
 	}
 	return (free_minishell(data), 0);
 }

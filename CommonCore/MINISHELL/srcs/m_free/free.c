@@ -95,6 +95,24 @@ void	free_token_list(t_token_list *token_list)
 	}
 }
 
+void clear_command_history(t_history **history)
+{
+    t_history *current = *history;
+    t_history *next;
+
+    while (current)
+    {
+        next = current->next;
+        free(current->command);
+        free(current);
+        current = next;
+    }
+
+    *history = NULL;
+    rl_clear_history();  // Optional: Clear readline's internal history
+}
+
+
 void	free_minishell(t_data *data)
 {
 	if (data->toklist)
@@ -103,5 +121,7 @@ void	free_minishell(t_data *data)
 		free_command(data->commands);
 	if (data->env)
 		free_env_list(data->env);
+	if (data->history)
+		clear_command_history(&(data->history));
 	free(data);
 }
