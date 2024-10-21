@@ -1,6 +1,5 @@
 #include "../../headers/minishell.h"
 
-// syntax: echo <flag> <string>
 void	handle_flags(t_data *data, int *i, int *n_flag)
 {
 	while (data->commands->args[*i] && !ft_strcmp(data->commands->args[*i],
@@ -42,8 +41,6 @@ void	ft_strlcat_char(char *dst, char c, size_t dstsize)
 	}
 }
 
-
-
 int	is_in_single_quote(const char *arg, int position)
 {
 	int	i;
@@ -59,134 +56,6 @@ int	is_in_single_quote(const char *arg, int position)
 	}
 	return (single_quotes % 2 != 0);
 }
-
-/*void	process_argument(char *arg, t_data *data)
-{
-	char	*processed_arg;
-	char	*temp;
-	char	*quote_buffer;
-	int		i;
-	int		start;
-	char	quote_type;
-	char	*expanded_content;
-	size_t	buffer_size;
-	size_t	curr_len;
-
-	buffer_size = ft_strlen(arg) + 1;
-	processed_arg = malloc(buffer_size);
-	if (!processed_arg)
-		return ;
-	processed_arg[0] = '\0';
-	quote_buffer = NULL;
-	i = 0;
-	start = 0;
-	while (arg[i])
-	{
-		if (is_quote(arg[i]))
-		{
-			quote_type = arg[i];
-			if (i > start)
-			{
-				temp = ft_substr(arg, start, i - start);
-				curr_len = ft_strlen(processed_arg) + ft_strlen(temp) + 1;
-				if (curr_len > buffer_size)
-				{
-					buffer_size = curr_len;
-					processed_arg = realloc(processed_arg, buffer_size);
-				}
-				if (quote_type == '\'')
-					ft_strlcat(processed_arg, temp, buffer_size);
-				else
-				{
-					expanded_content = process_double_quotes(temp, data);
-					curr_len = ft_strlen(processed_arg)
-						+ ft_strlen(expanded_content) + 1;
-					if (curr_len > buffer_size)
-					{
-						buffer_size = curr_len;
-						processed_arg = realloc(processed_arg, buffer_size);
-					}
-					ft_strlcat(processed_arg, expanded_content, buffer_size);
-					free(expanded_content);
-				}
-				free(temp);
-			}
-			i++;
-			start = i;
-			quote_buffer = malloc(ft_strlen(arg) + 1);
-			if (!quote_buffer)
-			{
-				free(processed_arg);
-				return ;
-			}
-			quote_buffer[0] = '\0';
-			while (arg[i] && arg[i] != quote_type)
-			{
-				temp = ft_substr(arg, i, 1);
-				curr_len = ft_strlen(quote_buffer) + 1;
-				if (curr_len > buffer_size)
-				{
-					buffer_size = curr_len;
-					quote_buffer = realloc(quote_buffer, buffer_size);
-				}
-				ft_strlcat(quote_buffer, temp, buffer_size);
-				free(temp);
-				i++;
-			}
-			curr_len = ft_strlen(processed_arg) + ft_strlen(quote_buffer) + 1;
-			if (curr_len > buffer_size)
-			{
-				buffer_size = curr_len;
-				processed_arg = realloc(processed_arg, buffer_size);
-			}
-			if (quote_type == '\'')
-				ft_strlcat(processed_arg, quote_buffer, buffer_size);
-			else if (quote_type == '\"')
-			{
-				expanded_content = process_double_quotes(quote_buffer, data);
-				curr_len = ft_strlen(processed_arg)
-					+ ft_strlen(expanded_content) + 1;
-				if (curr_len > buffer_size)
-				{
-					buffer_size = curr_len;
-					processed_arg = realloc(processed_arg, buffer_size);
-				}
-				ft_strlcat(processed_arg, expanded_content, buffer_size);
-				free(expanded_content);
-			}
-			free(quote_buffer);
-			start = ++i;
-		}
-		else
-			i++;
-	}
-	temp = ft_substr(arg, start, i - start);
-	if (is_in_single_quote(arg, start))
-	{
-		curr_len = ft_strlen(processed_arg) + ft_strlen(temp) + 1;
-		if (curr_len > buffer_size)
-		{
-			buffer_size = curr_len;
-			processed_arg = realloc(processed_arg, buffer_size);
-		}
-		ft_strlcat(processed_arg, temp, buffer_size);
-	}
-	else
-	{
-		expanded_content = process_double_quotes(temp, data);
-		curr_len = ft_strlen(processed_arg) + ft_strlen(expanded_content) + 1;
-		if (curr_len > buffer_size)
-		{
-			buffer_size = curr_len;
-			processed_arg = realloc(processed_arg, buffer_size);
-		}
-		ft_strlcat(processed_arg, expanded_content, buffer_size);
-		free(expanded_content);
-	}
-	free(temp);
-	print_escape(processed_arg);
-	free(processed_arg);
-}*/
 
 void	print_escape(char *arg)
 {
@@ -229,7 +98,6 @@ int	ft_echo(t_data *data)
 	while (data->commands->args[i])
 	{
 		arg = data->commands->args[i];
-		//process_argument(arg, data);
 		print_escape(arg);
 		if (data->commands->args[i + 1])
 			ft_putchar_fd(' ', 1);

@@ -2,7 +2,7 @@
 
 t_data	*init_minishell(char **env)
 {
-	t_data *data;
+	t_data	*data;
 
 	data = malloc(sizeof(t_data));
 	if (!data)
@@ -37,7 +37,6 @@ t_data	*init_minishell(char **env)
 	data->state.last_exit_status = 0;
 	data->error_occurred = 0;
 	data->history = NULL;
-	//data->redirects->error_flag = 0;
 	return (data);
 }
 

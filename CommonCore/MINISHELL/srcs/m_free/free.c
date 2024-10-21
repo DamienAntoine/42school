@@ -1,8 +1,8 @@
 #include "../../headers/minishell.h"
 
-void free_env_list(t_env *env)
+void	free_env_list(t_env *env)
 {
-    t_env *temp;
+	t_env	*temp;
 
 	while (env != NULL)
 	{
@@ -81,7 +81,7 @@ void	free_redirections(t_redirection *redirections)
 			if (temp)
 				free(temp);
 		}
-		//free(redirections);
+		// free(redirections);
 	}
 }
 
@@ -95,23 +95,22 @@ void	free_token_list(t_token_list *token_list)
 	}
 }
 
-void clear_command_history(t_history **history)
+void	clear_command_history(t_history **history)
 {
-    t_history *current = *history;
-    t_history *next;
+	t_history	*current;
+	t_history	*next;
 
-    while (current)
-    {
-        next = current->next;
-        free(current->command);
-        free(current);
-        current = next;
-    }
-
-    *history = NULL;
-    rl_clear_history();  // Optional: Clear readline's internal history
+	current = *history;
+	while (current)
+	{
+		next = current->next;
+		free(current->command);
+		free(current);
+		current = next;
+	}
+	*history = NULL;
+	rl_clear_history(); // Optional: Clear readline's internal history
 }
-
 
 void	free_minishell(t_data *data)
 {

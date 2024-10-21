@@ -3,7 +3,7 @@
 void ignore_sigquit()
 {
     struct sigaction sa;
-    sa.sa_handler = SIG_IGN; // Ignore SIGQUIT
+    sa.sa_handler = SIG_IGN; 
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = 0;
 
@@ -21,8 +21,7 @@ void setup_terminal()
         return;
     }
 
-    tio.c_lflag &= ~ECHOCTL; // Disable control characters echoing
-
+    tio.c_lflag &= ~ECHOCTL; 
     if (tcsetattr(STDIN_FILENO, TCSANOW, &tio) != 0)
         perror("Failed to set terminal attributes");
 } 
