@@ -44,22 +44,33 @@ void	handle_exec_error(t_data *data, char *exec_target)
 					exit(127);
 				}
 			}
+            if (access(exec_target, F_OK) == 0 && access(exec_target, R_OK) == -1 && access(exec_target, W_OK) == -1 && access(exec_target, X_OK) == -1)
+            {
+                ft_putstr_fd(exec_target, STDERR_FILENO);
+                ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+                data->error_occurred = 1;
+                exit(126);
+            }
+            else if (access(exec_target, F_OK) == 0 && access(exec_target, X_OK) == -1)
+            {
+                // if its a file but not executable
+                ft_putstr_fd(exec_target, STDERR_FILENO);
+                ft_putstr_fd(": command not found\n", STDERR_FILENO);
+                data->error_occurred = 1;
+                exit(127);
+            }
 			// if regular file but no permission (not currently working as intended ?)
-			if (S_ISREG(path_stat.st_mode) && access(exec_target, X_OK) == -1)
+			else if (S_ISREG(path_stat.st_mode) && access(exec_target, X_OK) == -1)
 			{
 				if (errno == EACCES)
 				{
+                    //printf("test***************************\n");
 					ft_putstr_fd(exec_target, STDERR_FILENO);
 					ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
 					data->error_occurred = 1;
 					exit(126);
 				}
 			}
-			// if its a file but not executable
-			ft_putstr_fd(exec_target, STDERR_FILENO);
-			ft_putstr_fd(": command not found\n", STDERR_FILENO);
-			data->error_occurred = 1;
-			exit(127);
 		}
 		else
 		{
@@ -154,7 +165,10 @@ int execute_external_command(t_command *cmdtable, char **full_args, char **envp,
                 exit(1);
         }
         if (execve(exec_target, full_args, envp) == -1)
+        {
             handle_exec_error(data, exec_target);
+        }
+            
     }
     else if (pid > 0) // Parent
     {
@@ -229,8 +243,10 @@ int send_command(t_data *data)
     {
         // Get the full command path
         char *command_path = get_command_path(cmdtable->cmds);
+
         if (!command_path)
         {
+
             handle_exec_error(data, cmdtable->cmds);
             free_split(envp);
             free(full_args);
