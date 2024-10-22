@@ -27,32 +27,31 @@ int	output_redirection_exists(t_redirection *redirects)
 	return (0);
 }
 
-void close_pipes(int pipes[], int num_commands)
+void	close_pipes(int pipes[], int num_commands)
 {
-    if (num_commands <= 1)
-        return;
-    close(pipes[0]);
-    close(pipes[1]);
-    close_pipes(&pipes[2], num_commands - 1);
+	if (num_commands <= 1)
+		return ;
+	close(pipes[0]);
+	close(pipes[1]);
+	close_pipes(&pipes[2], num_commands - 1);
 }
 
-int create_pipes(int pipes[], int num_commands)
+int	create_pipes(int pipes[], int num_commands)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (i < num_commands - 1)
-    {
-        if (pipe(pipes + i * 2) == -1)
-        {
-            perror("pipe");
-            return (-1);
-        }
-        i++;
-    }
-    return (0);
+	i = 0;
+	while (i < num_commands - 1)
+	{
+		if (pipe(pipes + i * 2) == -1)
+		{
+			perror("pipe");
+			return (-1);
+		}
+		i++;
+	}
+	return (0);
 }
-
 
 int	wait_for_children(t_data *data, pid_t *child_pids, int num_commands)
 {
