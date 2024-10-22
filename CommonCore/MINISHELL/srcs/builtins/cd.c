@@ -13,8 +13,8 @@ static int	change_directory(t_data *cur, const char *target_dir, char *oldpwd)
 
 static void	update_environment(t_data *cur, char *oldpwd, char *newpwd)
 {
-	update_or_add_env_variable(&cur->env, "OLDPWD", oldpwd);
-	update_or_add_env_variable(&cur->env, "PWD", newpwd);
+	up_env(&cur->env, "OLDPWD", oldpwd);
+	up_env(&cur->env, "PWD", newpwd);
 }
 
 static char	*get_target_dir(t_data *cur, char *oldpwd)

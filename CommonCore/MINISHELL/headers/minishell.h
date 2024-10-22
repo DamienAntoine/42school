@@ -82,6 +82,9 @@ typedef struct s_token_list
 
 //####  need to be sorted later  ########################
 
+void free_new_node(t_env *new_node);
+t_env *create_new_node(const char *env_entry);
+void add_node_to_list(t_env **cur_env, t_env *new_node);
 void	print_escape(char *arg);
 int	is_in_single_quote(const char *arg, int position);
 void	ft_strlcat_char(char *dst, char c, size_t dstsize);
@@ -191,7 +194,7 @@ char *get_next_line(int fd);
 //init_env.c
 
 char *find_env_value(t_env *env, const char *name);
-void update_or_add_env_variable(t_env **env_list, const char *name, const char *value);
+void	up_env(t_env **env_list, const char *name, const char *value);
 void init_env(char **env, t_env **cur_env);
 
 //#########################   m_free   ########################

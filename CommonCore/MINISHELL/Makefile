@@ -27,7 +27,7 @@ SRCS += ./srcs/m_parser/sort_tokens.c ./srcs/m_parser/input.c\
 SRCS += ./srcs/utils/utils_str.c ./srcs/utils/utils_error.c ./srcs/utils/utils_print.c ./srcs/utils/utils_checker.c\
 		./srcs/utils/terminal_signal.c ./srcs/utils/command_path.c ./srcs/utils/util_exe.c ./srcs/utils/util_pipe.c\
 		./srcs/utils/util_redir.c ./srcs/utils/util_token.c ./srcs/utils/util_echo.c ./srcs/utils/util_export.c \
-		./srcs/utils/util_cd.c
+		./srcs/utils/util_cd.c ./srcs/utils/util_free.c ./srcs/utils/util_env.c
 
 
 
