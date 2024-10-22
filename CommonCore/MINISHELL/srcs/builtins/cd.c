@@ -51,7 +51,6 @@ int	ft_cd(t_data *cur)
 	char	*target_dir;
 
 	oldpwd = get_current_directory();
-	oldpwd = get_current_directory();
 	if (!oldpwd)
 	{
 		perror("getcwd");

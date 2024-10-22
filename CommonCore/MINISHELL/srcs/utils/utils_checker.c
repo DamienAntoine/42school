@@ -1,21 +1,5 @@
 #include "../../headers/minishell.h"
 
-int	is_pipe(t_data *data)
-{
-	t_token_list	*toklist;
-	int				i;
-
-	toklist = data->toklist;
-	i = 0;
-	while (toklist->tokens[i])
-	{
-		if (ft_strcmp(toklist->tokens[i], "|") == 0)
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
 int	is_builtin(char *cmd)
 {
 	if (ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "echo") == 0
@@ -69,9 +53,9 @@ int	has_quotes(t_token_list *toklist)
 
 int	is_operator(const char *token)
 {
-	if (ft_strcmp(token, "|") == 0 || ft_strcmp(token, "<") == 0 ||
-		ft_strcmp(token, ">") == 0 || ft_strcmp(token, "<<") == 0 ||
-		ft_strcmp(token, ">>") == 0)
+	if (ft_strcmp(token, "|") == 0 || ft_strcmp(token, "<") == 0
+        || ft_strcmp(token, ">") == 0 || ft_strcmp(token, "<<") == 0
+        || ft_strcmp(token, ">>") == 0)
 		return (1);
 	return (0);
 }
@@ -80,7 +64,6 @@ int	is_consecutive(t_token_list *toklist, int i)
 {
 	if (i + 1 >= toklist->token_count)
 		return (2);
-
 	if (is_operator(toklist->tokens[i]) && is_operator(toklist->tokens[i + 1]))
 		return (1);
 	return (0);

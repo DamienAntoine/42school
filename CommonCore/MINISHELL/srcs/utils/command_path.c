@@ -13,6 +13,15 @@ char	*create_full_path(const char *path, size_t len, const char *cmd)
 	return (full_path);
 }
 
+char    *colon_helper(char *next_colon, char *path)
+{
+    if (*next_colon)
+		path = next_colon + 1;
+	else
+		path = next_colon;
+    return (path);
+}
+
 char	*get_command_path(const char *cmd)
 {
 	char	*path;
@@ -37,10 +46,7 @@ char	*get_command_path(const char *cmd)
 			return (full_path);
 		free(full_path);
 		full_path = NULL;
-		if (*next_colon)
-			path = next_colon + 1;
-		else
-			path = next_colon;
+        path = colon_helper(next_colon, path);
 	}
 	return (NULL);
 }
