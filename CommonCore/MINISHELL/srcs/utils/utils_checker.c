@@ -54,8 +54,8 @@ int	has_quotes(t_token_list *toklist)
 int	is_operator(const char *token)
 {
 	if (ft_strcmp(token, "|") == 0 || ft_strcmp(token, "<") == 0
-        || ft_strcmp(token, ">") == 0 || ft_strcmp(token, "<<") == 0
-        || ft_strcmp(token, ">>") == 0)
+		|| ft_strcmp(token, ">") == 0 || ft_strcmp(token, "<<") == 0
+		|| ft_strcmp(token, ">>") == 0)
 		return (1);
 	return (0);
 }

@@ -37,7 +37,7 @@ int	handle_env_variable(t_data *cur, char **target_dir, char *oldpwd)
 	if (!*target_dir)
 	{
 		printf("cd: %s: No such environment variable\n",
-				&cur->commands->args[0][1]);
+			&cur->commands->args[0][1]);
 		free(oldpwd);
 		return (1);
 	}
