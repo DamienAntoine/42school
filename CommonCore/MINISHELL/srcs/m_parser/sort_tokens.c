@@ -36,6 +36,7 @@ void	ft_process_arguments(t_data *data, t_command **current, int *i, int *j)
 	else
 		(*i)++;
 }
+
 void	ft_sortloop(t_data *data, int i, int j)
 {
 	t_token_list	*toklist;

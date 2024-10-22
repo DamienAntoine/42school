@@ -44,9 +44,9 @@ int	handle_exec_error(t_data *data, char *exec_target)
 					return (127);
 				}
 			}
-			if (access(exec_target, F_OK) == 0 && access(exec_target, R_OK) ==
-				-1 && access(exec_target, W_OK) == -1 && access(exec_target,
-					X_OK) == -1)
+			if (access(exec_target, F_OK) == 0 && access(exec_target, R_OK)
+            == -1 && access(exec_target, W_OK) == -1 && access(exec_target,
+			X_OK) == -1)
 			{
 				ft_putstr_fd(exec_target, STDERR_FILENO);
 				ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
@@ -61,8 +61,8 @@ int	handle_exec_error(t_data *data, char *exec_target)
 				data->error_occurred = 1;
 				return (127);
 			}
-			else if (S_ISREG(path_stat.st_mode) && access(exec_target, X_OK) ==
-					-1)
+			else if (S_ISREG(path_stat.st_mode) && access(exec_target, X_OK)
+            == -1)
 			{
 				if (errno == EACCES)
 				{
