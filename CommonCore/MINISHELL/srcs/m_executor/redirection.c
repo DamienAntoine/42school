@@ -16,107 +16,35 @@ int	open_redirection(t_redirection *redir)
 	return (fd);
 }
 
-int	setup_redirection(t_redirection *redir)
-{
-	int	fd;
-
-	while (redir)
-	{
-		if (redir->type == 0)
-		{
-			fd = open_redirection(redir);
-			if (dup2(fd, STDIN_FILENO) == -1)
-			{
-				close(fd);
-				return (-1);
-			}
-			close(fd);
-		}
-		else if (redir->type == 1)
-		{
-			fd = open_redirection(redir);
-			if (fd == -1)
-				return (-1);
-			if (dup2(fd, STDOUT_FILENO) == -1)
-			{
-				close(fd);
-				return (-1);
-			}
-			close(fd);
-		}
-		else if (redir->type == 2)
-		{
-			fd = open_redirection(redir);
-			if (fd == -1)
-				return (-1);
-			if (dup2(fd, STDOUT_FILENO) == -1)
-			{
-				close(fd);
-				return (-1);
-			}
-			close(fd);
-		}
-		else if (redir->type == 3)
-			handle_here_doc(redir);
-		redir = redir->next;
-	}
-	return (0);
-}
-
-int	handle_here_doc(t_redirection *redir)
-{
-	char	*delimiter;
-	char	*line;
-	int		pipefd[2];
-
-	delimiter = redir->file;
-	line = NULL;
-	if (pipe(pipefd) == -1)
-	{
-		perror("pipe");
-		return (-1);
-	}
-	while (1)
-	{
-		line = readline("heredoc> ");
-		if (line == NULL)
-		{
-			ft_putstr_fd("\n", STDERR_FILENO);
-			break ;
-		}
-		if (ft_strcmp(line, delimiter) == 0)
-		{
-			free(line);
-			break ;
-		}
-		write(pipefd[1], line, ft_strlen(line));
-		write(pipefd[1], "\n", 1);
-		free(line);
-	}
-	close(pipefd[1]);
-	return (pipefd[0]);
-}
-
-void	add_redirection(t_command *current_command, char *file, int type)
+t_redirection	*create_new_redirection(char *file, int type)
 {
 	t_redirection	*new_redir;
-	t_redirection	*tmp;
 
 	new_redir = malloc(sizeof(t_redirection));
 	if (!new_redir)
 	{
 		perror("Failed to allocate memory for new redirection");
-		return ;
+		return (NULL);
 	}
 	new_redir->file = ft_strdup(file);
 	if (!new_redir->file)
 	{
 		free(new_redir);
 		perror("Failed to duplicate file string");
-		return ;
+		return (NULL);
 	}
 	new_redir->type = type;
 	new_redir->next = NULL;
+	return (new_redir);
+}
+void	add_redirection(t_command *current_command, char *file, int type)
+{
+	t_redirection	*new_redir;
+	t_redirection	*tmp;
+
+	new_redir = create_new_redirection(file, type);
+	if (!new_redir)
+		return ;
 	if (current_command->redirects == NULL)
 		current_command->redirects = new_redir;
 	else
