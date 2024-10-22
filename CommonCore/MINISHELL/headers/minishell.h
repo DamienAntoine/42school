@@ -82,8 +82,12 @@ typedef struct s_token_list
 
 //####  need to be sorted later  ########################
 
-int handle_no_command(t_data *data, char **envp);
-int send_helper(t_data *data, t_command *cmdtable, char **full_args, char **envp);
+int	open_redirection(t_redirection *redir);
+int	handle_input_redirection(t_redirection *redir);
+int	handle_output_redirection(t_redirection *redir);
+int	setup_redirection(t_redirection *redir);
+int	process_heredoc_lines(const char *delimiter, int write_fd);
+int	handle_here_doc(t_redirection *redir);
 int	output_redirection_exists(t_redirection *redirects);
 void close_pipes(int pipes[], int num_commands);
 int create_pipes(int pipes[], int num_commands);
