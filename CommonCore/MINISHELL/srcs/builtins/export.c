@@ -37,25 +37,9 @@ static t_env	*clone_node(t_env *node)
 	return (new_node);
 }
 
-void	print_export(t_env *env_list, t_data *data)
+void    move_current(t_env *current)
 {
-	t_env	*current;
-	t_env	*sorted_list;
-	t_env	*new_node;
-
-	current = env_list;
-	sorted_list = NULL;
-	while (current)
-	{
-		new_node = clone_node(current);
-		if (new_node)
-		{
-			sorted_insert(&sorted_list, new_node);
-		}
-		current = current->next;
-	}
-	current = sorted_list;
-	while (current)
+    while (current)
 	{
 		ft_putstr_fd("declare -x ", 1);
 		ft_putstr_fd(current->type, 1);
@@ -68,6 +52,25 @@ void	print_export(t_env *env_list, t_data *data)
 		ft_putchar_fd('\n', 1);
 		current = current->next;
 	}
+}
+
+void	print_export(t_env *env_list, t_data *data)
+{
+	t_env	*current;
+	t_env	*sorted_list;
+	t_env	*new_node;
+
+	current = env_list;
+	sorted_list = NULL;
+	while (current)
+	{
+		new_node = clone_node(current);
+		if (new_node)
+			sorted_insert(&sorted_list, new_node);
+		current = current->next;
+	}
+	current = sorted_list;
+    move_current(current);
 	while (sorted_list)
 	{
 		current = sorted_list;
@@ -77,57 +80,66 @@ void	print_export(t_env *env_list, t_data *data)
 	data->state.last_exit_status = 0;
 }
 
-static void	export_with_arg(t_env **env_list, char *arg, t_data *data)
+static void update_existing_var(t_env *current, char *new_value, t_data *data)
 {
-	char	*name;
-	char	*new_value;
-	t_env	**current;
-	t_env	*new_node;
+    free(current->value);
+    current->value = ft_strdup(new_value);
+    if (current->value == NULL)
+    {
+        perror("Memory allocation failed for value");
+        data->state.last_exit_status = 1;
+    }
+    else
+        data->state.last_exit_status = 0;
+}
 
-	name = ft_strtok(arg, "=");
-	new_value = ft_strtok(NULL, "");
-	if (new_value == NULL)
-		new_value = "";
-	current = env_list;
-	while (*current && ft_strcmp((*current)->type, name) != 0)
-	{
-		current = &(*current)->next;
-	}
-	if (*current)
-	{
-		free((*current)->value);
-		(*current)->value = ft_strdup(new_value);
-		if ((*current)->value == NULL)
-		{
-			perror("Memory allocation failed for value");
-			data->state.last_exit_status = 1;
-			return ;
-		}
-		data->state.last_exit_status = 0;
-	}
-	else
-	{
-		new_node = malloc(sizeof(t_env));
-		if (!new_node)
-		{
-			perror("Failed to allocate memory for new environment variable");
-			data->state.last_exit_status = 1;
-			return ;
-		}
-		new_node->type = ft_strdup(name);
-		new_node->value = ft_strdup(new_value);
-		new_node->next = NULL;
-		if (new_node->type == NULL || new_node->value == NULL)
-		{
-			free(new_node->type);
-			free(new_node->value);
-			free(new_node);
-			data->state.last_exit_status = 1;
-			return ;
-		}
-		*current = new_node;
-		data->state.last_exit_status = 0;
-	}
+static int create_new_var(t_env **current, char *name, char *new_value)
+{
+    t_env *new_node;
+
+    new_node = malloc(sizeof(t_env));
+    if (!new_node)
+    {
+        perror("Failed to allocate memory for new environment variable");
+        return 1;
+    }
+    new_node->type = ft_strdup(name);
+    new_node->value = ft_strdup(new_value);
+    new_node->next = NULL;
+
+    if (!new_node->type || !new_node->value)
+    {
+        free(new_node->type);
+        free(new_node->value);
+        free(new_node);
+        return 1;
+    }
+    *current = new_node;
+    return 0;
+}
+
+static void export_with_arg(t_env **env_list, char *arg, t_data *data)
+{
+    char *name;
+    char *new_value;
+    t_env **current;
+
+    name = ft_strtok(arg, "=");
+    new_value = ft_strtok(NULL, "");
+    if (new_value == NULL)
+        new_value = "";
+    current = env_list;
+    while (*current && ft_strcmp((*current)->type, name) != 0)
+        current = &(*current)->next;
+    if (*current)
+        update_existing_var(*current, new_value, data);
+    else
+    {
+        if (create_new_var(current, name, new_value))
+            data->state.last_exit_status = 1;
+        else
+            data->state.last_exit_status = 0;
+    }
 }
 
 int	is_valid_arg(const char *arg)

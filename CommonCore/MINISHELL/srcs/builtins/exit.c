@@ -17,11 +17,24 @@ void	set_exit_status(long status, t_data *data)
 	data->state.last_exit_status = (int)normalized_status;
 }
 
+void    exit_helper(char *status_str, int status, t_data *data)
+{
+    status = ft_atoi(status_str);
+	if (data->commands->args[1])
+	{
+		ft_putstr_fd("exit: too many arguments\n", STDERR_FILENO);
+		set_exit_status(1, data);
+	}
+	else
+		set_exit_status(status, data);
+}
+
 int	ft_exit(t_data *data)
 {
 	char	*status_str;
 	int		status;
 
+    status = 0;
 	if (data->commands->args[0])
 	{
 		status_str = ft_strdup(data->commands->args[0]);
@@ -31,16 +44,7 @@ int	ft_exit(t_data *data)
 			set_exit_status(2, data);
 		}
 		else
-		{
-			status = ft_atoi(status_str);
-			if (data->commands->args[1])
-			{
-				ft_putstr_fd("exit: too many arguments\n", STDERR_FILENO);
-				set_exit_status(1, data);
-			}
-			else
-				set_exit_status(status, data);
-		}
+			exit_helper(status_str, status, data);
 		free(status_str);
 	}
 	else

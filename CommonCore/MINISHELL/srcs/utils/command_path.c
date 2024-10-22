@@ -2,11 +2,12 @@
 
 char	*get_command_path(const char *cmd)
 {
-	char *path = getenv("PATH");
+	char *path;
 	char *full_path = NULL;
 	char *next_colon;
 	size_t len;
 
+    path = getenv("PATH");
 	if (!path)
 		return (NULL);
 	while (*path)
@@ -14,7 +15,6 @@ char	*get_command_path(const char *cmd)
 		next_colon = ft_strchr(path, ':');
 		if (!next_colon)
 			next_colon = path + ft_strlen(path);
-
 		len = next_colon - path;
 		full_path = malloc(len + ft_strlen(cmd) + 2);
 		if (!full_path)
@@ -24,7 +24,6 @@ char	*get_command_path(const char *cmd)
 		ft_strlcat(full_path, cmd, len + ft_strlen(cmd) + 2);
 		if (access(full_path, X_OK) == 0)
 			return (full_path);
-
 		free(full_path);
 		full_path = NULL;
 		if (*next_colon)

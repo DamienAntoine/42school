@@ -235,6 +235,7 @@ char	*handle_quotes(const char *str, t_data *data)
 	free(expanded_str);
 	return (result);
 }
+
 char	*ft_strtok(char *str, const char *delimiter)
 {
 	static char	*last;

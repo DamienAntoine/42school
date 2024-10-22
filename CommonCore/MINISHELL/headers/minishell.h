@@ -82,6 +82,8 @@ typedef struct s_token_list
 
 //####  need to be sorted later  ########################
 
+t_data  *init_toklist(t_data *data);
+t_data    *malloc_commands(t_data *data);
 t_history *add_command_to_history(t_history **history, const char *command);
 char	*process_env_token(const char *str, t_data *data);
 void	ft_strlcat_char(char *dst, char c, size_t dstsize);

@@ -11,21 +11,6 @@ void ignore_sigquit()
         perror("Failed to ignore SIGQUIT");
 }
 
-
-void setup_terminal()
-{
-    struct termios tio;
-    if (tcgetattr(STDIN_FILENO, &tio) != 0)
-	{
-        perror("Failed to get terminal attributes");
-        return;
-    }
-
-    tio.c_lflag &= ~ECHOCTL; 
-    if (tcsetattr(STDIN_FILENO, TCSANOW, &tio) != 0)
-        perror("Failed to set terminal attributes");
-} 
-
 void	handle_sigint(int sig)
 {
 	(void)sig;

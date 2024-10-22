@@ -1,7 +1,5 @@
 #include "../../headers/minishell.h"
 
-
-
 int is_delimiter(char c, const char *delimiter)
 {
     int i;
@@ -16,7 +14,6 @@ int is_delimiter(char c, const char *delimiter)
     return (0);
 }
 
-
 int		ft_isspace(int c)
 {
 	c = (unsigned char)c;
@@ -28,26 +25,21 @@ int		ft_isspace(int c)
 
 char	*ft_strstr(const char *haystack, const char *needle)
 {
-    if (*needle == '\0') // If the needle is empty, return the haystack
-        return (char *)haystack;
+    const char *h;
+    const char *n;
 
-    if (*haystack == '\0') // If haystack is empty, return NULL (no match)
-        return NULL;
-
-    const char *h = haystack;
-    const char *n = needle;
-
-    // Check if the current part of haystack matches the needle
+    h = haystack;
+    n = needle;
+    if (*needle == '\0')
+        return ((char *)haystack);
+    if (*haystack == '\0')
+        return (NULL);
     while (*h && *n && *h == *n)
     {
         h++;
         n++;
     }
-
-    // If we've matched the entire needle, return the start of the match
     if (*n == '\0')
-        return (char *)haystack;
-
-    // Recur for the next character in the haystack
-    return ft_strstr(haystack + 1, needle);
+        return ((char *)haystack);
+    return (ft_strstr(haystack + 1, needle));
 }
