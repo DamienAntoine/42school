@@ -82,6 +82,11 @@ typedef struct s_token_list
 
 //####  need to be sorted later  ########################
 
+int	output_redirection_exists(t_redirection *redirects);
+void close_pipes(int pipes[], int num_commands);
+int create_pipes(int pipes[], int num_commands);
+int	wait_for_children(t_data *data, pid_t *child_pids, int num_commands);
+int	ft_cmdsize(t_command *lst);
 void free_new_node(t_env *new_node);
 t_env *create_new_node(const char *env_entry);
 void add_node_to_list(t_env **cur_env, t_env *new_node);
