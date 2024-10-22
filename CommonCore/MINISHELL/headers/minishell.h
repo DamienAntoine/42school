@@ -9,7 +9,7 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <errno.h>
-#include <sys/wait.h> //for waitpid, WIFEXITED, WEXITSTATUS
+#include <sys/wait.h> 
 #include <termios.h>
 #include <fcntl.h>
 #include <readline/readline.h>
@@ -59,18 +59,18 @@ typedef struct s_env
 
 typedef struct s_command
 {
-	char					*cmds;				//command (ls, env, cd, ...)
-	char					**args;				//arguments / flags (-l, "file.txt", ...)
+	char					*cmds;				
+	char					**args;				
 	struct s_redirection	*redirects;
-	struct s_command		*next;				//pointer to next command if pipe (|)
+	struct s_command		*next;				
 }	t_command;
 
-typedef struct s_redirection					//this struct is to be able to use multiple redirections in one command
+typedef struct s_redirection					
 {
-	char					*file;				// file for redirection
-	int						type;				// 0 for input ("<"), 1 for output (">"), 2 for append (">>"), 3 for ("<<")
+	char					*file;				
+	int						type;				
 	int						error_flag;
-	struct	s_redirection	*next;				// pointer to the next redirection
+	struct	s_redirection	*next;				
 }	t_redirection;
 
 typedef struct s_token_list
@@ -129,7 +129,6 @@ void ft_grep(t_data *data);
 void ignore_sigquit();
 void setup_terminal();
 void	handle_sigint(int sig);
-//void update_exit_status(t_data *data, long long status);
 void set_exit_status(long status, t_data *data);
 
 
@@ -156,12 +155,9 @@ int    handle_unset(t_env **lst, char **args);
 
 int	ft_pwd(t_env *cur_env);
 void	print_export(t_env *env_list, t_data *data);
-//void    handle_export(t_env **lst, char **args, t_state *state);
 int	handle_export(t_data *data);
 
 int	ft_exit(t_data *data);
-//void	exit();
-//void	export();
 
 //#########################   Utils   ########################
 //utils_print.c
@@ -219,20 +215,14 @@ size_t ft_toklen(const char *str, const char *delim);
 
 //#########################   m_parser   ########################
 //create_redirects.c
-//void ft_add_redirection(t_data *data, char *file, int type);
 t_redirection *ft_create_redirection(char *file, int type);
 
 //sort_tokens.c
 void	ft_sort_tokens(t_data *data);
 void	ft_sortloop(t_data *data, int i, int j);
 void ft_sortredirect(t_data *data, t_command *current_command, int *i);
-//void	ft_sortpipes(t_data *data);
 void	ft_sortpipes(t_command *commands);
 
 
-//t_command	*ft_sort_tokens(t_token_list *toklist, t_command *table);
-//void	ft_sortloop(t_token_list *toklist, t_command *current, int i, int j);
-//t_command *ft_sortredirect(t_token_list *toklist, t_command *current, int *i);
-//t_command	*ft_sortpipes(t_command *current);
 
 #endif
