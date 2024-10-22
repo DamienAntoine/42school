@@ -43,7 +43,7 @@ int	is_valid_env_variable(const char *var)
 			return (0);
 		i++;
 	}
-    return (1);
+	return (1);
 }
 
 int	has_quotes(t_token_list *toklist)
@@ -60,28 +60,28 @@ int	has_quotes(t_token_list *toklist)
 		if (ft_strcmp(toklist->tokens[i], "\'") && doubquote == 0)
 			singquote = !singquote;
 		else if (ft_strcmp(toklist->tokens[i], "\"") && singquote == 0)
-		doubquote = !doubquote;
+			doubquote = !doubquote;
 	}
 	if (singquote || doubquote)
 		return (1);
 	return (0);
 }
 
-int is_operator(const char *token)
+int	is_operator(const char *token)
 {
-    if (ft_strcmp(token, "|") == 0 || ft_strcmp(token, "<") == 0 ||
-        ft_strcmp(token, ">") == 0 || ft_strcmp(token, "<<") == 0 ||
-        ft_strcmp(token, ">>") == 0)
-        return (1);
-    return (0);
+	if (ft_strcmp(token, "|") == 0 || ft_strcmp(token, "<") == 0 ||
+		ft_strcmp(token, ">") == 0 || ft_strcmp(token, "<<") == 0 ||
+		ft_strcmp(token, ">>") == 0)
+		return (1);
+	return (0);
 }
 
-int is_consecutive(t_token_list *toklist, int i)
+int	is_consecutive(t_token_list *toklist, int i)
 {
-    if (i + 1 >= toklist->token_count)
-        return (2);
+	if (i + 1 >= toklist->token_count)
+		return (2);
 
-    if (is_operator(toklist->tokens[i]) && is_operator(toklist->tokens[i + 1]))
-        return (1);
-    return (0);
+	if (is_operator(toklist->tokens[i]) && is_operator(toklist->tokens[i + 1]))
+		return (1);
+	return (0);
 }

@@ -2,9 +2,9 @@
 
 int	ft_echo(t_data *data)
 {
-	int		n_flag;
-	int		i;
-	char	*arg;
+	int n_flag;
+	int i;
+	char *arg;
 
 	n_flag = 0;
 	i = 0;

@@ -5,15 +5,11 @@ char	*create_full_path(const char *path, size_t len, const char *cmd)
 	char	*full_path;
 
 	full_path = malloc(len + ft_strlen(cmd) + 2);
-	// Allocate memory for the full path
 	if (!full_path)
 		return (NULL);
 	ft_strlcpy(full_path, path, len + 1);
-	// Copy the current path into full_path
 	ft_strlcat(full_path, "/", len + 2);
-	// Add a '/' after the path
 	ft_strlcat(full_path, cmd, len + ft_strlen(cmd) + 2);
-	// Append the command to full_path
 	return (full_path);
 }
 
