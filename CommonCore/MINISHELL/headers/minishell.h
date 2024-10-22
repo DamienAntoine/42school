@@ -82,6 +82,21 @@ typedef struct s_token_list
 
 //####  need to be sorted later  ########################
 
+void	print_escape(char *arg);
+int	is_in_single_quote(const char *arg, int position);
+void	ft_strlcat_char(char *dst, char c, size_t dstsize);
+char	*ft_strcat(char *dest, const char *src);
+void	handle_flags(t_data *data, int *i, int *n_flag);
+char	*get_current_directory(void);
+int	handle_home_directory(t_data *cur, char **target_dir, char *oldpwd);
+int	handle_oldpwd(t_data *cur, char **target_dir, char *oldpwd);
+int	handle_env_variable(t_data *cur, char **target_dir, char *oldpwd);
+int	validate_arguments(t_data *cur, char *oldpwd);
+void	export_with_arg(t_env **env_list, char *arg, t_data *data);
+int	create_new_var(t_env **current, char *name, char *new_value);
+void	update_existing_var(t_env *current, char *new_value, t_data *data);
+t_env	*clone_node(t_env *node);
+void	sorted_insert(t_env **sorted_list, t_env *new_node);
 t_data  *init_toklist(t_data *data);
 t_data    *malloc_commands(t_data *data);
 t_history *add_command_to_history(t_history **history, const char *command);
