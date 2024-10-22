@@ -1,24 +1,24 @@
 #include "../../headers/minishell.h"
 
-void init_env(char **env, t_env **cur_env)
+void	init_env(char **env, t_env **cur_env)
 {
-    int i;
-    t_env *new_node;
+	int		i;
+	t_env	*new_node;
 
-    i = 0;
-    new_node = NULL;
-    *cur_env = NULL;
-    while (env[i])
-    {
-        new_node = create_new_node(env[i]);
-        if (!new_node)
-        {
-            free_env_list(*cur_env);
-            exit(EXIT_FAILURE);
-        }
-        add_node_to_list(cur_env, new_node);
-        i++;
-    }
+	i = 0;
+	new_node = NULL;
+	*cur_env = NULL;
+	while (env[i])
+	{
+		new_node = create_new_node(env[i]);
+		if (!new_node)
+		{
+			free_env_list(*cur_env);
+			exit(EXIT_FAILURE);
+		}
+		add_node_to_list(cur_env, new_node);
+		i++;
+	}
 }
 
 void	up_env(t_env **env_list, const char *name, const char *value)

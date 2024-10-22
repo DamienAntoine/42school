@@ -25,7 +25,7 @@ void	ft_process_arguments(t_data *data, t_command **current, int *i, int *j)
 		return ;
 	}
 	else if (ft_strlen(toklist->tokens[*i]) > 0
-			&& !ft_isspace(toklist->tokens[*i][0]))
+		&& !ft_isspace(toklist->tokens[*i][0]))
 	{
 		if ((*current)->cmds == NULL)
 			(*current)->cmds = ft_strdup(toklist->tokens[*i]);

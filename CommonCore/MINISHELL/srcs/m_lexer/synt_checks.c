@@ -1,13 +1,12 @@
 #include "../../headers/minishell.h"
 
-int is_redirection(t_token_list *toklist, int i)
+int	is_redirection(t_token_list *toklist, int i)
 {
-    if (ft_strcmp(toklist->tokens[i], "<") == 0
-		|| ft_strcmp(toklist->tokens[i], ">") == 0
-		|| ft_strcmp(toklist->tokens[i], "<<") == 0
+	if (ft_strcmp(toklist->tokens[i], "<") == 0 || ft_strcmp(toklist->tokens[i],
+			">") == 0 || ft_strcmp(toklist->tokens[i], "<<") == 0
 		|| ft_strcmp(toklist->tokens[i], ">>") == 0)
-        return (1);
-    return (0);
+		return (1);
+	return (0);
 }
 
 int	ft_check_syntax(t_token_list *toklist)
