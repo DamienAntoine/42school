@@ -54,7 +54,7 @@ int	handle_exec_error(t_data *data, char *exec_target)
 				return (126);
 			}
 			else if (access(exec_target, F_OK) == 0 && access(exec_target,
-					X_OK) == -1)
+						X_OK) == -1)
 			{
 				ft_putstr_fd(exec_target, STDERR_FILENO);
 				ft_putstr_fd(": command not found\n", STDERR_FILENO);
@@ -62,7 +62,7 @@ int	handle_exec_error(t_data *data, char *exec_target)
 				return (127);
 			}
 			else if (S_ISREG(path_stat.st_mode) && access(exec_target, X_OK) ==
-				-1)
+					-1)
 			{
 				if (errno == EACCES)
 				{
@@ -81,7 +81,7 @@ int	handle_exec_error(t_data *data, char *exec_target)
 				{
 					ft_putstr_fd(exec_target, STDERR_FILENO);
 					ft_putstr_fd(": No such file or directory\n",
-						STDERR_FILENO);
+									STDERR_FILENO);
 				}
 				else
 				{

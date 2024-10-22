@@ -150,10 +150,10 @@ void	ft_sortredirect(t_data *data, t_command *current_command, int *i)
 		(*i)++;
 		if (*i < toklist->token_count)
 			add_redirection(current_command, toklist->tokens[*i],
-				redirect_type);
+					redirect_type);
 		else
 			fprintf(stderr,
-				"Syntax error: No file name after redirection operator.\n");
+					"Syntax error: No file name after redirection operator.\n");
 		(*i)++;
 	}
 }

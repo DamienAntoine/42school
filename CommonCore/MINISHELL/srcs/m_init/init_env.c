@@ -46,7 +46,8 @@ void	init_env(char **env, t_env **cur_env)
 	}
 }
 
-void	update_or_add_env_variable(t_env **env_list, const char *name, const char *value)
+void	update_or_add_env_variable(t_env **env_list, const char *name,
+		const char *value)
 {
 	t_env	*env;
 	t_env	*new_node;

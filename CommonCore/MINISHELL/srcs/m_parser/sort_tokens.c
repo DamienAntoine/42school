@@ -11,6 +11,31 @@ void	ft_sortpipes(t_command *commands)
 	memset(current->next, 0, sizeof(t_command));
 }
 
+void	ft_process_arguments(t_data *data, t_command **current, int *i, int *j)
+{
+	t_token_list	*toklist;
+
+	toklist = data->toklist;
+	if (ft_strcmp(toklist->tokens[*i], "<") == 0
+		|| ft_strcmp(toklist->tokens[*i], ">") == 0
+		|| ft_strcmp(toklist->tokens[*i], ">>") == 0
+		|| ft_strcmp(toklist->tokens[*i], "<<") == 0)
+	{
+		ft_sortredirect(data, *current, i);
+		return ;
+	}
+	else if (ft_strlen(toklist->tokens[*i]) > 0
+			&& !ft_isspace(toklist->tokens[*i][0]))
+	{
+		if ((*current)->cmds == NULL)
+			(*current)->cmds = ft_strdup(toklist->tokens[*i]);
+		else
+			(*current)->args[(*j)++] = ft_strdup(toklist->tokens[*i]);
+		(*i)++;
+	}
+	else
+		(*i)++;
+}
 void	ft_sortloop(t_data *data, int i, int j)
 {
 	t_token_list	*toklist;
@@ -34,25 +59,8 @@ void	ft_sortloop(t_data *data, int i, int j)
 				return ;
 			i++;
 		}
-		else if (ft_strcmp(toklist->tokens[i], "<") == 0
-			|| ft_strcmp(toklist->tokens[i], ">") == 0
-			|| ft_strcmp(toklist->tokens[i], ">>") == 0
-			|| ft_strcmp(toklist->tokens[i], "<<") == 0)
-		{
-			ft_sortredirect(data, current, &i);
-			continue ;
-		}
-		else if (ft_strlen(toklist->tokens[i]) > 0
-			&& !ft_isspace(toklist->tokens[i][0]))
-		{
-			if (current->cmds == NULL)
-				current->cmds = ft_strdup(toklist->tokens[i]);
-			else
-				current->args[j++] = ft_strdup(toklist->tokens[i]);
-			i++;
-		}
 		else
-			i++;
+			ft_process_arguments(data, &current, &i, &j);
 	}
 	current->args[j] = NULL;
 }
