@@ -90,6 +90,12 @@ typedef struct s_token_list
 	int						token_count;
 }							t_token_list;
 
+typedef struct s_quote_state
+{
+	int in_single_quotes;
+	int in_double_quotes;
+}	t_quote_state;
+
 //####  need to be sorted later  ########################
 
 
