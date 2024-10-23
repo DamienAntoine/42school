@@ -80,6 +80,16 @@ typedef struct s_token_list
 
 //####  need to be sorted later  ########################
 
+int	handle_is_directory(t_data *data, char *exec_target, struct stat path_stat);
+int	handle_permission_denied(t_data *data, char *exec_target);
+int	handle_exec_permission(t_data *data, char *exec_target, struct stat path_stat);
+int	handle_exec_error_if_part(t_data *data, char *exec_target, struct stat path_stat);
+int	handle_exec_error_else_part(t_data *data, char *exec_target);
+int	execute_child_process(t_command *cmdtable, char **full_args, char **envp, t_data *data);
+int	execute_external_command(t_command *cmdtable, char **full_args, char **envp, t_data *data);
+int handle_parent_process(pid_t pid);
+int	handle_exec_error(t_data *data, char *exec_target);
+int	check_redirection_before_fork(t_data *data);
 int				execute_builtin(t_command *cmdtable, t_data *data);
 int				handle_exec_error(t_data *data, char *exec_target);
 char			**prepare_full_args(t_command *cmdtable, int *arg_count);
