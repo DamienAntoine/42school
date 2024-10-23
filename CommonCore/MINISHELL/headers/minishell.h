@@ -92,6 +92,17 @@ typedef struct s_token_list
 
 //####  need to be sorted later  ########################
 
+int	quotes_check(const char *input);
+void	process_quotes(const char *str, int *i, t_data *data);
+char	*handle_quotes(const char *str, t_data *data);
+int	is_in_quotes(const char *arg, int position);
+
+
+char	*expand_variable(const char *var_name, t_data *data);
+size_t	estimate_buffer_size(const char *str, t_data *data);
+void	handle_single_quotes(const char *str, int *i, t_data *data);
+void	handle_double_quotes(const char *str, int *i, t_data *data);
+void	handle_unprocessed_string(const char *str, int *i, int *start, t_data *data);
 
 int	handle_null_data(t_data *data);
 int	handle_null_data(t_data *data);

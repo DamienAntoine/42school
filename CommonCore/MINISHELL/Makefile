@@ -19,7 +19,8 @@ SRCS += ./srcs/m_executor/executor.c ./srcs/m_executor/pipes.c ./srcs/m_executor
 SRCS += ./srcs/m_free/free.c\
 
 # m_lexer
-SRCS += ./srcs/m_lexer/synt_checks.c ./srcs/m_lexer/tokenize.c\
+SRCS += ./srcs/m_lexer/synt_checks.c ./srcs/m_lexer/tokenize.c ./srcs/m_lexer/helper_token_1.c\
+		./srcs/m_lexer/helper_token_2.c ./srcs/m_lexer/helper_token_3.c ./srcs/m_lexer/helper_token_4.c\
 
 # m_parser
 SRCS += ./srcs/m_parser/sort_tokens.c ./srcs/m_parser/input.c\
@@ -29,7 +30,9 @@ SRCS += ./srcs/utils/utils_str.c ./srcs/utils/utils_error.c ./srcs/utils/utils_p
 		./srcs/utils/terminal_signal.c ./srcs/utils/command_path.c ./srcs/utils/util_exe_1.c ./srcs/utils/util_pipe.c\
 		./srcs/utils/util_redir.c ./srcs/utils/util_token.c ./srcs/utils/util_echo.c ./srcs/utils/util_export.c \
 		./srcs/utils/util_cd.c ./srcs/utils/util_free.c ./srcs/utils/util_env.c ./srcs/utils/util_checker_2.c\
-		./srcs/utils/util_builtin.c ./srcs/utils/util_input.c ./srcs/utils/util_exe_2.c 
+		./srcs/utils/util_builtin.c ./srcs/utils/util_input.c ./srcs/utils/util_exe_2.c  ./srcs/utils/util_strtok.c\
+		./srcs/utils/util_quote.c ./srcs/utils/util_trim.c
+
 
 
 
