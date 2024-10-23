@@ -77,8 +77,8 @@ int	process_heredoc_lines(const char *delimiter, int write_fd)
 
 int	handle_here_doc(t_redirection *redir)
 {
-	char *delimiter;
-	int pipefd[2];
+	char	*delimiter;
+	int		pipefd[2];
 
 	delimiter = redir->file;
 	if (pipe(pipefd) == -1)

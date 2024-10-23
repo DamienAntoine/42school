@@ -41,18 +41,17 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	return (new);
 }
 
-
 /*
 #include <stdio.h>
+
 int	main(void)
 {
 	char	*str;
 	size_t	len;
-	char *new;
+	char	*new;
 
 	str = "test string 123456";
 	len = ft_strlen(str);
-
 	if (new)
 	{
 		new = ft_substr(str, 12, 6);

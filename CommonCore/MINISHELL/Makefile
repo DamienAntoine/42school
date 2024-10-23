@@ -5,7 +5,7 @@ NAME = minishell
 LDFLAGS = -lreadline
 
 # main and builtins
-SRCS =  ./includes/gnl.c ./srcs/main.c ./srcs/builtins/cd.c ./srcs/builtins/echo.c ./srcs/builtins/env.c ./srcs/builtins/exit.c\
+SRCS =  ./srcs/main.c ./srcs/builtins/cd.c ./srcs/builtins/echo.c ./srcs/builtins/env.c ./srcs/builtins/exit.c\
 		./srcs/builtins/export.c ./srcs/builtins/pwd.c ./srcs/builtins/unset.c\
 
 # m_init

@@ -24,14 +24,3 @@ int	ft_strncmp(char const *s1, char const *s2, size_t n)
 	}
 	return (((unsigned char)(*s1) - (unsigned char)(*s2)));
 }
-/*
-#include <stdio.h>
-int main(void)
-{
-	int	res;
-	res = ft_strncmp("test\200", "test\0", 6);
-
-	printf("%d", res);
-	return (0);
-}
-*/
