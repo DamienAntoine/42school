@@ -28,7 +28,8 @@ char	*remove_balanced_quotes(const char *input)
 	while (i < len)
 	{
 		quote_check(input[i], &in_single_quotes, &in_double_quotes);
-		if ((input[i] == '\'' && !in_double_quotes) || (input[i] == '\"' && !in_single_quotes))
+		if ((input[i] == '\'' && !in_double_quotes) || (input[i] == '\"'
+				&& !in_single_quotes))
 			i++;
 		else
 			result[j++] = input[i++];

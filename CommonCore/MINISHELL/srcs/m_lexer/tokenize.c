@@ -1,6 +1,5 @@
 #include "../../headers/minishell.h"
 
-
 int	handle_exit_status_expansion(const char *str, int *i, int *start,
 		t_data *data)
 {
@@ -62,7 +61,6 @@ int	handle_variable_expansion(const char *str, int *i, int *start, t_data *data)
 	}
 	return (0);
 }
-
 
 void	append_remaining_text(const char *str, int *i, int *start, t_data *data)
 {

@@ -1,8 +1,5 @@
 #include "../../headers/minishell.h"
 
-
-
-
 char	*ft_strtok(char *str, const char *delimiter)
 {
 	static char	*last;

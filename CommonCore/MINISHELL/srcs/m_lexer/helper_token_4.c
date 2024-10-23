@@ -2,10 +2,10 @@
 
 char	**process_and_tokenize_input(char *input)
 {
-	char			**args;
-	char			*processed_input;
-	char			*token;
-	int				i;
+	char	**args;
+	char	*processed_input;
+	char	*token;
+	int		i;
 
 	processed_input = trim_input(input);
 	if (!processed_input)
@@ -44,7 +44,6 @@ char	**handle_and_expand_tokens(t_data *data, char **args)
 		i++;
 	}
 	toklist->token_count = i;
-
 	return (args);
 }
 
@@ -55,6 +54,5 @@ char	**ft_tokenize(t_data *data, char *input)
 	args = process_and_tokenize_input(input);
 	if (!args)
 		return (NULL);
-
-	return handle_and_expand_tokens(data, args);
+	return (handle_and_expand_tokens(data, args));
 }
