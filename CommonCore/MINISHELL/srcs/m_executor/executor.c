@@ -1,7 +1,5 @@
 #include "../../headers/minishell.h"
 
-
-
 int	handle_null_data(t_data *data)
 {
 	if (data == NULL)
@@ -36,9 +34,9 @@ int	handle_builtin_command(t_data *data, int *exit_code)
 int	prepare_command(t_data *data, char ***envp, char ***full_args)
 {
 	int	arg_count;
+
 	*envp = env_list_to_array(data->env);
 	*full_args = prepare_full_args(data->commands, &arg_count);
-
 	if (handle_null_data(data))
 		return (1);
 	data->error_occurred = 0;
@@ -49,7 +47,7 @@ int	prepare_command(t_data *data, char ***envp, char ***full_args)
 
 int	handle_builtin_cmd(t_data *data, char **envp, char **full_args)
 {
-	int exit_code;
+	int	exit_code;
 
 	if (is_builtin(data->commands->cmds))
 	{
@@ -86,11 +84,10 @@ int	execute_cmd(t_data *data, char **envp, char **full_args)
 	free_split(envp);
 	free(full_args);
 	set_exit_status(exit_code, data);
-
 	return (exit_code);
 }
 
-int send_command(t_data *data)
+int	send_command(t_data *data)
 {
 	char	**envp;
 	char	**full_args;
@@ -98,9 +95,8 @@ int send_command(t_data *data)
 
 	result = prepare_command(data, &envp, &full_args);
 	if (result != -1)
-		return result;
-
-	return execute_cmd(data, envp, full_args);
+		return (result);
+	return (execute_cmd(data, envp, full_args));
 }
 
 int	ft_cmdsize(t_command *lst)
