@@ -13,6 +13,7 @@ SRCS += ./srcs/m_init/init.c ./srcs/m_init/init_env.c\
 
 # m_executor
 SRCS += ./srcs/m_executor/executor.c ./srcs/m_executor/pipes.c ./srcs/m_executor/redirection.c\
+		./srcs/m_executor/executor_2.c
 
 # m_free
 SRCS += ./srcs/m_free/free.c\

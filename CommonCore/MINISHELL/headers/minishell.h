@@ -80,6 +80,13 @@ typedef struct s_token_list
 
 //####  need to be sorted later  ########################
 
+
+int	handle_null_data(t_data *data);
+int	handle_null_data(t_data *data);
+int	handle_builtin_command(t_data *data, int *exit_code);
+int	prepare_command(t_data *data, char ***envp, char ***full_args);
+int	handle_builtin_cmd(t_data *data, char **envp, char **full_args);
+
 int	handle_is_directory(t_data *data, char *exec_target, struct stat path_stat);
 int	handle_permission_denied(t_data *data, char *exec_target);
 int	handle_exec_permission(t_data *data, char *exec_target, struct stat path_stat);
