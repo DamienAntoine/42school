@@ -74,7 +74,8 @@ void	handle_double_quotes(const char *str, int *i, t_data *data)
 	}
 }
 
-void	handle_unprocessed_string(const char *str, int *i, int *start, t_data *data)
+void	handle_unprocessed_string(const char *str, int *i, int *start,
+		t_data *data)
 {
 	char	*temp;
 
@@ -86,11 +87,14 @@ void	handle_unprocessed_string(const char *str, int *i, int *start, t_data *data
 	}
 }
 
-int	handle_exit_status_expansion(const char *str, int *i, int *start, t_data *data)
+int	handle_exit_status_expansion(const char *str, int *i, int *start,
+		t_data *data)
 {
+	char	*status_str;
+
 	if (str[*start] == '?')
 	{
-		char *status_str = ft_itoa(data->state.last_exit_status);
+		status_str = ft_itoa(data->state.last_exit_status);
 		ft_strlcat(data->env->result, status_str, data->env->buffer_size);
 		free(status_str);
 		(*i)++;
@@ -116,7 +120,8 @@ int	process_variable(const char *str, int *i, int *start, t_data *data)
 		*start = *i;
 		return (1);
 	}
-	while (str[*i] && (isalnum(str[*i]) || str[*i] == '_' || str[*i] == '=' || str[*i] == ';'))
+	while (str[*i] && (isalnum(str[*i]) || str[*i] == '_' || str[*i] == '='
+			|| str[*i] == ';'))
 		(*i)++;
 	temp = ft_substr(str, *start, *i - *start);
 	if (temp && temp[0] != '\0')
@@ -127,7 +132,6 @@ int	process_variable(const char *str, int *i, int *start, t_data *data)
 	}
 	free(temp);
 	*start = *i;
-
 	return (1);
 }
 
@@ -140,7 +144,7 @@ int	handle_variable_expansion(const char *str, int *i, int *start, t_data *data)
 		*start = *i;
 		if (handle_exit_status_expansion(str, i, start, data))
 			return (1);
-		return process_variable(str, i, start, data);
+		return (process_variable(str, i, start, data));
 	}
 	return (0);
 }
@@ -153,7 +157,7 @@ void	process_quotes(const char *str, int *i, t_data *data)
 
 void	append_remaining_text(const char *str, int *i, int *start, t_data *data)
 {
-	char *temp;
+	char	*temp;
 
 	if (*start < *i)
 	{
@@ -165,8 +169,8 @@ void	append_remaining_text(const char *str, int *i, int *start, t_data *data)
 
 char	*process_env_token(const char *str, t_data *data)
 {
-	int start;
-	int i;
+	int	start;
+	int	i;
 
 	data->env->in_single_quotes = 0;
 	data->env->in_double_quotes = 0;
@@ -181,11 +185,11 @@ char	*process_env_token(const char *str, t_data *data)
 	{
 		process_quotes(str, &i, data);
 		if (handle_variable_expansion(str, &i, &start, data))
-			continue;
+			continue ;
 		i++;
 	}
 	append_remaining_text(str, &i, &start, data);
-	return data->env->result;
+	return (data->env->result);
 }
 
 int	quotes_check(const char *input)
