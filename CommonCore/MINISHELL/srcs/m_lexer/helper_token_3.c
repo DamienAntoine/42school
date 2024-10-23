@@ -19,9 +19,9 @@ void	process_input(const char *input, char *result, size_t len,
 	while (i < len)
 	{
 		quote_check(input[i], &quote_state->in_single_quotes,
-				&quote_state->in_double_quotes);
+			&quote_state->in_double_quotes);
 		if ((input[i] == '\'' && !(quote_state->in_double_quotes))
-				|| (input[i] == '\"' && !(quote_state->in_single_quotes)))
+			|| (input[i] == '\"' && !(quote_state->in_single_quotes)))
 			i++;
 		else
 			result[j++] = input[i++];
