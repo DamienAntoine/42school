@@ -56,94 +56,136 @@ size_t	estimate_buffer_size(const char *str, t_data *data)
 	return (size);
 }
 
+void	handle_single_quotes(const char *str, int *i, t_data *data)
+{
+	if (str[*i] == '\'' && !data->env->in_double_quotes)
+	{
+		data->env->in_single_quotes = !data->env->in_single_quotes;
+		(*i)++;
+	}
+}
+
+void	handle_double_quotes(const char *str, int *i, t_data *data)
+{
+	if (str[*i] == '\"')
+	{
+		data->env->in_double_quotes = !data->env->in_double_quotes;
+		(*i)++;
+	}
+}
+
+void	handle_unprocessed_string(const char *str, int *i, int *start, t_data *data)
+{
+	char	*temp;
+
+	if (*i > *start)
+	{
+		temp = ft_substr(str, *start, *i - *start);
+		ft_strlcat(data->env->result, temp, data->env->buffer_size);
+		free(temp);
+	}
+}
+
+int	handle_exit_status_expansion(const char *str, int *i, int *start, t_data *data)
+{
+	if (str[*start] == '?')
+	{
+		char *status_str = ft_itoa(data->state.last_exit_status);
+		ft_strlcat(data->env->result, status_str, data->env->buffer_size);
+		free(status_str);
+		(*i)++;
+		while (ft_isalnum(str[*i]) || str[*i] == '_')
+		{
+			ft_strlcat_char(data->env->result, str[*i], data->env->buffer_size);
+			(*i)++;
+		}
+		*start = *i;
+		return (1);
+	}
+	return (0);
+}
+
+int	process_variable(const char *str, int *i, int *start, t_data *data)
+{
+	char	*temp;
+	char	*expanded_var;
+
+	if (!str[*start] || !(ft_isalnum(str[*start]) || str[*start] == '_'))
+	{
+		ft_strlcat(data->env->result, "$", data->env->buffer_size);
+		*start = *i;
+		return (1);
+	}
+	while (str[*i] && (isalnum(str[*i]) || str[*i] == '_' || str[*i] == '=' || str[*i] == ';'))
+		(*i)++;
+	temp = ft_substr(str, *start, *i - *start);
+	if (temp && temp[0] != '\0')
+	{
+		expanded_var = expand_variable(temp, data);
+		ft_strlcat(data->env->result, expanded_var, data->env->buffer_size);
+		free(expanded_var);
+	}
+	free(temp);
+	*start = *i;
+
+	return (1);
+}
+
+int	handle_variable_expansion(const char *str, int *i, int *start, t_data *data)
+{
+	if (str[*i] == '$' && !data->env->in_single_quotes)
+	{
+		handle_unprocessed_string(str, i, start, data);
+		(*i)++;
+		*start = *i;
+		if (handle_exit_status_expansion(str, i, start, data))
+			return (1);
+		return process_variable(str, i, start, data);
+	}
+	return (0);
+}
+
+void	process_quotes(const char *str, int *i, t_data *data)
+{
+	handle_single_quotes(str, i, data);
+	handle_double_quotes(str, i, data);
+}
+
+void	append_remaining_text(const char *str, int *i, int *start, t_data *data)
+{
+	char *temp;
+
+	if (*start < *i)
+	{
+		temp = ft_substr(str, *start, *i - *start);
+		ft_strlcat(data->env->result, temp, data->env->buffer_size);
+		free(temp);
+	}
+}
+
 char	*process_env_token(const char *str, t_data *data)
 {
-	char	*result;
-	char	*temp;
-	int		start;
-	int		i;
-	char	*expanded_var;
-	char	*status_str;
-	size_t	buffer_size;
-	int		in_single_quotes;
-	int		in_double_quotes;
+	int start;
+	int i;
 
-	in_single_quotes = 0;
-	in_double_quotes = 0;
-	buffer_size = estimate_buffer_size(str, data);
-	result = malloc(buffer_size);
-	if (!result)
+	data->env->in_single_quotes = 0;
+	data->env->in_double_quotes = 0;
+	data->env->buffer_size = estimate_buffer_size(str, data);
+	data->env->result = malloc(data->env->buffer_size);
+	if (!data->env->result)
 		return (NULL);
-	result[0] = '\0';
+	data->env->result[0] = '\0';
 	i = 0;
 	start = 0;
 	while (str[i])
 	{
-		if (str[i] == '\'' && !in_double_quotes)
-		{
-			in_single_quotes = !in_single_quotes;
-			i++;
-			continue ;
-		}
-		if (str[i] == '\"')
-		{
-			in_double_quotes = !in_double_quotes;
-			i++;
-			continue ;
-		}
-		if (str[i] == '$' && !in_single_quotes)
-		{
-			if (i > start)
-			{
-				temp = ft_substr(str, start, i - start);
-				ft_strlcat(result, temp, buffer_size);
-				free(temp);
-			}
-			i++;
-			start = i;
-			if (str[start] == '?')
-			{
-				status_str = ft_itoa(data->state.last_exit_status);
-				ft_strlcat(result, status_str, buffer_size);
-				free(status_str);
-				i++;
-				while (ft_isalnum(str[i]) || str[i] == '_')
-				{
-					ft_strlcat_char(result, str[i], buffer_size);
-					i++;
-				}
-				start = i;
-				continue ;
-			}
-			if (!str[start] || !(ft_isalnum(str[start]) || str[start] == '_'))
-			{
-				ft_strlcat(result, "$", buffer_size);
-				start = i;
-				continue ;
-			}
-			while (str[i] && (isalnum(str[i]) || str[i] == '_' || str[i] == '='
-					|| str[i] == ';'))
-				i++;
-			temp = ft_substr(str, start, i - start);
-			if (temp && temp[0] != '\0')
-			{
-				expanded_var = expand_variable(temp, data);
-				ft_strlcat(result, expanded_var, buffer_size);
-				free(expanded_var);
-			}
-			free(temp);
-			start = i;
-		}
-		else
-			i++;
+		process_quotes(str, &i, data);
+		if (handle_variable_expansion(str, &i, &start, data))
+			continue;
+		i++;
 	}
-	if (start < i)
-	{
-		temp = ft_substr(str, start, i - start);
-		ft_strlcat(result, temp, buffer_size);
-		free(temp);
-	}
-	return (result);
+	append_remaining_text(str, &i, &start, data);
+	return data->env->result;
 }
 
 int	quotes_check(const char *input)

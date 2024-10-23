@@ -54,7 +54,19 @@ typedef struct s_env
 	char					*type;
 	char					*value;
 	struct s_env			*next;
+	int						in_single_quotes;  // New field to track single quotes
+	int						in_double_quotes;  // New field to track double quotes
+	char					*result;           // New field to store the result buffer
+	size_t					buffer_size;       // New field to store buffer size
 }							t_env;
+
+
+// typedef struct s_env
+// {
+// 	char					*type;
+// 	char					*value;
+// 	struct s_env			*next;
+// }							t_env;
 
 typedef struct s_command
 {
