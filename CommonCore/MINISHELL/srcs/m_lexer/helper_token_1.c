@@ -42,9 +42,7 @@ size_t	ft_estimate_buffer_size(const char *str, t_data *data)
 			size += ft_estimate_variable_size(str, &i, data);
 		}
 		else
-		{
 			i++;
-		}
 	}
 	return (size);
 }

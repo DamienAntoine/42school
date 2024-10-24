@@ -74,6 +74,7 @@ int	main(int argc, char **argv, char **env)
 	data = init_minishell(env);
 	signal(SIGINT, handle_sigint);
 	ignore_sigquit();
+	rl_bind_key('\t', rl_insert);
 	while (1)
 	{
 		reset_toklist(data);
