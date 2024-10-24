@@ -21,7 +21,6 @@ int	handle_input(t_data *data)
 		return (0);
 	}
 	add_command_to_history(&(data->history), input);
-	add_command_to_history(&(data->history), input);
 	data->toklist->tokens = ft_tokenize(data, input);
 	free(input);
 	return (1);
