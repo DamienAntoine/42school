@@ -31,7 +31,7 @@ char	*get_command_path(const char *cmd)
 
 	full_path = NULL;
 	path = getenv("PATH");
-	if (!path)
+	if (!path || *path == '\0')
 		return (NULL);
 	while (*path)
 	{

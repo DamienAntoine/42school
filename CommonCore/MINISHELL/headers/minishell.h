@@ -133,8 +133,6 @@ int				execute_builtin(t_command *cmdtable, t_data *data);
 int				handle_exec_error(t_data *data, char *exec_target);
 char			**prepare_full_args(t_command *cmdtable, int *arg_count);
 int				execute_builtin_command(t_command *cmdtable, t_data *data);
-int				execute_external_command(t_command *cmdtable,
-					char **full_args, char **envp, t_data *data);
 int				open_redirection(t_redirection *redir);
 int				handle_input_redirection(t_redirection *redir);
 int				handle_output_redirection(t_redirection *redir);
