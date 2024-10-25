@@ -185,7 +185,7 @@ void			free_minishell(t_data *data);
 void			free_split(char **split);
 int				is_builtin(char *cmd);
 int				execute_builtin(t_command *cmdtable, t_data *data);
-char			*get_command_path(const char *cmd);
+char			*get_command_path(t_data *data, const char *cmd);
 char			*get_full_input(void);
 void			add_redirection(t_command *current_command,
 					char *file, int type);
@@ -281,4 +281,4 @@ void			ft_sortredirect(t_data *data,
 					t_command *current_command, int *i);
 void			ft_sortpipes(t_command *commands);
 
-#endif
+# endif

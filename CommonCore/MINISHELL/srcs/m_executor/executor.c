@@ -8,7 +8,7 @@ int	execute_cmd(t_data *data, char **envp, char **full_args)
 	exit_code = handle_builtin_cmd(data, envp, full_args);
 	if (exit_code != -1)
 		return (exit_code);
-	command_path = get_command_path(data->commands->cmds);
+	command_path = get_command_path(data, data->commands->cmds);
 	if (!command_path)
 	{
 		exit_code = handle_exec_error(data, data->commands->cmds);

@@ -32,7 +32,7 @@ int	execute_child_process(t_command *cmdtable, char **full_args, char **envp,
 {
 	char	*exec_target;
 
-	exec_target = get_command_path(cmdtable->cmds);
+	exec_target = get_command_path(data, cmdtable->cmds);
 	if (!exec_target)
 		exec_target = cmdtable->cmds;
 	if (cmdtable->redirects != NULL)

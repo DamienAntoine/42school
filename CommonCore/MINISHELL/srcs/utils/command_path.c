@@ -22,15 +22,21 @@ char	*colon_helper(char *next_colon, char *path)
 	return (path);
 }
 
-char	*get_command_path(const char *cmd)
+char	*get_command_path(t_data *data, const char *cmd)
 {
 	char	*path;
 	char	*full_path;
 	char	*next_colon;
 	size_t	len;
 
-	full_path = NULL;
-	path = getenv("PATH");
+	if (ft_strncmp(cmd, "/", 1) == 0 || ft_strncmp(cmd, "./", 2) == 0
+		|| ft_strncmp(cmd, "../", 3) == 0)
+	{
+		if (access(cmd, X_OK) == 0)
+			return (ft_strdup(cmd));
+		return (NULL);
+	}
+	path = find_env_value(data->env, "PATH");
 	if (!path || *path == '\0')
 		return (NULL);
 	while (*path)
