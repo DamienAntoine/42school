@@ -105,7 +105,7 @@ void	toggle_quotes(char c, int *in_single_quotes, int *in_double_quotes);
 char	*initialize_tokenizer(char *str, const char *delimiter, char **last);
 
 char	*process_token_character(char *str, char *start, const char *delimiter,	char **last);
-
+void	close_all_pipes(int *pipes);
 
 
 int	quotes_check(const char *input);
