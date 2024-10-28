@@ -41,7 +41,7 @@ int	execute_child_process(t_command *cmdtable, char **full_args, char **envp,
 			exit(1);
 	}
 	if (execve(exec_target, full_args, envp) == -1)
-		exit(handle_exec_error(data, exec_target));
+		return (-1);
 	return (0);
 }
 
@@ -52,7 +52,10 @@ int	execute_external_command(t_command *cmdtable, char **full_args, char **envp,
 
 	pid = fork();
 	if (pid == 0)
-		execute_child_process(cmdtable, full_args, envp, data);
+	{
+		if (execute_child_process(cmdtable, full_args, envp, data) == -1)
+			return (126);
+	}
 	else if (pid > 0)
 		return (handle_parent_process(pid));
 	else
