@@ -59,14 +59,31 @@ int	setup_pipes_and_fork(t_data *data, t_command *cmdtable, int pipes[],
 
 int	handle_pipes(t_data *data, t_command *cmdtable, int num_commands)
 {
-	int		pipes[(num_commands - 1) * 2];
-	pid_t	child_pids[num_commands];
+	int		*pipes;
+	pid_t	*child_pids;
 	int		exit_code;
+	int		i;
 
+	pipes = malloc((num_commands - 1) * 2 * sizeof(int));
+	child_pids = malloc(num_commands * sizeof(pid_t));
+	if (!pipes || !child_pids)
+	{
+		free(pipes);
+		free(child_pids);
+		return (-1);
+	}
 	exit_code = 0;
 	if (setup_pipes_and_fork(data, cmdtable, pipes, child_pids) == -1)
+	{
+		free(pipes);
+		free(child_pids);
 		return (-1);
-	close_pipes(pipes, num_commands);
+	}
+	i = 0;
+	while (i < (num_commands - 1) * 2)
+		close(*(pipes + i++));
 	exit_code = wait_for_children(data, child_pids, num_commands);
+	free(pipes);
+	free(child_pids);
 	return (exit_code);
 }
