@@ -61,6 +61,8 @@ typedef struct s_env
 }							t_env;
 
 
+
+
 // typedef struct s_env
 // {
 // 	char					*type;
@@ -97,8 +99,13 @@ typedef struct s_quote_state
 }	t_quote_state;
 
 //####  need to be sorted later  ########################
+char	*initialize_str(char *str, const char *delimiter, char **last);
+char	*check_special_characters(char *str, char *start, char **last);
+void	toggle_quotes(char c, int *in_single_quotes, int *in_double_quotes);
+char	*initialize_tokenizer(char *str, const char *delimiter, char **last);
 
-
+char	*process_token_character(char *str, char *start, const char *delimiter,	char **last);
+void	close_all_pipes(int *pipes);
 
 
 int	quotes_check(const char *input);

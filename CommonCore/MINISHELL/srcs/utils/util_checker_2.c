@@ -1,5 +1,14 @@
 #include "../../headers/minishell.h"
 
+void	close_all_pipes(int *pipes)
+{
+	int	j;
+
+	j = 0;
+	while (pipes[j] != -1)
+		close(pipes[j++]);
+}
+
 int	check_redirection_before_fork(t_data *data)
 {
 	t_command		*cmdtable;

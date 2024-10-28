@@ -22,6 +22,30 @@ char	*colon_helper(char *next_colon, char *path)
 	return (path);
 }
 
+char	*is_direct_path(const char *cmd)
+{
+	if (ft_strncmp(cmd, "/", 1) == 0 || ft_strncmp(cmd, "./", 2) == 0
+		|| ft_strncmp(cmd, "../", 3) == 0)
+	{
+		if (access(cmd, X_OK) == 0)
+			return (ft_strdup(cmd));
+	}
+	return (NULL);
+}
+
+char	*get_initial_command_path(t_data *data, const char *cmd, char **path)
+{
+	char	*direct_path;
+
+	direct_path = is_direct_path(cmd);
+	if (direct_path)
+		return (direct_path);
+	*path = find_env_value(data->env, "PATH");
+	if (!*path || **path == '\0')
+		return (NULL);
+	return (NULL);
+}
+
 char	*get_command_path(t_data *data, const char *cmd)
 {
 	char	*path;
@@ -29,15 +53,10 @@ char	*get_command_path(t_data *data, const char *cmd)
 	char	*next_colon;
 	size_t	len;
 
-	if (ft_strncmp(cmd, "/", 1) == 0 || ft_strncmp(cmd, "./", 2) == 0
-		|| ft_strncmp(cmd, "../", 3) == 0)
-	{
-		if (access(cmd, X_OK) == 0)
-			return (ft_strdup(cmd));
-		return (NULL);
-	}
-	path = find_env_value(data->env, "PATH");
-	if (!path || *path == '\0')
+	full_path = get_initial_command_path(data, cmd, &path);
+	if (full_path)
+		return (full_path);
+	if (!path)
 		return (NULL);
 	while (*path)
 	{
@@ -51,7 +70,6 @@ char	*get_command_path(t_data *data, const char *cmd)
 		if (access(full_path, X_OK) == 0)
 			return (full_path);
 		free(full_path);
-		full_path = NULL;
 		path = colon_helper(next_colon, path);
 	}
 	return (NULL);
