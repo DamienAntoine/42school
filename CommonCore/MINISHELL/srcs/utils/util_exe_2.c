@@ -24,6 +24,8 @@ int	handle_parent_process(pid_t pid)
 		exit_code = WEXITSTATUS(status);
 	else
 		exit_code = 128 + WTERMSIG(status);
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+		ft_putstr_fd("\n", 1);
 	return (exit_code);
 }
 
@@ -53,6 +55,8 @@ int	execute_external_command(t_command *cmdtable, char **full_args, char **envp,
 	pid = fork();
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		if (execute_child_process(cmdtable, full_args, envp, data) == -1)
 			return (126);
 	}

@@ -14,8 +14,8 @@ void	ignore_sigquit(void)
 void	handle_sigint(int sig)
 {
 	(void)sig;
-	ft_putstr_fd("\033[2K\r", 1);
 	rl_replace_line("", 0);
+	ft_putstr_fd("\n", 1);
 	rl_on_new_line();
 	rl_redisplay();
 }

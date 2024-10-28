@@ -81,7 +81,9 @@ int	main(int argc, char **argv, char **env)
 			return (0);
 		reset_command(data);
 		ft_sort_tokens(data);
+		signal(SIGINT, SIG_IGN);
 		execute_command(data);
+		signal(SIGINT, handle_sigint);
 	}
 	return (free_minishell(data), 0);
 }
