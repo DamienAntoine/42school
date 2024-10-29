@@ -80,7 +80,9 @@ int	main(int argc, char **argv, char **env)
 		if (!handle_input(data))
 			return (0);
 		reset_command(data);
-		ft_sort_tokens(data);
+		set_exit_status(0, data);
+		if (ft_sort_tokens(data) == -1 || data->state.last_exit_status != 0)
+			continue ;
 		signal(SIGINT, SIG_IGN);
 		execute_command(data);
 		signal(SIGINT, handle_sigint);

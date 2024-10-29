@@ -298,9 +298,9 @@ size_t						ft_toklen(const char *str, const char *delim);
 t_redirection				*ft_create_redirection(char *file, int type);
 
 // sort_tokens.c
-void						ft_sort_tokens(t_data *data);
-void						ft_sortloop(t_data *data, int i, int j);
-void						ft_sortredirect(t_data *data,
+int							ft_sort_tokens(t_data *data);
+int							ft_sortloop(t_data *data, int i, int j);
+int							ft_sortredirect(t_data *data,
 								t_command *current_command, int *i);
 void						ft_sortpipes(t_command *commands);
 

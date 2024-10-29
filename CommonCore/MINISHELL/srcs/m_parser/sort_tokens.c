@@ -11,19 +11,18 @@ void	ft_sortpipes(t_command *commands)
 	memset(current->next, 0, sizeof(t_command));
 }
 
-void	ft_process_arguments(t_data *data, t_command **current, int *i, int *j)
+int	ft_process_arguments(t_data *data, t_command **current, int *i, int *j)
 {
 	t_token_list	*toklist;
 
 	toklist = data->toklist;
+	if (data->state.last_exit_status != 0)
+		return (-1);
 	if (ft_strcmp(toklist->tokens[*i], "<") == 0
 		|| ft_strcmp(toklist->tokens[*i], ">") == 0
 		|| ft_strcmp(toklist->tokens[*i], ">>") == 0
 		|| ft_strcmp(toklist->tokens[*i], "<<") == 0)
-	{
-		ft_sortredirect(data, *current, i);
-		return ;
-	}
+		return (ft_sortredirect(data, *current, i));
 	else if (ft_strlen(toklist->tokens[*i]) > 0
 		&& !ft_isspace(toklist->tokens[*i][0]))
 	{
@@ -35,9 +34,10 @@ void	ft_process_arguments(t_data *data, t_command **current, int *i, int *j)
 	}
 	else
 		(*i)++;
+	return (0);
 }
 
-void	ft_sortloop(t_data *data, int i, int j)
+int	ft_sortloop(t_data *data, int i, int j)
 {
 	t_token_list	*toklist;
 	t_command		*current;
@@ -46,9 +46,15 @@ void	ft_sortloop(t_data *data, int i, int j)
 	current = data->commands;
 	current->args = malloc(sizeof(char *) * (toklist->token_count + 1));
 	if (!current->args)
-		return ;
+	{
+		set_exit_status(1, data);
+		return (-1);
+	}
+	current->args[0] = NULL;
 	while (i < toklist->token_count)
 	{
+		if (data->state.last_exit_status != 0)
+			return (-1);
 		if (ft_strcmp(toklist->tokens[i], "|") == 0)
 		{
 			current->args[j] = NULL;
@@ -57,16 +63,20 @@ void	ft_sortloop(t_data *data, int i, int j)
 			current = current->next;
 			current->args = malloc(sizeof(char *) * (toklist->token_count + 1));
 			if (!current->args)
-				return ;
+				return (-1);
 			i++;
 		}
 		else
-			ft_process_arguments(data, &current, &i, &j);
+		{
+			if (ft_process_arguments(data, &current, &i, &j) == -1)
+				return (-1);
+		}
 	}
 	current->args[j] = NULL;
+	return (0);
 }
 
-void	ft_sort_tokens(t_data *data)
+int	ft_sort_tokens(t_data *data)
 {
 	int	i;
 	int	j;
@@ -74,5 +84,7 @@ void	ft_sort_tokens(t_data *data)
 	i = 0;
 	j = 0;
 	ft_memset(data->commands, 0, sizeof(t_command));
-	ft_sortloop(data, i, j);
+	if (ft_sortloop(data, i, j) == -1)
+		return (-1);
+	return (0);
 }
