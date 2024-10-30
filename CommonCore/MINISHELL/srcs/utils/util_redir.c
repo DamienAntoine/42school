@@ -60,6 +60,7 @@ int	process_heredoc_lines(const char *delimiter, int write_fd)
 {
 	char	*line;
 
+	printf("process in heredoclines : %d\n", getpid());
 	while (1)
 	{
 		line = readline("> ");
