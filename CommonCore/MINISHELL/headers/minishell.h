@@ -210,7 +210,6 @@ char						*get_command_path(t_data *data, const char *cmd);
 char						*get_full_input(void);
 void						add_redirection(t_command *current_command,
 								char *file, int type);
-int							setup_redirection(t_redirection *redir);
 int							handle_here_doc(t_redirection *redir);
 char						*ft_strstr(const char *haystack,
 								const char *needle);

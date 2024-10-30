@@ -21,16 +21,6 @@ int	handle_null_commands(t_data *data, char **envp)
 	return (-1);
 }
 
-int	handle_builtin_command(t_data *data, int *exit_code)
-{
-	if (is_builtin(data->commands->cmds))
-	{
-		*exit_code = execute_builtin_command(data->commands, data);
-		return (1);
-	}
-	return (0);
-}
-
 int	prepare_command(t_data *data, char ***envp, char ***full_args)
 {
 	int	arg_count;

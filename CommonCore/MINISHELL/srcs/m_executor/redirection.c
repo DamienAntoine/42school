@@ -11,8 +11,8 @@ int	open_redirection(t_redirection *redir)
 		fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	else if (redir->type == 2)
 		fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	else if (redir->type == 3)
-		fd = handle_here_doc(redir);
+	/*else if (redir->type == 3)
+		fd = handle_here_doc(redir);*/
 	return (fd);
 }
 
