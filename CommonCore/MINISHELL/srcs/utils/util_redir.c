@@ -31,11 +31,60 @@ int	handle_output_redirection(t_redirection *redir)
 	close(fd);
 	return (0);
 }
-
+/*ORIGINAL SETUP_REDIRECTION
 int	setup_redirection(t_redirection *redir)
 {
-	int	result;
+	int				result;
+	int				result;
+	int				result;
+	pid_t			pid;
+	static pid_t	last_forked_pid;
 
+	while (redir)
+	{
+		printf("test\n");
+		if (redir->type == 0)
+			result = handle_input_redirection(redir);
+		else if (redir->type == 1 || redir->type == 2)
+			result = handle_output_redirection(redir);
+		else if (redir->type == 3)
+			handle_here_doc(redir);
+		if (result == -1)
+			return (-1);
+		redir = redir->next;
+	}
+	return (0);
+}*/
+/*SETUP_REDIRECTION BUT ONLY PARENT PROCESS ENTERS HEREDOC
+int	setup_redirection(t_redirection *redir)
+{
+	while (redir)
+	{
+		printf("test\n");
+		if (redir->type == 0)
+			result = handle_input_redirection(redir);
+		else if (redir->type == 1 || redir->type == 2)
+			result = handle_output_redirection(redir);
+		else if (redir->type == 3)
+		{
+			if (getpid() == getppid())
+				result = handle_here_doc(redir);
+			else
+				return (0);
+		}
+		if (result == -1)
+			return (-1);
+		redir = redir->next;
+	}
+	return (0);
+}*/
+int	setup_redirection(t_redirection *redir)
+{
+	int result;
+	pid_t pid;
+	static pid_t last_forked_pid;
+
+	last_forked_pid = -1;
 	while (redir)
 	{
 		if (redir->type == 0)
@@ -43,7 +92,29 @@ int	setup_redirection(t_redirection *redir)
 		else if (redir->type == 1 || redir->type == 2)
 			result = handle_output_redirection(redir);
 		else if (redir->type == 3)
-			handle_here_doc(redir);
+		{
+			pid = fork();
+			if (pid == -1)
+			{
+				perror("fork");
+				return (-1);
+			}
+			if (pid == 0)
+			{
+				if (pid == last_forked_pid)
+					result = handle_here_doc(redir);
+				if (result == -1)
+					exit(EXIT_FAILURE);
+				else
+					exit(EXIT_SUCCESS);
+			}
+			else
+			{
+				last_forked_pid = pid;
+				waitpid(pid, NULL, 0);
+				return (0);
+			}
+		}
 		if (result == -1)
 			return (-1);
 		redir = redir->next;
@@ -72,6 +143,7 @@ int	process_heredoc_lines(const char *delimiter, int write_fd)
 		write(write_fd, "\n", 1);
 		free(line);
 	}
+	close(write_fd);
 	return (0);
 }
 
