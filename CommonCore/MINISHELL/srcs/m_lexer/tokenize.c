@@ -88,12 +88,13 @@ char	*process_env_token(const char *str, t_data *data)
 	data->env->result[0] = '\0';
 	i = 0;
 	start = 0;
-	while (str[i])
+	while (str[i] != '\0')
 	{
 		process_quotes(str, &i, data);
 		if (handle_variable_expansion(str, &i, &start, data))
 			continue ;
-		i++;
+		if (str[i] != '\0')
+			i++;
 	}
 	append_remaining_text(str, &i, &start, data);
 	return (data->env->result);

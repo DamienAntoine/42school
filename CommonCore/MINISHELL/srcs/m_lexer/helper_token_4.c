@@ -20,11 +20,16 @@ char	**process_and_tokenize_input(char *input)
 	token = ft_strtok(processed_input, " \t\n");
 	while (token && i < MAX_ARGS - 1)
 	{
-		args[i++] = ft_strdup(token);
-		token = ft_strtok(NULL, " \t\n");
+		while (token && i < MAX_ARGS - 1)
+		{
+			if (token != NULL)
+				args[i++] = ft_strdup(token);
+			token = ft_strtok(NULL, " \t\n");
+		}
 	}
 	args[i] = NULL;
 	free(processed_input);
+	free(token);
 	return (args);
 }
 
