@@ -1,13 +1,28 @@
 #include "../headers/minishell.h"
 
+void	free_tokens(char **tokens)
+{
+    int	i;
+
+    if (!tokens)
+        return ;
+    i = 0;
+    while (tokens[i])
+    {
+        free(tokens[i]); // Free each token
+        i++;
+    }
+    free(tokens); // Free the array of tokens
+}
+
 void	reset_toklist(t_data *data)
 {
-	if (data->toklist->tokens)
-	{
-		free_split(data->toklist->tokens);
-		data->toklist->tokens = NULL;
-		data->toklist->token_count = 0;
-	}
+    if (data->toklist->tokens)
+    {
+        free_tokens(data->toklist->tokens);
+        data->toklist->tokens = NULL;
+        data->toklist->token_count = 0;
+    }
 }
 
 int	handle_input(t_data *data)
