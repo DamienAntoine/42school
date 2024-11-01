@@ -52,60 +52,54 @@ int	ft_cmdsize(t_command *lst)
 	return (size);
 }
 
-int handle_heredocs_before_fork(t_command *cmdtable)
+int	handle_heredocs_before_fork(t_command *cmdtable)
 {
-    t_redirection *redir;
-    int pipefd[2];
+	t_redirection	*redir;
+	int				pipefd[2];
 
-    while (cmdtable)
-    {
-        redir = cmdtable->redirects;
-        while (redir)
-        {
-            if (redir->type == 3)
-            {
-                if (pipe(pipefd) == -1)
-                    return (-1);
-                if (process_heredoc_lines(redir->file, pipefd[1]) == -1)
-                {
-                    close(pipefd[0]);
-                    close(pipefd[1]);
-                    return (-1);
-                }
-                close(pipefd[1]);  // Close write end after writing
-                redir->heredoc_fd = pipefd[0];  // Keep read end open
-            }
-            redir = redir->next;
-        }
-        cmdtable = cmdtable->next;
-    }
-    return (0);
+	while (cmdtable)
+	{
+		redir = cmdtable->redirects;
+		while (redir)
+		{
+			if (redir->type == 3)
+			{
+				if (pipe(pipefd) == -1)
+					return (-1);
+				if (process_heredoc_lines(redir->file, pipefd[1]) == -1)
+				{
+					close(pipefd[0]);
+					close(pipefd[1]);
+					return (-1);
+				}
+				close(pipefd[1]);
+				redir->heredoc_fd = pipefd[0];
+			}
+			redir = redir->next;
+		}
+		cmdtable = cmdtable->next;
+	}
+	return (0);
 }
 
-int execute_command(t_data *data)
+int	execute_command(t_data *data)
 {
-    t_command   *cmdtable;
-    int         num_commands;
-    int         exit_code;
+	t_command	*cmdtable;
+	int			num_commands;
+	int			exit_code;
 
-    cmdtable = data->commands;
-    num_commands = ft_cmdsize(cmdtable);
-    exit_code = 0;
-
-    // Handle heredocs first in parent process
-    if (handle_heredocs_before_fork(cmdtable) == -1)
-        return (1);
-
-    if (cmdtable->next || cmdtable->redirects)
-    {
-        exit_code = handle_pipes(data, cmdtable, num_commands);
-    }
-    else
-    {
-        exit_code = send_command(data);
-        if (exit_code != 0)
-            return (exit_code);
-    }
-
-    return (exit_code);
+	cmdtable = data->commands;
+	num_commands = ft_cmdsize(cmdtable);
+	exit_code = 0;
+	if (handle_heredocs_before_fork(cmdtable) == -1)
+		return (1);
+	if (cmdtable->next || cmdtable->redirects)
+		exit_code = handle_pipes(data, cmdtable, num_commands);
+	else
+	{
+		exit_code = send_command(data);
+		if (exit_code != 0)
+			return (exit_code);
+	}
+	return (exit_code);
 }

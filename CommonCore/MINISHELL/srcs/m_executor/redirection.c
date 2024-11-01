@@ -18,25 +18,25 @@ int	open_redirection(t_redirection *redir)
 
 t_redirection	*create_new_redirection(char *file, int type)
 {
-    t_redirection	*new_redir;
+	t_redirection	*new_redir;
 
-    new_redir = malloc(sizeof(t_redirection));
-    if (!new_redir)
-    {
-        perror("Failed to allocate memory for new redirection");
-        return (NULL);
-    }
-    new_redir->file = ft_strdup(file);
-    if (!new_redir->file)
-    {
-        free(new_redir);
-        perror("Failed to duplicate file string");
-        return (NULL);
-    }
-    new_redir->type = type;
-    new_redir->next = NULL;
-    new_redir->heredoc_fd = -1;
-    return (new_redir);
+	new_redir = malloc(sizeof(t_redirection));
+	if (!new_redir)
+	{
+		perror("Failed to allocate memory for new redirection");
+		return (NULL);
+	}
+	new_redir->file = ft_strdup(file);
+	if (!new_redir->file)
+	{
+		free(new_redir);
+		perror("Failed to duplicate file string");
+		return (NULL);
+	}
+	new_redir->type = type;
+	new_redir->next = NULL;
+	new_redir->heredoc_fd = -1;
+	return (new_redir);
 }
 
 void	add_redirection(t_command *current_command, char *file, int type)
@@ -72,8 +72,8 @@ int	check_heredoc(int redirect_type, t_token_list *toklist, int *i)
 				|| ft_strcmp(toklist->tokens[*i + 1], ">>") == 0)
 				return (-1);
 		}
-		if (*i + 1 >= toklist->token_count || toklist->tokens
-			[*i + 1][0] == '\0')
+		if (*i + 1 >= toklist->token_count || toklist->tokens[*i
+			+ 1][0] == '\0')
 			return (-1);
 	}
 	return (0);

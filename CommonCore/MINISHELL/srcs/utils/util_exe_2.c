@@ -29,17 +29,17 @@ int	handle_parent_process(pid_t pid)
 	return (exit_code);
 }
 
-int execute_child_process(t_command *cmdtable, char **full_args, char **envp, t_data *data)
+int	execute_child_process(t_command *cmdtable, char **full_args, char **envp,
+		t_data *data)
 {
-    char *exec_target = get_command_path(data, cmdtable->cmds);
-    if (!exec_target)
-        exec_target = cmdtable->cmds;
+	char	*exec_target;
 
-    // Directly execute without additional redirection setup
-    if (execve(exec_target, full_args, envp) == -1)
-        return (-1);
-
-    return (0);
+	exec_target = get_command_path(data, cmdtable->cmds);
+	if (!exec_target)
+		exec_target = cmdtable->cmds;
+	if (execve(exec_target, full_args, envp) == -1)
+		return (-1);
+	return (0);
 }
 
 int	execute_external_command(t_command *cmdtable, char **full_args, char **envp,
