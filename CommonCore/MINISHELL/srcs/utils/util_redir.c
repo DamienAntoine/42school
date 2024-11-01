@@ -56,55 +56,51 @@ int	setup_redirection(t_redirection *redir)
 	return (0);
 }
 
-int	process_heredoc_lines(const char *delimiter, int write_fd)
+int process_heredoc_lines(const char *delimiter, int write_fd)
 {
-	char	*line;
+    char    *line;
 
-	printf("process in heredoclines : %d\n", getpid());
-	while (1)
-	{
-		line = readline("> ");
-		if (line == NULL)
-		{
-			ft_putstr_fd("\n", STDERR_FILENO);
-			break ;
-		}
-		if (ft_strcmp(line, delimiter) == 0)
-		{
-			free(line);
-			break ;
-		}
-		write(write_fd, line, ft_strlen(line));
-		write(write_fd, "\n", 1);
-		free(line);
-	}
-	close(write_fd);
-	return (0);
+    if (write_fd < 0)
+        return (-1);
+
+    while (1)
+    {
+        line = readline("> ");
+        if (line == NULL)
+        {
+            ft_putstr_fd("\n", STDERR_FILENO);
+            break;
+        }
+        if (ft_strcmp(line, delimiter) == 0)
+        {
+            free(line);
+            break;
+        }
+        if (write(write_fd, line, ft_strlen(line)) == -1 ||
+            write(write_fd, "\n", 1) == -1)
+        {
+            free(line);
+            return (-1);
+        }
+        free(line);
+    }
+    return (0);
 }
 
-int	handle_here_doc(t_redirection *redir)
+int handle_here_doc(t_redirection *redir)
 {
-	char	*delimiter;
-	int		pipefd[2];
+    if (redir->heredoc_fd < 0)  // Already closed or invalid
+        return (-1);
 
-	delimiter = redir->file;
-	if (pipe(pipefd) == -1)
-	{
-		perror("pipe");
-		return (-1);
-	}
-	if (process_heredoc_lines(delimiter, pipefd[1]) == -1)
-	{
-		close(pipefd[1]);
-		return (-1);
-	}
-	close(pipefd[1]);
-	if (dup2(pipefd[0], STDIN_FILENO) == -1)
-	{
-		perror("dup2");
-		close(pipefd[0]);
-		return (-1);
-	}
-	close(pipefd[0]);
-	return (STDIN_FILENO);
+    // Duplicate heredoc fd to stdin
+    if (dup2(redir->heredoc_fd, STDIN_FILENO) == -1)
+    {
+        perror("dup2");
+        return (-1);
+    }
+
+    close(redir->heredoc_fd);  // Close original fd after duplication
+    redir->heredoc_fd = -1;    // Mark as closed to prevent reusing
+    return (0);
 }
+

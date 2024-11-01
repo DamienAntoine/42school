@@ -73,6 +73,7 @@ typedef struct s_redirection
 	char					*file;
 	int						type;
 	int						error_flag;
+	int						heredoc_fd;
 	struct s_redirection	*next;
 }							t_redirection;
 

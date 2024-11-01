@@ -1,30 +1,32 @@
 #include "../../headers/minishell.h"
 
-void	handle_child_process(t_data *data, t_command *cmdtable, int pipes[],
-		int i)
+void handle_child_process(t_data *data, t_command *cmdtable, int pipes[], int i)
 {
-	int	j;
-	int	exit_code;
+    int j = 0;
+    int exit_code;
 
-	j = 0;
-	if (cmdtable->redirects != NULL)
-	{
-		if (setup_redirection(cmdtable->redirects) == -1)
-			exit(1);
-	}
-	if (i > 0)
-		dup2(pipes[(i - 1) * 2], STDIN_FILENO);
-	if (cmdtable->next && !output_redirection_exists(cmdtable->redirects))
-		dup2(pipes[i * 2 + 1], STDOUT_FILENO);
-	while (pipes[j] != -1)
-	{
-		close(pipes[j]);
-		j++;
-	}
-	data->commands = cmdtable;
-	exit_code = send_command(data);
-	free_minishell(data);
-	exit(exit_code);
+    // Pipe handling
+    if (i > 0)
+        dup2(pipes[(i - 1) * 2], STDIN_FILENO);
+    if (cmdtable->next && !output_redirection_exists(cmdtable->redirects))
+        dup2(pipes[i * 2 + 1], STDOUT_FILENO);
+
+    // Close all pipe fds
+    while (pipes[j] != -1)
+        close(pipes[j++]);
+
+    // Handle redirections (including heredocs) only once here
+    if (cmdtable->redirects != NULL)
+    {
+        if (setup_redirection(cmdtable->redirects) == -1)
+            exit(1);
+    }
+
+    // Execute command
+    data->commands = cmdtable;
+    exit_code = send_command(data);
+    free_minishell(data);
+    exit(exit_code);
 }
 
 int	initialize_pipes(int *pipes, t_command *cmdtable)
