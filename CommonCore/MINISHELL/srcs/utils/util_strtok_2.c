@@ -16,19 +16,19 @@ char	*initialize_str(char *str, const char *delimiter, char **last)
 
 char	*check_special_characters(char *str, char *start, char **last)
 {
-    char *result;
+	char	*result;
 
-    if (str != start)
-    {
-        *last = str;
-        result = ft_substr(start, 0, str - start);
-        return (result);
-    }
-    if (*(str + 1) == *str)
-        str++;
-    *last = str + 1;
-    result = ft_substr(start, 0, str - start + 1);
-    return (result);
+	if (str != start)
+	{
+		*last = str;
+		result = ft_substr(start, 0, str - start);
+		return (result);
+	}
+	if (*(str + 1) == *str)
+		str++;
+	*last = str + 1;
+	result = ft_substr(start, 0, str - start + 1);
+	return (result);
 }
 
 void	toggle_quotes(char c, int *in_single_quotes, int *in_double_quotes)

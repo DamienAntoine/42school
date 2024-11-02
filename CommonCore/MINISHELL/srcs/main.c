@@ -1,30 +1,5 @@
 #include "../headers/minishell.h"
 
-void	free_tokens(char **tokens) //(same as free_split, i just created another one to debug need to delete later)
-{
-	int	i;
-
-	if (!tokens)
-		return ;
-	i = 0;
-	while (tokens[i])
-	{
-		free(tokens[i]);
-		i++;
-	}
-	free(tokens);
-}
-
-void	reset_toklist(t_data *data)
-{
-	if (data->toklist->tokens)
-	{
-		free_tokens(data->toklist->tokens);
-		data->toklist->tokens = NULL;
-		data->toklist->token_count = 0;
-	}
-}
-
 int	handle_input(t_data *data)
 {
 	char	*input;
@@ -39,43 +14,6 @@ int	handle_input(t_data *data)
 	data->toklist->tokens = ft_tokenize(data, input);
 	free(input);
 	return (1);
-}
-
-void	reset_command(t_data *data)
-{
-	free_command(data->commands);
-	data->commands = malloc(sizeof(t_command));
-	if (!data->commands)
-	{
-		perror("Failed to allocate memory for new commands");
-		exit(EXIT_FAILURE);
-	}
-	init_commands(data);
-}
-
-t_history	*add_command_to_history(t_history **history, const char *command)
-{
-	t_history	*tail;
-	t_history	*new_node;
-
-	new_node = malloc(sizeof(t_history));
-	if (!new_node)
-		return (NULL);
-	new_node->command = strdup(command);
-	new_node->next = NULL;
-	new_node->prev = NULL;
-	if (*history == NULL)
-		*history = new_node;
-	else
-	{
-		tail = *history;
-		while (tail->next)
-			tail = tail->next;
-		tail->next = new_node;
-		new_node->prev = tail;
-	}
-	add_history(command);
-	return (new_node);
 }
 
 int	main(int argc, char **argv, char **env)

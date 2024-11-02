@@ -90,6 +90,14 @@ typedef struct s_quote_state
 }							t_quote_state;
 
 //####  need to be sorted later  ########################
+void	reset_command(t_data *data);
+void	free_tokens(char **tokens);
+void	reset_toklist(t_data *data);
+
+int	open_redirection(t_redirection *redir);
+t_redirection	*create_new_redirection(char *file, int type);
+void	add_redirection(t_command *current_command, char *file, int type);
+
 char						*initialize_str(char *str, const char *delimiter,
 								char **last);
 char						*check_special_characters(char *str, char *start,

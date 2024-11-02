@@ -64,9 +64,8 @@ int	handle_heredocs_before_fork(t_command *cmdtable)
 		{
 			if (redir->type == 3)
 			{
-				if (pipe(pipefd) == -1)
-					return (-1);
-				if (process_heredoc_lines(redir->file, pipefd[1]) == -1)
+				if (pipe(pipefd) == -1
+					|| process_heredoc_lines(redir->file, pipefd[1]) == -1)
 				{
 					close(pipefd[0]);
 					close(pipefd[1]);

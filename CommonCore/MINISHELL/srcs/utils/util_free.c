@@ -65,27 +65,24 @@ void	free_split(char **split)
 
 void	free_redirections(t_redirection *redirections)
 {
-    t_redirection	*temp;
+	t_redirection	*temp;
 
-    while (redirections)
-    {
-        temp = redirections;
-        redirections = redirections->next;
-
-        if (temp->heredoc_fd != -1)
-        {
-            close(temp->heredoc_fd);
-            temp->heredoc_fd = -1;
-        }
-
-        if (temp->file)
-        {
-            free(temp->file);
-            temp->file = NULL;
-        }
-
-        free(temp);
-    }
+	while (redirections)
+	{
+		temp = redirections;
+		redirections = redirections->next;
+		if (temp->heredoc_fd != -1)
+		{
+			close(temp->heredoc_fd);
+			temp->heredoc_fd = -1;
+		}
+		if (temp->file)
+		{
+			free(temp->file);
+			temp->file = NULL;
+		}
+		free(temp);
+	}
 }
 
 void	free_token_list(t_token_list *token_list)
