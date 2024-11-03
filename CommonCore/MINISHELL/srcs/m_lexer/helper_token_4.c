@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   helper_token_4.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sanhwang <sanhwang@student.42luxembourg    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/03 12:16:43 by sanhwang          #+#    #+#             */
+/*   Updated: 2024/11/03 12:16:55 by sanhwang         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../headers/minishell.h"
 
 char	*fin_input(char *input)
@@ -44,38 +56,6 @@ char	**process_and_tokenize_input(char *input)
 	free(final_input);
 	return (args);
 }
-
-// char	**process_and_tokenize_input(char *input)
-// {
-// 	char	**args;
-// 	char	*processed_input;
-// 	char	*token;
-// 	char	*dup;
-// 	int		i;
-
-// 	processed_input = trim_input(input);
-// 	if (!processed_input)
-// 		return (NULL);
-// 	args = malloc(MAX_ARGS * sizeof(char *));
-// 	if (!args)
-// 	{
-// 		free(processed_input);
-// 		return (NULL);
-// 	}
-// 	i = 0;
-// 	token = ft_strtok(processed_input, " \t\n");
-// 	while (token && i < MAX_ARGS - 1)
-// 	{
-// 		dup = ft_strdup(token);
-// 		if (token != processed_input && strchr("<>|", *token))
-// 			free(token);
-// 		args[i++] = dup;
-// 		token = ft_strtok(NULL, " \t\n");
-// 	}
-// 	args[i] = NULL;
-// 	free(processed_input);
-// 	return (args);
-// }
 
 char	**handle_and_expand_tokens(t_data *data, char **args)
 {
