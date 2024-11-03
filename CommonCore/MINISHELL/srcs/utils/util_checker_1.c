@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   util_checker_1.c                                   :+:      :+:    :+:   */
+/*   utils_checker.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sanhwang <sanhwang@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/03 12:17:14 by sanhwang          #+#    #+#             */
-/*   Updated: 2024/11/03 12:17:15 by sanhwang         ###   ########.fr       */
+/*   Created: 2024/11/03 12:19:24 by sanhwang          #+#    #+#             */
+/*   Updated: 2024/11/03 14:49:19 by sanhwang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	has_quotes(t_token_list *toklist)
 	return (0);
 }
 
-int	is_operator(const char *token)
+static int	is_operator(const char *token)
 {
 	if (ft_strcmp(token, "|") == 0 || ft_strcmp(token, "<") == 0
 		|| ft_strcmp(token, ">") == 0 || ft_strcmp(token, "<<") == 0

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   util_history.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dantoine <dantoine@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: sanhwang <sanhwang@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 12:13:57 by dantoine          #+#    #+#             */
-/*   Updated: 2024/11/03 12:13:58 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/11/03 15:50:37 by sanhwang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_history	*add_command_to_history(t_history **history, const char *command)
 	new_node = malloc(sizeof(t_history));
 	if (!new_node)
 		return (NULL);
-	new_node->command = strdup(command);
+	new_node->command = ft_strdup(command);
 	new_node->next = NULL;
 	new_node->prev = NULL;
 	if (*history == NULL)

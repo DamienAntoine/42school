@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dantoine <dantoine@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: sanhwang <sanhwang@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 12:12:45 by dantoine          #+#    #+#             */
-/*   Updated: 2024/11/03 12:12:46 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/11/03 14:22:04 by sanhwang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

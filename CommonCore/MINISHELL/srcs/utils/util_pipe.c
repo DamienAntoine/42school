@@ -3,30 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   util_pipe.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dantoine <dantoine@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: sanhwang <sanhwang@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 12:14:08 by dantoine          #+#    #+#             */
-/*   Updated: 2024/11/03 12:14:09 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/11/03 15:24:01 by sanhwang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/minishell.h"
-
-int	is_pipe(t_data *data)
-{
-	t_token_list	*toklist;
-	int				i;
-
-	toklist = data->toklist;
-	i = 0;
-	while (toklist->tokens[i])
-	{
-		if (ft_strcmp(toklist->tokens[i], "|") == 0)
-			return (1);
-		i++;
-	}
-	return (0);
-}
 
 int	output_redirection_exists(t_redirection *redirects)
 {
@@ -37,15 +21,6 @@ int	output_redirection_exists(t_redirection *redirects)
 		redirects = redirects->next;
 	}
 	return (0);
-}
-
-void	close_pipes(int pipes[], int num_commands)
-{
-	if (num_commands <= 1)
-		return ;
-	close(pipes[0]);
-	close(pipes[1]);
-	close_pipes(&pipes[2], num_commands - 1);
 }
 
 int	create_pipes(int pipes[], int num_commands)

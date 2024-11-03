@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sort_tokens.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dantoine <dantoine@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: sanhwang <sanhwang@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 12:13:20 by dantoine          #+#    #+#             */
-/*   Updated: 2024/11/03 12:13:20 by dantoine         ###   ########.fr       */
+/*   Updated: 2024/11/03 15:27:34 by sanhwang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,45 +97,6 @@ int	ft_sortloop(t_data *data, int i, int j)
 	current->args[j] = NULL;
 	return (0);
 }
-
-// int	ft_sortloop(t_data *data, int i, int j)
-// {
-// 	t_token_list	*toklist;
-// 	t_command		*current;
-
-// 	toklist = data->toklist;
-// 	current = data->commands;
-// 	current->args = malloc(sizeof(char *) * (toklist->token_count + 1));
-// 	if (!current->args)
-// 	{
-// 		set_exit_status(1, data);
-// 		return (-1);
-// 	}
-// 	current->args[0] = NULL;
-// 	while (i < toklist->token_count)
-// 	{
-// 		if (data->state.last_exit_status != 0)
-// 			return (-1);
-// 		if (ft_strcmp(toklist->tokens[i], "|") == 0)
-// 		{
-// 			current->args[j] = NULL;
-// 			ft_sortpipes(current);
-// 			j = 0;
-// 			current = current->next;
-// 			current->args = malloc(sizeof(char *) * (toklist->token_count + 1));
-// 			if (!current->args)
-// 				return (-1);
-// 			i++;
-// 		}
-// 		else
-// 		{
-// 			if (ft_process_arguments(data, &current, &i, &j) == -1)
-// 				return (-1);
-// 		}
-// 	}
-// 	current->args[j] = NULL;
-// 	return (0);
-// }
 
 int	ft_sort_tokens(t_data *data)
 {

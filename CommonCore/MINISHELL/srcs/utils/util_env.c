@@ -6,7 +6,7 @@
 /*   By: sanhwang <sanhwang@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 12:17:45 by sanhwang          #+#    #+#             */
-/*   Updated: 2024/11/03 12:17:46 by sanhwang         ###   ########.fr       */
+/*   Updated: 2024/11/03 15:49:26 by sanhwang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_env	*create_new_node(const char *env_entry)
 	t_env	*new_node;
 	char	*equal_sign;
 
-	equal_sign = strchr(env_entry, '=');
+	equal_sign = ft_strchr(env_entry, '=');
 	new_node = (t_env *)malloc(sizeof(t_env));
 	if (!new_node)
 	{

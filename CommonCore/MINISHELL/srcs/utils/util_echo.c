@@ -6,7 +6,7 @@
 /*   By: sanhwang <sanhwang@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 12:17:40 by sanhwang          #+#    #+#             */
-/*   Updated: 2024/11/03 12:17:41 by sanhwang         ###   ########.fr       */
+/*   Updated: 2024/11/03 15:49:02 by sanhwang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,25 +22,6 @@ void	handle_flags(t_data *data, int *i, int *n_flag)
 	}
 }
 
-char	*ft_strcat(char *dest, const char *src)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (dest[i] != '\0')
-		i++;
-	j = 0;
-	while (src[j] != '\0')
-	{
-		dest[i] = src[j];
-		i++;
-		j++;
-	}
-	dest[i] = '\0';
-	return (dest);
-}
-
 void	ft_strlcat_char(char *dst, char c, size_t dstsize)
 {
 	size_t	dst_len;
@@ -51,22 +32,6 @@ void	ft_strlcat_char(char *dst, char c, size_t dstsize)
 		dst[dst_len] = c;
 		dst[dst_len + 1] = '\0';
 	}
-}
-
-int	is_in_single_quote(const char *arg, int position)
-{
-	int	i;
-	int	single_quotes;
-
-	i = 0;
-	single_quotes = 0;
-	while (i < position)
-	{
-		if (arg[i] == '\'')
-			single_quotes++;
-		i++;
-	}
-	return (single_quotes % 2 != 0);
 }
 
 void	print_escape(char *arg)
