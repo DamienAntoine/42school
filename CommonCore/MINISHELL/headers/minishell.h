@@ -6,7 +6,7 @@
 /*   By: sanhwang <sanhwang@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 12:08:01 by sanhwang          #+#    #+#             */
-/*   Updated: 2024/11/06 00:42:41 by sanhwang         ###   ########.fr       */
+/*   Updated: 2024/11/06 11:44:08 by sanhwang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ typedef struct s_quote_state
 	int						in_double_quotes;
 }							t_quote_state;
 
-//#########################   builtins   ##################################
+//#########################   builtins   #####################################
 
 int							ft_cd(t_data *cur);
 int							ft_echo(t_data *data);
@@ -114,14 +114,14 @@ int							handle_export(t_data *data);
 int							ft_exit(t_data *data);
 void						set_exit_status(long status, t_data *data);
 
-//######################### m_init #######################################
+//######################### m_init ###########################################
 // init.c
 t_data						*init_toklist(t_data *data);
 t_data						*malloc_commands(t_data *data);
 void						init_commands(t_data *data);
 t_data						*init_minishell(char **env);
 
-//######################### m_executor ####################################
+//######################### m_executor #######################################
 // pipes.c
 int							handle_pipes(t_data *data, t_command *cmdtable,
 								int num_commands);
@@ -147,14 +147,14 @@ t_redirection				*create_new_redirection(char *file, int type);
 void						add_redirection(t_command *current_command,
 								char *file, int type);
 
-//#########################   m_env   #####################################
+//#########################   m_env   #########################################
 // init_env.c
 char						*find_env_value(t_env *env, const char *name);
 void						up_env(t_env **env_list, const char *name,
 								const char *value);
 void						init_env(char **env, t_env **cur_env);
 
-//#########################   m_free   ####################################
+//#########################   m_free   #######################################
 // free.c
 void						free_env_list(t_env *env);
 void						free_token_list(t_token_list *token_list);
@@ -162,7 +162,7 @@ void						free_redirections(t_redirection *redirections);
 void						free_command(t_command *command);
 void						free_minishell(t_data *data);
 
-//#########################   m_lexer   ##################################
+//#########################   m_lexer   ######################################
 // helper_token_1.c
 size_t						estimate_buffer_size(const char *str, t_data *data);
 // helper_token_2.c
@@ -181,7 +181,7 @@ char						**ft_tokenize(t_data *data, char *input);
 char						*ft_strtok(char *str, const char *delimiter);
 char						*process_env_token(const char *str, t_data *data);
 
-//#########################   m_parser   ################################
+//#########################   m_parser   ####################################
 // input.c
 int							are_quotes_balanced(const char *input);
 char						*get_full_input(void);
@@ -190,7 +190,7 @@ int							ft_sort_tokens(t_data *data);
 int							ft_sortloop(t_data *data, int i, int j);
 void						ft_sortpipes(t_command *commands);
 
-//#########################  utils  #####################################
+//#########################  utils  #########################################
 // utils_print.c
 void						printf_and_free(const char *message, void *ptr);
 void						perror_and_free(const char *message, void *ptr);
